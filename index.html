@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Third Eye Print Co. — Screen Printing & Embroidery (San Diego)</title>
+  <meta name="description" content="Third Eye Print Co. — San Diego screen printing & embroidery. Helping brands & artists grow through quality, vision, and craft. Get a quote today." />
+  <meta name="theme-color" content="#0b0b0f" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Third Eye Print Co." />
+  <meta property="og:description" content="San Diego screen printing & embroidery — quality, vision & craft." />
+  <meta property="og:type" content="website" />
+
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --panel:#11121a;
+      --panel2:#0f1016;
+      --text:#f3f4f6;
+      --muted:#b7bcc7;
+      --line:rgba(255,255,255,.12);
+      --accent:#e6d38a; /* warm gold */
+      --accent2:#6ee7ff; /* subtle cool glow */
+      --shadow: 0 12px 40px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,.14), transparent 60%),
+                  radial-gradient(900px 500px at 90% 0%, rgba(230,211,138,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 18px}
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(11,11,15,.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width: 220px;
+    }
+    .logo{
+      width:42px; height:42px; border-radius:12px;
+      display:grid; place-items:center;
+      background: linear-gradient(145deg, rgba(230,211,138,.18), rgba(110,231,255,.10));
+      border:1px solid var(--line);
+      box-shadow: var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand h1{
+      margin:0; font-size:16px; letter-spacing:.3px; line-height:1.1;
+    }
+    .brand p{margin:2px 0 0; font-size:12px; color:var(--muted)}
+    .links{
+      display:flex; align-items:center; gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .links a{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .links a:hover{color:var(--text); border-color: rgba(230,211,138,.35)}
+    .cta{
+      padding:10px 14px !important;
+      color:#0b0b0f !important;
+      border-color: transparent !important;
+      background: linear-gradient(135deg, var(--accent), rgba(230,211,138,.78)) !important;
+      font-weight:700;
+    }
+
+    /* Hero */
+    .hero{
+      padding:56px 0 26px;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 920px){
+      .heroGrid{grid-template-columns: 1fr; }
+      .brand{min-width:auto}
+      .links{justify-content:flex-start}
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .heroCard{
+      padding:22px;
+      position:relative;
+      min-height: 290px;
+    }
+    .heroCard:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(600px 220px at 20% 10%, rgba(230,211,138,.18), transparent 55%),
+                  radial-gradient(520px 240px at 95% 30%, rgba(110,231,255,.14), transparent 60%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .heroInner{position:relative}
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size:13px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 14px rgba(230,211,138,.45);
+    }
+    .hero h2{
+      margin:14px 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height:1.08;
+      letter-spacing:-.3px;
+    }
+    .hero p{
+      margin:0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 62ch;
+    }
+    .heroActions{
+      display:flex; flex-wrap:wrap; gap:10px;
+      align-items:center;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      font-weight:650;
+      font-size:14px;
+    }
+    .btn:hover{border-color: rgba(230,211,138,.35)}
+    .btnPrimary{
+      border:none;
+      color:#0b0b0f;
+      background: linear-gradient(135deg, var(--accent), rgba(230,211,138,.78));
+    }
+    .btnGhost{color:var(--muted)}
+    .subnote{font-size:12px;color:var(--muted); margin-top:10px}
+
+    /* Side panel */
+    .side{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .side h3{margin:0; font-size:14px; color:var(--muted); letter-spacing:.4px; text-transform:uppercase}
+    .pillRow{display:flex; flex-wrap:wrap; gap:10px}
+    .pill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      font-size:13px;
+    }
+    .pill strong{color:var(--accent)}
+    .divider{height:1px;background:var(--line); margin:6px 0}
+
+    /* Sections */
+    section{padding:28px 0}
+    .sectionTitle{
+      display:flex; align-items:end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .sectionTitle h3{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.2px;
+    }
+    .sectionTitle p{margin:0; color:var(--muted); font-size:14px}
+
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 920px){
+      .grid3{grid-template-columns:1fr}
+    }
+    .item{
+      padding:16px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+    .item h4{margin:0 0 6px; font-size:16px}
+    .item p{margin:0; color:var(--muted); font-size:14px}
+
+    /* Pricing */
+    .pricingWrap{
+      padding:16px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+    .tableScroll{overflow:auto; border-radius:14px; border:1px solid var(--line); background: rgba(0,0,0,.22)}
+    table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+    th, td{
+      padding:12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      text-align:left;
+      font-size:14px;
+    }
+    th{color:var(--muted); font-weight:700; background: rgba(255,255,255,.03)}
+    tr:hover td{background: rgba(230,211,138,.05)}
+    .notes{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+      display:grid;
+      gap:6px;
+    }
+    .notes strong{color:var(--text)}
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    /* Gallery */
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 920px){
+      .gallery{grid-template-columns:1fr}
+    }
+    .ph{
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background:
+        radial-gradient(220px 140px at 20% 20%, rgba(110,231,255,.16), transparent 60%),
+        radial-gradient(240px 160px at 90% 40%, rgba(230,211,138,.12), transparent 60%),
+        rgba(255,255,255,.02);
+      min-height: 160px;
+      display:flex; align-items:flex-end;
+      padding:14px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* Contact */
+    .contactGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 920px){ .contactGrid{grid-template-columns:1fr} }
+    form{
+      display:grid; gap:10px;
+    }
+    input, textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    textarea{min-height:120px; resize:vertical}
+    label{font-size:12px; color:var(--muted)}
+    .two{
+      display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    }
+    @media (max-width: 600px){ .two{grid-template-columns:1fr} }
+    .footer{
+      padding:22px 0 40px;
+      color:var(--muted);
+      border-top:1px solid var(--line);
+      margin-top:22px;
+      font-size:13px;
+    }
+    .miniLinks{display:flex; gap:12px; flex-wrap:wrap; margin-top:10px}
+    .miniLinks a{color:var(--muted); text-decoration:underline; text-decoration-color: rgba(230,211,138,.35)}
+    .miniLinks a:hover{color:var(--text)}
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <div class="nav">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <!-- simple eye icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2.5 12s3.6-7 9.5-7 9.5 7 9.5 7-3.6 7-9.5 7S2.5 12 2.5 12Z" stroke="rgba(230,211,138,.9)" stroke-width="1.6"/>
+              <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="rgba(110,231,255,.85)" stroke-width="1.6"/>
+            </svg>
+          </div>
+          <div>
+            <h1>Third Eye Print Co.</h1>
+            <p>Screen Printing & Embroidery • San Diego</p>
+          </div>
+        </div>
+
+        <nav class="links" aria-label="Primary">
+          <a href="#services">Services</a>
+          <a href="#process">Process</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+          <a href="#contact" class="cta">Get a Quote</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero" id="top">
+      <div class="heroGrid">
+        <div class="card heroCard">
+          <div class="heroInner">
+            <div class="kicker"><span class="dot"></span> Helping brands & artists grow through <strong style="color:var(--text)">quality, vision & craft</strong></div>
+            <h2>Premium screen printing & embroidery that looks as good as it feels.</h2>
+            <p>
+              Based in San Diego. Fast, clear communication. Consistent prints. Clean details.
+              From merch drops to work shirts — we’ll help you ship something you’re proud of.
+            </p>
+
+            <div class="heroActions">
+              <a class="btn btnPrimary" href="#contact">Request a Quote</a>
+              <a class="btn" href="tel:+16192578389">Call / Text: (619) 257-8389</a>
+              <a class="btn btnGhost" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">Instagram @thirdeyeprintco</a>
+            </div>
+            <div class="subnote">Typical turnaround: <strong style="color:var(--text)">7–10 business days</strong> after art approval (rush available).</div>
+          </div>
+        </div>
+
+        <aside class="card side">
+          <h3>Quick Info</h3>
+          <div class="pillRow">
+            <div class="pill"><strong>6+ yrs</strong> experience</div>
+            <div class="pill">San Diego</div>
+            <div class="pill">Bulk discounts</div>
+            <div class="pill">Quality-first</div>
+          </div>
+          <div class="divider"></div>
+          <div class="pillRow">
+            <div class="pill"><strong>Screen setup:</strong> $25 per color</div>
+            <div class="pill"><strong>Rush:</strong> +15%</div>
+            <div class="pill"><strong>Extra print location:</strong> +$3/shirt</div>
+          </div>
+          <div class="divider"></div>
+          <div class="badge">Best for: merch drops • teams • events • workwear</div>
+          <div class="badge">Ask about: tag printing • sleeve prints • front + back</div>
+        </aside>
+      </div>
+    </div>
+
+    <section id="services">
+      <div class="wrap">
+        <div class="sectionTitle">
+          <h3>Services</h3>
+          <p>Built for small brands, artists, crews, and growing teams.</p>
+        </div>
+
+        <div class="grid3">
+          <div class="item">
+            <h4>Screen Printing</h4>
+            <p>Clean, durable prints for tees, hoodies, crewnecks, totes, and more. Great for bulk runs and consistent color.</p>
+          </div>
+          <div class="item">
+            <h4>Embroidery</h4>
+            <p>Polished stitching for hats, beanies, jackets, polos, and workwear. Ideal for logos and premium brand feel.</p>
+          </div>
+          <div class="item">
+            <h4>Brand Support</h4>
+            <p>We help you avoid common mistakes — placement, sizing, ink choices, and garment selection — so your drop lands right.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="wrap">
+        <div class="sectionTitle">
+          <h3>How it works</h3>
+          <p>Simple process, no confusion.</p>
+        </div>
+
+        <div class="grid3">
+          <div class="item">
+            <h4>1) Send details</h4>
+            <p>Quantity, garment type, print locations, and your artwork (or an idea). We’ll confirm print-ready specs.</p>
+          </div>
+          <div class="item">
+            <h4>2) Approve mockup</h4>
+            <p>We verify sizing/placement and colors. Once you approve, we start production.</p>
+          </div>
+          <div class="item">
+            <h4>3) Print & deliver</h4>
+            <p>Typical turnaround is 7–10 business days after art approval. Rush service available (+15%).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="wrap">
+        <div class="sectionTitle">
+          <h3>Screen Printing Pricing</h3>
+          <p>100% cotton tees (S–XL included). Bulk discounts available.</p>
+        </div>
+
+        <div class="pricingWrap">
+          <div class="tableScroll" role="region" aria-label="Pricing table" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Qty</th>
+                  <th>1 Color</th>
+                  <th>2 Colors</th>
+                  <th>3 Colors</th>
+                  <th>4 Colors</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>12</td><td>$14.00</td><td>$16.00</td><td>$18.00</td><td>$20.00</td></tr>
+                <tr><td>24</td><td>$10.75</td><td>$12.75</td><td>$14.75</td><td>$16.75</td></tr>
+                <tr><td>36</td><td>$8.75</td><td>$10.25</td><td>$11.75</td><td>$13.25</td></tr>
+                <tr><td>48</td><td>$7.50</td><td>$9.00</td><td>$10.50</td><td>$12.00</td></tr>
+                <tr><td>72</td><td>$6.75</td><td>$8.25</td><td>$9.75</td><td>$11.25</td></tr>
+                <tr><td>100+</td><td>$6.50</td><td>$7.75</td><td>$9.00</td><td>$10.25</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="notes" aria-label="Pricing notes">
+            <div>• <strong>Size add-ons:</strong> +$2.50 for 2XL+ • +$3.50 for 3XL+</div>
+            <div>• <strong>Extra print location:</strong> +$3.00 per shirt</div>
+            <div>• <strong>Screen setup:</strong> $25 per color</div>
+            <div>• <strong>Rush orders:</strong> +15%</div>
+            <div>• <strong>Turnaround:</strong> 7–10 business days after art approval</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="wrap">
+        <div class="sectionTitle">
+          <h3>FAQ</h3>
+          <p>Fast answers to common questions.</p>
+        </div>
+
+        <div class="grid3">
+          <div class="item">
+            <h4>What files do you need?</h4>
+            <p>Vector files are best (AI/EPS/SVG). High-res PNG works too. If you’re not sure, send what you have — we’ll guide you.</p>
+          </div>
+          <div class="item">
+            <h4>Can you print front + back?</h4>
+            <p>Yes. Multiple locations are available (front, back, sleeve, etc.). Extra print location is +$3/shirt.</p>
+          </div>
+          <div class="item">
+            <h4>Do you offer bulk pricing?</h4>
+            <p>Yes — pricing improves as quantity increases. If you’re doing 100+ or repeat orders, ask about deeper discounts.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="wrap">
+        <div class="sectionTitle">
+          <h3>Recent work</h3>
+          <p>Replace these placeholders with your best photos (tees, close-ups, shop shots).</p>
+        </div>
+
+        <div class="gallery">
+          <div class="ph">Gallery image 1 (merch drop)</div>
+          <div class="ph">Gallery image 2 (press / shop)</div>
+          <div class="ph">Gallery image 3 (close-up detail)</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="wrap">
+        <div class="sectionTitle">
+          <h3>Get a quote</h3>
+          <p>Tell us what you’re making — we’ll reply with pricing + next steps.</p>
+        </div>
+
+        <div class="contactGrid">
+          <div class="item">
+            <h4>Contact</h4>
+            <p style="color:var(--muted); margin:0 0 10px;">
+              San Diego • Screen Printing & Embroidery
+            </p>
+
+            <div class="pillRow" style="margin-bottom:10px;">
+              <a class="pill" href="tel:+16192578389"><strong>Call/Text:</strong> (619) 257-8389</a>
+              <a class="pill" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer"><strong>IG:</strong> @thirdeyeprintco</a>
+            </div>
+
+            <div class="divider"></div>
+
+            <p style="color:var(--muted); margin:10px 0 0;">
+              Prefer DM? Message on Instagram and include:
+              <strong style="color:var(--text)">quantity</strong>, <strong style="color:var(--text)">garment type</strong>,
+              <strong style="color:var(--text)">colors</strong>, and <strong style="color:var(--text)">print locations</strong>.
+            </p>
+          </div>
+
+          <div class="item">
+            <h4>Quote form</h4>
+
+            <!-- NOTE: This form is front-end only by default.
+                 Option A: Replace action="" with a Formspree endpoint.
+                 Option B: Use a simple mailto link button.
+            -->
+            <form id="quoteForm" action="" method="POST" novalidate>
+              <div class="two">
+                <div>
+                  <label for="name">Name</label>
+                  <input id="name" name="name" autocomplete="name" placeholder="Your name" required />
+                </div>
+                <div>
+                  <label for="phone">Phone / Email</label>
+                  <input id="phone" name="contact" autocomplete="email" placeholder="How should we reach you?" required />
+                </div>
+              </div>
+
+              <div class="two">
+                <div>
+                  <label for="qty">Quantity</label>
+                  <input id="qty" name="quantity" inputmode="numeric" placeholder="e.g., 48" required />
+                </div>
+                <div>
+                  <label for="colors"># of ink colors</label>
+                  <select id="colors" name="colors" required>
+                    <option value="">Select…</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5+</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="two">
+                <div>
+                  <label for="garment">Garment</label>
+                  <input id="garment" name="garment" placeholder="T-shirt / Hoodie / Hat / etc." required />
+                </div>
+                <div>
+                  <label for="locations">Print locations</label>
+                  <input id="locations" name="locations" placeholder="Front / Back / Sleeve" required />
+                </div>
+              </div>
+
+              <div>
+                <label for="notes">Notes / link to artwork</label>
+                <textarea id="notes" name="notes" placeholder="Drop a Drive link / describe your idea."></textarea>
+              </div>
+
+              <button class="btn btnPrimary" type="submit">Submit Quote Request</button>
+              <div id="formMsg" class="subnote" role="status" aria-live="polite"></div>
+
+              <div class="subnote">
+                Tip: If you want this form to actually send messages, use Formspree (free) or a simple email endpoint.
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div><strong style="color:var(--text)">Third Eye Print Co.</strong> — San Diego screen printing & embroidery.</div>
+          <div class="miniLinks">
+            <a href="#top">Back to top</a>
+            <a href="#pricing">Pricing</a>
+            <a href="tel:+16192578389">Call/Text</a>
+            <a href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">Instagram</a>
+          </div>
+          <div style="margin-top:10px;">© <span id="year"></span> Third Eye Print Co. All rights reserved.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Smooth scrolling for same-page anchors
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener("click", (e) => {
+        const id = a.getAttribute("href");
+        if (!id || id === "#") return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    // Front-end form handling (no backend by default)
+    const form = document.getElementById("quoteForm");
+    const msg = document.getElementById("formMsg");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      const required = ["name","contact","quantity","colors","garment","locations"];
+      const missing = required.filter(k => !String(data[k] || "").trim());
+
+      if (missing.length) {
+        msg.textContent = "Please fill out the required fields.";
+        return;
+      }
+
+      // Build a mailto fallback (works everywhere, no backend required)
+      const subject = encodeURIComponent("Quote Request — Third Eye Print Co.");
+      const body = encodeURIComponent(
+        `Name: ${data.name}\n` +
+        `Contact: ${data.contact}\n` +
+        `Quantity: ${data.quantity}\n` +
+        `Ink colors: ${data.colors}\n` +
+        `Garment: ${data.garment}\n` +
+        `Print locations: ${data.locations}\n\n` +
+        `Notes / Artwork link:\n${data.notes || ""}\n`
+      );
+
+      // TODO: Replace with shop email when ready
+      const to = ""; // e.g. "thirdeyeprintco@gmail.com"
+      if (!to) {
+        msg.textContent = "Form is ready — add your business email in the code to enable email sending. (See TODO.)";
+        return;
+      }
+
+      window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+      msg.textContent = "Opening your email app…";
+    });
+  </script>
+</body>
+</html>
