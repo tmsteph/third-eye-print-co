@@ -6,6 +6,7 @@
   <title>Third Eye Print Co. — Screen Printing & Embroidery (San Diego)</title>
   <meta name="description" content="Third Eye Print Co. — San Diego screen printing & embroidery. Helping brands & artists grow through quality, vision, and craft. Get a quote today." />
   <meta name="theme-color" content="#0b0b0f" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Third Eye Print Co." />
@@ -63,6 +64,13 @@
       border:1px solid var(--line);
       box-shadow: var(--shadow);
       flex:0 0 auto;
+      overflow:hidden;
+    }
+    .logo img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
     }
     .brand h1{
       margin:0; font-size:16px; letter-spacing:.3px; line-height:1.1;
@@ -291,6 +299,20 @@
       color:var(--muted);
       font-size:13px;
     }
+    .galleryPhoto{
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      overflow:hidden;
+      min-height:160px;
+      background: rgba(255,255,255,.02);
+    }
+    .galleryPhoto img{
+      display:block;
+      width:100%;
+      height:100%;
+      min-height:160px;
+      object-fit:cover;
+    }
 
     /* Contact */
     .contactGrid{
@@ -336,12 +358,8 @@
     <div class="wrap">
       <div class="nav">
         <div class="brand">
-          <div class="logo" aria-hidden="true">
-            <!-- simple eye icon -->
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M2.5 12s3.6-7 9.5-7 9.5 7 9.5 7-3.6 7-9.5 7S2.5 12 2.5 12Z" stroke="rgba(230,211,138,.9)" stroke-width="1.6"/>
-              <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="rgba(110,231,255,.85)" stroke-width="1.6"/>
-            </svg>
+          <div class="logo">
+            <img src="assets/print-shop-team.jpg" alt="Third Eye Print Co. logo" />
           </div>
           <div>
             <h1>Third Eye Print Co.</h1>
@@ -523,7 +541,9 @@
         </div>
 
         <div class="gallery">
-          <div class="ph">Gallery image 1 (merch drop)</div>
+          <figure class="galleryPhoto">
+            <img src="assets/print-shop-team.jpg" alt="Team photo from Third Eye Print Co. shop" loading="lazy" />
+          </figure>
           <div class="ph">Gallery image 2 (press / shop)</div>
           <div class="ph">Gallery image 3 (close-up detail)</div>
         </div>
