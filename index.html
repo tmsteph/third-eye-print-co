@@ -589,22 +589,22 @@
               <div class="two">
                 <div>
                   <label for="name">Name</label>
-                  <input id="name" name="name" autocomplete="name" placeholder="Your name" required />
+                  <input id="name" name="name" autocomplete="name" placeholder="Your name" />
                 </div>
                 <div>
                   <label for="phone">Phone / Email</label>
-                  <input id="phone" name="contact" autocomplete="email" placeholder="How should we reach you?" required />
+                  <input id="phone" name="contact" autocomplete="email" placeholder="How should we reach you?" />
                 </div>
               </div>
 
               <div class="two">
                 <div>
                   <label for="qty">Quantity</label>
-                  <input id="qty" name="quantity" inputmode="numeric" placeholder="e.g., 48" required />
+                  <input id="qty" name="quantity" inputmode="numeric" placeholder="e.g., 48" />
                 </div>
                 <div>
                   <label for="colors"># of ink colors</label>
-                  <select id="colors" name="colors" required>
+                  <select id="colors" name="colors">
                     <option value="">Select…</option>
                     <option>1</option>
                     <option>2</option>
@@ -618,11 +618,11 @@
               <div class="two">
                 <div>
                   <label for="garment">Garment</label>
-                  <input id="garment" name="garment" placeholder="T-shirt / Hoodie / Hat / etc." required />
+                  <input id="garment" name="garment" placeholder="T-shirt / Hoodie / Hat / etc." />
                 </div>
                 <div>
                   <label for="locations">Print locations</label>
-                  <input id="locations" name="locations" placeholder="Front / Back / Sleeve" required />
+                  <input id="locations" name="locations" placeholder="Front / Back / Sleeve" />
                 </div>
               </div>
 
@@ -687,11 +687,11 @@
       // Build a mailto fallback (works everywhere, no backend required)
       const subject = encodeURIComponent("Quote Request — Third Eye Print Co.");
       const body = encodeURIComponent(
-        `Name: ${val("name")}\n` +
-        `Contact: ${val("contact")}\n` +
-        `Quantity: ${val("quantity")}\n` +
-        `Ink colors: ${val("colors")}\n` +
-        `Garment: ${val("garment")}\n` +
+        `Name: ${val("name")}\n\n` +
+        `Contact: ${val("contact")}\n\n` +
+        `Quantity: ${val("quantity")}\n\n` +
+        `Ink colors: ${val("colors")}\n\n` +
+        `Garment: ${val("garment")}\n\n` +
         `Print locations: ${val("locations")}\n\n` +
         `Notes / Artwork link:\n${val("notes")}\n`
       );
