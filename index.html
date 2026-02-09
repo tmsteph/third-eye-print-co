@@ -631,7 +631,7 @@
                 <textarea id="notes" name="notes" placeholder="Drop a Drive link / describe your idea."></textarea>
               </div>
 
-              <button class="btn btnPrimary" type="submit">Submit Quote Request</button>
+              <button class="btn btnPrimary" type="submit">Send Quote</button>
               <div id="formMsg" class="subnote" role="status" aria-live="polite"></div>
 
               <div class="subnote">
@@ -679,32 +679,24 @@
       e.preventDefault();
 
       const data = Object.fromEntries(new FormData(form).entries());
-      const required = ["name","contact","quantity","colors","garment","locations"];
-      const missing = required.filter(k => !String(data[k] || "").trim());
-
-      if (missing.length) {
-        msg.textContent = "Please fill out the required fields.";
-        return;
-      }
+      const val = (key) => {
+        const text = String(data[key] || "").trim();
+        return text || "Not provided";
+      };
 
       // Build a mailto fallback (works everywhere, no backend required)
       const subject = encodeURIComponent("Quote Request — Third Eye Print Co.");
       const body = encodeURIComponent(
-        `Name: ${data.name}\n` +
-        `Contact: ${data.contact}\n` +
-        `Quantity: ${data.quantity}\n` +
-        `Ink colors: ${data.colors}\n` +
-        `Garment: ${data.garment}\n` +
-        `Print locations: ${data.locations}\n\n` +
-        `Notes / Artwork link:\n${data.notes || ""}\n`
+        `Name: ${val("name")}\n` +
+        `Contact: ${val("contact")}\n` +
+        `Quantity: ${val("quantity")}\n` +
+        `Ink colors: ${val("colors")}\n` +
+        `Garment: ${val("garment")}\n` +
+        `Print locations: ${val("locations")}\n\n` +
+        `Notes / Artwork link:\n${val("notes")}\n`
       );
 
-      // TODO: Replace with shop email when ready
-      const to = ""; // e.g. "thirdeyeprintco@gmail.com"
-      if (!to) {
-        msg.textContent = "Form is ready — add your business email in the code to enable email sending. (See TODO.)";
-        return;
-      }
+      const to = "gamboaesai@gmail.com";
 
       window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
       msg.textContent = "Opening your email app…";
