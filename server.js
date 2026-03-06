@@ -26,11 +26,17 @@ app.use(express.static(__dirname));
 
 const CLEAN_LIMITS = {
   name: 120,
+  company: 120,
   contact: 180,
+  serviceType: 120,
   quantity: 40,
   colors: 40,
   garment: 120,
   locations: 160,
+  artStatus: 120,
+  needBy: 80,
+  budget: 80,
+  fulfillment: 120,
   notes: 2000,
 };
 
@@ -45,11 +51,17 @@ function cleanText(value, maxLength) {
 function normalizeLead(input = {}) {
   return {
     name: cleanText(input.name, CLEAN_LIMITS.name),
+    company: cleanText(input.company, CLEAN_LIMITS.company),
     contact: cleanText(input.contact, CLEAN_LIMITS.contact),
+    serviceType: cleanText(input.serviceType, CLEAN_LIMITS.serviceType),
     quantity: cleanText(input.quantity, CLEAN_LIMITS.quantity),
     colors: cleanText(input.colors, CLEAN_LIMITS.colors),
     garment: cleanText(input.garment, CLEAN_LIMITS.garment),
     locations: cleanText(input.locations, CLEAN_LIMITS.locations),
+    artStatus: cleanText(input.artStatus, CLEAN_LIMITS.artStatus),
+    needBy: cleanText(input.needBy, CLEAN_LIMITS.needBy),
+    budget: cleanText(input.budget, CLEAN_LIMITS.budget),
+    fulfillment: cleanText(input.fulfillment, CLEAN_LIMITS.fulfillment),
     notes: cleanText(input.notes, CLEAN_LIMITS.notes),
   };
 }
@@ -69,6 +81,7 @@ app.get("/config.js", (_req, res) => {
   const safeConfig = {
     gunRelayUrls: resolvedRelayUrls,
     gunRelayUrl: GUN_RELAY_URL,
+    stripeEnabled: Boolean(STRIPE_SECRET_KEY),
     stripeDepositCents: STRIPE_DEPOSIT_CENTS,
     stripeCurrency: STRIPE_CURRENCY,
   };
@@ -135,8 +148,10 @@ app.post("/api/create-checkout-session", async (req, res) => {
       metadata: {
         name: lead.name || "",
         contact: lead.contact || "",
+        serviceType: lead.serviceType || "",
         quantity: lead.quantity || "",
         garment: lead.garment || "",
+        needBy: lead.needBy || "",
       },
     });
 
