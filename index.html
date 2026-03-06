@@ -1356,11 +1356,11 @@
               <div class="field-grid">
                 <label for="name">
                   Name
-                  <input id="name" name="name" autocomplete="name" placeholder="Your name" required />
+                  <input id="name" name="name" autocomplete="name" placeholder="Your name" />
                 </label>
                 <label for="contact">
                   Phone or email
-                  <input id="contact" name="contact" autocomplete="email" placeholder="How should we reach you?" required />
+                  <input id="contact" name="contact" autocomplete="email" placeholder="How should we reach you?" />
                 </label>
               </div>
 
@@ -1515,7 +1515,7 @@
               </div>
 
               <div id="formMsg" class="form-status" role="status" aria-live="polite"></div>
-              <div class="deposit-note">
+              <div class="deposit-note" id="depositNote">
                 Deposit at checkout: <strong id="depositAmount">loading...</strong>
               </div>
               <div class="deposit-note">
@@ -1552,6 +1552,7 @@
     const form = document.getElementById("quoteForm");
     const msg = document.getElementById("formMsg");
     const payDepositBtn = document.getElementById("payDepositBtn");
+    const depositNote = document.getElementById("depositNote");
     const depositAmount = document.getElementById("depositAmount");
     const serviceTypeField = document.getElementById("serviceType");
     const notesField = document.getElementById("notes");
@@ -1730,9 +1731,9 @@
 
         try {
           await copyTextToClipboard(phoneNumber);
-          showPhoneCopyNote(link, `Copied ${phoneNumber}`);
+          showPhoneCopyNote(link, `Phone number copied to clipboard: ${phoneNumber}`);
         } catch (_error) {
-          showPhoneCopyNote(link, `Use ${phoneNumber}`);
+          showPhoneCopyNote(link, `Copy this number: ${phoneNumber}`);
         }
       });
     });
@@ -1768,7 +1769,9 @@
 
     if (!stripeEnabled && payDepositBtn) {
       payDepositBtn.hidden = true;
-      depositAmount.textContent = "enabled after Stripe setup";
+      if (depositNote) {
+        depositNote.hidden = true;
+      }
     } else if (depositAmount) {
       if (depositCents > 0) {
         try {
@@ -1808,13 +1811,16 @@
       });
     }
 
-    function validateLead(lead) {
+    function canStartDeposit(lead) {
       return Boolean(lead.name) && Boolean(lead.contact);
     }
 
     function buildMailtoUrl(lead) {
       const serviceLabel = lead.serviceType || "Custom print quote";
-      const subject = `Quote request: ${serviceLabel} - ${lead.name}`;
+      const requesterLabel = lead.name || lead.company || lead.contact || "";
+      const subject = requesterLabel
+        ? `Quote request: ${serviceLabel} - ${requesterLabel}`
+        : `Quote request: ${serviceLabel}`;
       const bodyLines = [
         "New quote request",
         "",
@@ -1886,11 +1892,6 @@
       event.preventDefault();
       const lead = formDataToLead();
 
-      if (!validateLead(lead)) {
-        msg.textContent = "Please enter at least name and contact before submitting.";
-        return;
-      }
-
       msg.textContent = "Opening your email app with a prefilled quote request...";
       window.location.href = buildMailtoUrl(lead);
 
@@ -1903,7 +1904,7 @@
       payDepositBtn.addEventListener("click", async () => {
         const lead = formDataToLead();
 
-        if (!validateLead(lead)) {
+        if (!canStartDeposit(lead)) {
           msg.textContent = "Please enter name and contact before paying the deposit.";
           return;
         }
