@@ -297,6 +297,7 @@
       top: calc(100% + 6px);
       left: 0;
       right: 0;
+      white-space: nowrap;
     }
 
     .btn {
@@ -1774,7 +1775,7 @@
 
         try {
           await copyTextToClipboard(phoneNumber);
-          showPhoneCopyNote(link, `Phone number copied to clipboard: ${phoneNumber}`);
+          showPhoneCopyNote(link, `Copied ${phoneNumber} to clipboard`);
         } catch (_error) {
           showPhoneCopyNote(link, `Copy this number: ${phoneNumber}`);
         }
