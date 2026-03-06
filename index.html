@@ -56,6 +56,7 @@
         linear-gradient(180deg, #0a0a0d 0%, #0d0d11 100%);
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
+      overflow-x: clip;
     }
 
     img {
@@ -222,6 +223,16 @@
       font-size: 17px;
     }
 
+    .hero-copy,
+    .hero-panel,
+    .card-block,
+    .pricing-card,
+    .pricing-side,
+    .contact-card,
+    .form-card {
+      min-width: 0;
+    }
+
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
@@ -299,6 +310,7 @@
       border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
       box-shadow: var(--shadow);
+      min-width: 0;
     }
 
     .hero-panel {
@@ -508,6 +520,7 @@
       border-radius: 18px;
       border: 1px solid var(--line);
       background: rgba(0, 0, 0, 0.26);
+      max-width: 100%;
     }
 
     table {
@@ -817,14 +830,8 @@
 
       .nav-links {
         width: 100%;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding-bottom: 2px;
+        flex-wrap: wrap;
         justify-content: flex-start;
-      }
-
-      .nav-links::-webkit-scrollbar {
-        display: none;
       }
 
       .offer-grid,
@@ -844,6 +851,10 @@
       .form-actions {
         flex-direction: column;
         align-items: stretch;
+      }
+
+      .contact-link {
+        flex-wrap: wrap;
       }
 
       .btn {
