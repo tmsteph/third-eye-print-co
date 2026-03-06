@@ -45,6 +45,8 @@
 
     html {
       scroll-behavior: smooth;
+      background: #0a0a0d;
+      forced-color-adjust: none;
     }
 
     body {
@@ -52,13 +54,11 @@
       min-height: 100vh;
       font-family: "Manrope", sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(680px 360px at 10% 0%, rgba(124, 217, 235, 0.16), transparent 60%),
-        radial-gradient(760px 420px at 100% 0%, rgba(228, 208, 139, 0.12), transparent 58%),
-        linear-gradient(180deg, #0a0a0d 0%, #0d0d11 100%);
+      background: linear-gradient(180deg, #0a0a0d 0%, #0d0d11 100%);
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
       overflow-x: clip;
+      forced-color-adjust: none;
     }
 
     img {
@@ -178,7 +178,20 @@
     }
 
     .hero {
+      position: relative;
+      isolation: isolate;
       padding: 64px 0 24px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(600px 300px at 8% 4%, rgba(124, 217, 235, 0.12), transparent 64%),
+        radial-gradient(680px 340px at 94% 2%, rgba(228, 208, 139, 0.09), transparent 62%);
     }
 
     .hero-grid {
@@ -251,10 +264,6 @@
 
     .hero-actions .btn {
       width: 100%;
-    }
-
-    .phone-mobile-number {
-      display: inline;
     }
 
     .phone-action {
@@ -899,19 +908,29 @@
       flex-wrap: wrap;
     }
 
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
+    .footer-contacts {
+      display: grid;
+      gap: 8px;
     }
 
-    .footer-links a {
+    .footer-contact-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-contact-label {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .footer-contacts a {
       color: var(--muted);
       text-decoration: underline;
       text-decoration-color: rgba(228, 208, 139, 0.35);
     }
 
-    .footer-links a:hover {
+    .footer-contacts a:hover {
       color: var(--text);
     }
 
@@ -931,12 +950,6 @@
 
       .pricing-notes {
         grid-template-columns: 1fr;
-      }
-    }
-
-    @media (min-width: 721px) {
-      .phone-mobile-number {
-        display: none;
       }
     }
 
@@ -1063,7 +1076,6 @@
             <div class="phone-action">
               <a class="btn" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
                 <span>Call or Text</span>
-                <span class="phone-mobile-number">+1 (619) 257-8389</span>
               </a>
               <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
             </div>
@@ -1362,7 +1374,6 @@
               <div class="phone-action">
                 <a class="contact-link" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
                   <strong>Call or text</strong>
-                  <span class="phone-mobile-number">+1 (619) 257-8389</span>
                 </a>
                 <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
               </div>
@@ -1560,12 +1571,19 @@
         San Diego apparel, print, signage, and launch support.
       </div>
 
-      <div class="footer-links">
-        <a href="#offerings">Offerings</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#quote">Quote</a>
-        <a href="tel:+16192578389">Call or text</a>
-        <a href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">Instagram</a>
+      <div class="footer-contacts">
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Email:</span>
+          <a href="mailto:gamboaesai@gmail.com">gamboaesai@gmail.com</a>
+        </div>
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Phone:</span>
+          <a href="tel:+16192578389">+1 (619) 257-8389</a>
+        </div>
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Instagram:</span>
+          <a href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">@thirdeyeprintco</a>
+        </div>
       </div>
     </div>
   </footer>
