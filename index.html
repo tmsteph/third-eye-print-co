@@ -240,6 +240,42 @@
       margin-top: 22px;
     }
 
+    .phone-stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .phone-copy {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px dashed rgba(228, 208, 139, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      user-select: all;
+      -webkit-user-select: all;
+    }
+
+    .phone-copy span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .phone-copy strong {
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    .phone-mobile-number {
+      display: inline;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -704,15 +740,6 @@
       font-weight: 600;
     }
 
-    .form-meta {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--muted);
-      font-size: 13px;
-    }
-
     form {
       display: grid;
       gap: 12px;
@@ -883,6 +910,20 @@
       .pricing-notes {
         grid-template-columns: 1fr;
       }
+
+      .phone-copy {
+        display: none;
+      }
+    }
+
+    @media (min-width: 721px) {
+      .phone-copy {
+        display: inline-flex;
+      }
+
+      .phone-mobile-number {
+        display: none;
+      }
     }
 
     @media (max-width: 720px) {
@@ -973,7 +1014,16 @@
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="#quote">Request a Quote</a>
-            <a class="btn" href="tel:+16192578389">Call or Text (619) 257-8389</a>
+            <div class="phone-stack">
+              <a class="btn" href="tel:+16192578389">
+                <span>Call or Text</span>
+                <span class="phone-mobile-number">(619) 257-8389</span>
+              </a>
+              <div class="phone-copy" aria-label="Phone number">
+                <span>Copy number</span>
+                <strong>(619) 257-8389</strong>
+              </div>
+            </div>
             <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
               View Instagram
             </a>
@@ -1280,25 +1330,21 @@
             <p>Best for brands, teams, events, workwear programs, and launch support in San Diego and beyond.</p>
 
             <div class="contact-points">
-              <a class="contact-link" href="tel:+16192578389">
-                <strong>(619) 257-8389</strong>
-                <span>Call or text</span>
-              </a>
+              <div class="phone-stack">
+                <a class="contact-link" href="tel:+16192578389">
+                  <strong>Call or text</strong>
+                  <span class="phone-mobile-number">(619) 257-8389</span>
+                </a>
+                <div class="phone-copy" aria-label="Phone number">
+                  <span>Copy number</span>
+                  <strong>(619) 257-8389</strong>
+                </div>
+              </div>
               <a class="contact-link" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
                 <strong>@thirdeyeprintco</strong>
                 <span>Instagram</span>
               </a>
             </div>
-
-            <div class="form-meta">
-              If a client would rather DM, ask them for service type, quantity, deadline, and any artwork link they already have.
-            </div>
-
-            <ul class="simple-list">
-              <li>Great when the client knows exactly what they want</li>
-              <li>Still works when they only have a rough idea and an event date</li>
-              <li>Local pickup and shipped jobs can both be scoped here</li>
-            </ul>
           </aside>
 
           <div class="surface form-card">
@@ -1509,6 +1555,10 @@
     const depositAmount = document.getElementById("depositAmount");
     const serviceTypeField = document.getElementById("serviceType");
     const notesField = document.getElementById("notes");
+    const artStatusField = document.getElementById("artStatus");
+    const colorsField = document.getElementById("colors");
+    const budgetField = document.getElementById("budget");
+    const fulfillmentField = document.getElementById("fulfillment");
     const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
     const quoteEmailTo = "gamboaesai@gmail.com";
 
@@ -1522,8 +1572,90 @@
 
     const depositCents = Number(runtimeConfig.stripeDepositCents || 0);
     const depositCurrency = String(runtimeConfig.stripeCurrency || "usd").toUpperCase();
+    const presetButtons = Array.from(document.querySelectorAll("[data-service-preset]"));
+    const servicePrefillNotes = new Map(
+      presetButtons
+        .map((button) => [
+          String(button.dataset.servicePreset || "").trim(),
+          String(button.dataset.prefillNote || "").trim()
+        ])
+        .filter(([preset, note]) => preset && note)
+    );
+    const dropdownNoteFields = [
+      { field: artStatusField, label: "Artwork status" },
+      { field: colorsField, label: "Ink or print colors" },
+      { field: budgetField, label: "Budget range" },
+      { field: fulfillmentField, label: "Fulfillment" }
+    ];
+    let autoNotesValue = "";
+    let manualNotesValue = notesField ? String(notesField.value || "").trim() : "";
 
-    document.querySelectorAll("[data-service-preset]").forEach((button) => {
+    servicePrefillNotes.set("Custom request", "Need help quoting a custom print project.");
+
+    function trimFieldValue(field) {
+      return field ? String(field.value || "").trim() : "";
+    }
+
+    function stripAutoNotes(value) {
+      const normalizedValue = String(value || "").trim();
+
+      if (!autoNotesValue) {
+        return normalizedValue;
+      }
+
+      if (normalizedValue === autoNotesValue) {
+        return "";
+      }
+
+      if (normalizedValue.endsWith(autoNotesValue)) {
+        return normalizedValue.slice(0, normalizedValue.length - autoNotesValue.length).trim();
+      }
+
+      return normalizedValue.replace(autoNotesValue, "").trim();
+    }
+
+    function buildAutoNotes() {
+      const serviceType = trimFieldValue(serviceTypeField);
+      const selectedDetails = dropdownNoteFields
+        .map(({ field, label }) => {
+          const value = trimFieldValue(field);
+          return value ? `${label}: ${value}` : "";
+        })
+        .filter(Boolean);
+      const noteLines = [];
+      const serviceNote = servicePrefillNotes.get(serviceType) || "";
+
+      if (serviceNote) {
+        noteLines.push(serviceNote);
+      }
+
+      if (selectedDetails.length) {
+        noteLines.push("Selected details:");
+        selectedDetails.forEach((detail) => {
+          noteLines.push(`- ${detail}`);
+        });
+      }
+
+      return noteLines.join("\n");
+    }
+
+    function syncProjectNotes() {
+      if (!notesField) {
+        return;
+      }
+
+      manualNotesValue = stripAutoNotes(notesField.value);
+      autoNotesValue = buildAutoNotes();
+      notesField.value = [manualNotesValue, autoNotesValue].filter(Boolean).join("\n\n");
+    }
+
+    if (notesField) {
+      notesField.addEventListener("input", () => {
+        manualNotesValue = stripAutoNotes(notesField.value);
+      });
+    }
+
+    presetButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const preset = String(button.dataset.servicePreset || "").trim();
         const prefillNote = String(button.dataset.prefillNote || "").trim();
@@ -1532,13 +1664,24 @@
           serviceTypeField.value = preset;
         }
 
-        if (notesField && prefillNote && !notesField.value.trim()) {
-          notesField.value = prefillNote;
+        if (preset && prefillNote) {
+          servicePrefillNotes.set(preset, prefillNote);
         }
 
+        syncProjectNotes();
         form.scrollIntoView({ behavior: "smooth", block: "start" });
         msg.textContent = preset ? `Preset loaded: ${preset}. Add any missing detail and send the quote.` : "";
       });
+    });
+
+    if (serviceTypeField) {
+      serviceTypeField.addEventListener("change", syncProjectNotes);
+    }
+
+    dropdownNoteFields.forEach(({ field }) => {
+      if (field) {
+        field.addEventListener("change", syncProjectNotes);
+      }
     });
 
     if (!stripeEnabled && payDepositBtn) {
