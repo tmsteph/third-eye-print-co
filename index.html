@@ -587,21 +587,12 @@
       font-size: 14px;
     }
 
-    .pricing-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .pricing-badge {
-      border: 1px solid rgba(228, 208, 139, 0.16);
-      border-radius: 999px;
-      background: rgba(228, 208, 139, 0.08);
-      color: var(--text);
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      padding: 8px 12px;
-      text-transform: uppercase;
+    .pricing-assumptions {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
     }
 
     .table-scroll {
@@ -630,10 +621,6 @@
       font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-    }
-
-    caption .pricing-badges {
-      margin-top: 10px;
     }
 
     th,
@@ -1018,6 +1005,56 @@
         text-align: left;
       }
 
+      .pricing-card,
+      .pricing-side {
+        padding: 14px;
+      }
+
+      .pricing-intro {
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .table-scroll {
+        border-radius: 14px;
+      }
+
+      table {
+        min-width: 560px;
+      }
+
+      caption {
+        padding: 12px 10px 8px;
+      }
+
+      .pricing-caption-title,
+      .pricing-assumptions,
+      th,
+      td,
+      .pricing-note strong,
+      .pricing-note span,
+      .pricing-side h4,
+      .pricing-side p,
+      .simple-list li {
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 9px 10px;
+      }
+
+      .pricing-notes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .pricing-note {
+        border-radius: 14px;
+        padding: 10px 12px;
+      }
+
       .contact-link {
         flex-wrap: wrap;
       }
@@ -1241,11 +1278,7 @@
               <table>
                 <caption>
                   <span class="pricing-caption-title">Base screen-print pricing</span>
-                  <span class="pricing-badges" aria-label="Pricing assumptions">
-                    <span class="pricing-badge">Standard tees</span>
-                    <span class="pricing-badge">One print location</span>
-                    <span class="pricing-badge">Per-shirt pricing</span>
-                  </span>
+                  <span class="pricing-assumptions">Standard tees. One print location. Per-shirt pricing.</span>
                 </caption>
                 <thead>
                   <tr>
