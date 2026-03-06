@@ -184,6 +184,15 @@
       color:#0b0b0f;
       background: linear-gradient(135deg, var(--accent), rgba(230,211,138,.78));
     }
+    .btnSecondary{
+      border-color: rgba(110,231,255,.45);
+      background: rgba(110,231,255,.10);
+      color: #dff9ff;
+    }
+    .btn:disabled{
+      opacity:.6;
+      cursor:not-allowed;
+    }
     .btnGhost{color:var(--muted)}
     .subnote{font-size:12px;color:var(--muted); margin-top:10px}
 
@@ -340,6 +349,12 @@
       display:grid; grid-template-columns:1fr 1fr; gap:10px;
     }
     @media (max-width: 600px){ .two{grid-template-columns:1fr} }
+    .formActions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
     .footer{
       padding:22px 0 40px;
       color:var(--muted);
@@ -581,19 +596,15 @@
           <div class="item">
             <h4>Quote form</h4>
 
-            <!-- NOTE: This form is front-end only by default.
-                 Option A: Replace action="" with a Formspree endpoint.
-                 Option B: Use a simple mailto link button.
-            -->
             <form id="quoteForm" action="" method="POST" novalidate>
               <div class="two">
                 <div>
                   <label for="name">Name</label>
-                  <input id="name" name="name" autocomplete="name" placeholder="Your name" />
+                  <input id="name" name="name" autocomplete="name" placeholder="Your name" required />
                 </div>
                 <div>
-                  <label for="phone">Phone / Email</label>
-                  <input id="phone" name="contact" autocomplete="email" placeholder="How should we reach you?" />
+                  <label for="contact">Phone / Email</label>
+                  <input id="contact" name="contact" autocomplete="email" placeholder="How should we reach you?" required />
                 </div>
               </div>
 
@@ -631,11 +642,17 @@
                 <textarea id="notes" name="notes" placeholder="Drop a Drive link / describe your idea."></textarea>
               </div>
 
-              <button class="btn btnPrimary" type="submit">Send Quote</button>
+              <div class="formActions">
+                <button class="btn btnPrimary" type="submit">Send Quote</button>
+                <button class="btn btnSecondary" type="button" id="payDepositBtn">Pay Deposit</button>
+              </div>
               <div id="formMsg" class="subnote" role="status" aria-live="polite"></div>
 
               <div class="subnote">
-                Tip: If you want this form to actually send messages, use Formspree (free) or a simple email endpoint.
+                Deposit shown at checkout: <strong id="depositAmount" style="color:var(--text)">loading...</strong>
+              </div>
+              <div class="subnote">
+                Quote leads are stored by API and can also sync to your Gun relay when configured.
               </div>
             </form>
           </div>
@@ -655,7 +672,11 @@
     </section>
   </main>
 
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
   <script>
+    const runtimeConfig = window.THIRD_EYE_CONFIG || {};
+
     // Year
     document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -671,35 +692,162 @@
       });
     });
 
-    // Front-end form handling (no backend by default)
     const form = document.getElementById("quoteForm");
     const msg = document.getElementById("formMsg");
+    const payDepositBtn = document.getElementById("payDepositBtn");
+    const depositAmount = document.getElementById("depositAmount");
+
+    const configuredRelayUrls = Array.isArray(runtimeConfig.gunRelayUrls)
+      ? runtimeConfig.gunRelayUrls.map((value) => String(value || "").trim()).filter(Boolean)
+      : [];
+    const legacyRelayUrl = String(runtimeConfig.gunRelayUrl || "").trim();
+    const gunRelayUrls = configuredRelayUrls.length ? configuredRelayUrls : (legacyRelayUrl ? [legacyRelayUrl] : []);
+    const gun = window.Gun && gunRelayUrls.length ? window.Gun(gunRelayUrls) : null;
+    const gunLeads = gun ? gun.get("third-eye-print-co").get("leads") : null;
+
+    const depositCents = Number(runtimeConfig.stripeDepositCents || 0);
+    const depositCurrency = String(runtimeConfig.stripeCurrency || "usd").toUpperCase();
+
+    if (depositAmount) {
+      if (depositCents > 0) {
+        try {
+          const depositLabel = (depositCents / 100).toLocaleString(undefined, {
+            style: "currency",
+            currency: depositCurrency
+          });
+          depositAmount.textContent = depositLabel;
+        } catch (_error) {
+          depositAmount.textContent = `${(depositCents / 100).toFixed(2)} ${depositCurrency}`;
+        }
+      } else {
+        depositAmount.textContent = "configured in Stripe";
+      }
+    }
+
+    const paymentStatus = new URLSearchParams(window.location.search).get("payment");
+    if (paymentStatus === "success") {
+      msg.textContent = "Deposit received. We will follow up with next production steps.";
+    }
+    if (paymentStatus === "cancelled") {
+      msg.textContent = "Deposit canceled. You can submit the quote or retry payment anytime.";
+    }
+
+    function formDataToLead() {
+      const data = Object.fromEntries(new FormData(form).entries());
+      const lead = {};
+
+      Object.entries(data).forEach(([key, value]) => {
+        lead[key] = String(value || "").trim();
+      });
+
+      return lead;
+    }
+
+    function setBusy(isBusy) {
+      form.querySelectorAll("button").forEach((button) => {
+        button.disabled = isBusy;
+      });
+    }
+
+    function validateLead(lead) {
+      return Boolean(lead.name) && Boolean(lead.contact);
+    }
+
+    async function saveLeadToApi(source, lead) {
+      const response = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source, lead })
+      });
+
+      if (!response.ok) {
+        throw new Error("Lead API request failed");
+      }
+    }
+
+    function syncLeadToGun(source, lead) {
+      if (!gunLeads) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+        gunLeads.set(
+          {
+            source,
+            createdAt: new Date().toISOString(),
+            ...lead
+          },
+          () => resolve()
+        );
+      });
+    }
+
+    async function createCheckoutSession(lead) {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lead })
+      });
+
+      const body = await response.json();
+      if (!response.ok || !body.url) {
+        throw new Error(body.error || "Stripe checkout failed");
+      }
+
+      return body.url;
+    }
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
+      const lead = formDataToLead();
 
-      const data = Object.fromEntries(new FormData(form).entries());
-      const val = (key) => {
-        const text = String(data[key] || "").trim();
-        return text || "Not provided";
-      };
+      if (!validateLead(lead)) {
+        msg.textContent = "Please enter at least name and contact before submitting.";
+        return;
+      }
 
-      // Build a mailto fallback (works everywhere, no backend required)
-      const subject = encodeURIComponent("Quote Request — Third Eye Print Co.");
-      const body = encodeURIComponent(
-        `Name: ${val("name")}\n\n` +
-        `Contact: ${val("contact")}\n\n` +
-        `Quantity: ${val("quantity")}\n\n` +
-        `Ink colors: ${val("colors")}\n\n` +
-        `Garment: ${val("garment")}\n\n` +
-        `Print locations: ${val("locations")}\n\n` +
-        `Notes / Artwork link:\n${val("notes")}\n`
-      );
+      setBusy(true);
+      msg.textContent = "Saving your quote request...";
 
-      const to = "gamboaesai@gmail.com";
+      Promise.all([
+        saveLeadToApi("quote_form", lead),
+        syncLeadToGun("quote_form", lead)
+      ])
+        .then(() => {
+          msg.textContent = "Quote request sent. We will contact you shortly.";
+          form.reset();
+        })
+        .catch(() => {
+          msg.textContent = "Could not save the quote right now. Call/text (619) 257-8389.";
+        })
+        .finally(() => {
+          setBusy(false);
+        });
+    });
 
-      window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-      msg.textContent = "Opening your email app…";
+    payDepositBtn.addEventListener("click", async () => {
+      const lead = formDataToLead();
+
+      if (!validateLead(lead)) {
+        msg.textContent = "Please enter name and contact before paying the deposit.";
+        return;
+      }
+
+      try {
+        setBusy(true);
+        msg.textContent = "Preparing secure Stripe checkout...";
+
+        await Promise.all([
+          saveLeadToApi("quote_deposit_intent", lead),
+          syncLeadToGun("quote_deposit_intent", lead)
+        ]);
+
+        const checkoutUrl = await createCheckoutSession(lead);
+        window.location.assign(checkoutUrl);
+      } catch (_error) {
+        msg.textContent = "Checkout is unavailable right now. Submit quote and we will send a payment link.";
+        setBusy(false);
+      }
     });
   </script>
 </body>
