@@ -1775,7 +1775,7 @@
 
         try {
           await copyTextToClipboard(phoneNumber);
-          showPhoneCopyNote(link, `Copied ${phoneNumber} to clipboard`);
+          showPhoneCopyNote(link, `${phoneNumber} copied to clipboard`);
         } catch (_error) {
           showPhoneCopyNote(link, `Copy this number: ${phoneNumber}`);
         }
