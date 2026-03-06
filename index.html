@@ -8,9 +8,10 @@
     name="description"
     content="Third Eye Print Co. helps brands and teams quote screen printing, embroidery, stickers, handouts, signage, and launch kits from one clean intake."
   />
+  <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#0b0b0f" />
   <meta property="og:title" content="Third Eye Print Co." />
-  <meta property="og:description" content="Merch, marketing print, and event graphics without juggling three vendors." />
+  <meta property="og:description" content="Merch, Marketing, and Print." />
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,6 +22,8 @@
   />
   <style>
     :root {
+      color-scheme: only dark;
+      --anchor-offset: 38px;
       --bg: #0b0b0f;
       --panel: rgba(17, 18, 26, 0.86);
       --panel-strong: rgba(20, 21, 30, 0.96);
@@ -43,6 +46,13 @@
 
     html {
       scroll-behavior: smooth;
+      scroll-padding-top: var(--anchor-offset);
+      background: #0a0a0d;
+      forced-color-adjust: none;
+    }
+
+    section[id] {
+      scroll-margin-top: var(--anchor-offset);
     }
 
     body {
@@ -50,13 +60,11 @@
       min-height: 100vh;
       font-family: "Manrope", sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(680px 360px at 10% 0%, rgba(124, 217, 235, 0.16), transparent 60%),
-        radial-gradient(760px 420px at 100% 0%, rgba(228, 208, 139, 0.12), transparent 58%),
-        linear-gradient(180deg, #0a0a0d 0%, #0d0d11 100%);
+      background: linear-gradient(180deg, #0a0a0d 0%, #0d0d11 100%);
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
       overflow-x: clip;
+      forced-color-adjust: none;
     }
 
     img {
@@ -176,7 +184,20 @@
     }
 
     .hero {
+      position: relative;
+      isolation: isolate;
       padding: 64px 0 24px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(600px 300px at 8% 4%, rgba(124, 217, 235, 0.12), transparent 64%),
+        radial-gradient(680px 340px at 94% 2%, rgba(228, 208, 139, 0.09), transparent 62%);
     }
 
     .hero-grid {
@@ -223,6 +244,11 @@
       font-size: 17px;
     }
 
+    .hero-copy-followup {
+      display: inline-block;
+      margin-top: 8px;
+    }
+
     .hero-copy,
     .hero-panel,
     .card-block,
@@ -238,6 +264,51 @@
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 22px;
+      align-items: flex-start;
+    }
+
+    .hero-actions > .btn,
+    .hero-actions > .phone-action {
+      flex: 1 1 180px;
+      min-width: 0;
+    }
+
+    .hero-actions .btn {
+      width: 100%;
+    }
+
+    .phone-action {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .hero-actions .phone-action {
+      position: relative;
+    }
+
+    .phone-copy-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      min-height: 0;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .phone-copy-note.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero-actions .phone-copy-note {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      white-space: nowrap;
     }
 
     .btn {
@@ -515,6 +586,27 @@
       padding: 18px;
     }
 
+    .pricing-intro {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .pricing-intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .pricing-assumptions {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-style: italic;
+      line-height: 1.45;
+    }
+
     .table-scroll {
       overflow: auto;
       border-radius: 18px;
@@ -527,6 +619,20 @@
       width: 100%;
       min-width: 620px;
       border-collapse: collapse;
+    }
+
+    caption {
+      padding: 14px 12px 10px;
+      text-align: left;
+    }
+
+    .pricing-caption-title {
+      color: var(--muted);
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     th,
@@ -549,14 +655,30 @@
 
     .pricing-notes {
       display: grid;
-      gap: 8px;
+      gap: 10px;
       margin-top: 14px;
-      color: var(--muted);
-      font-size: 13px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .pricing-notes strong {
+    .pricing-note {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px 14px;
+    }
+
+    .pricing-note strong {
       color: var(--text);
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .pricing-note span {
+      color: var(--muted);
+      display: block;
+      font-size: 13px;
+      line-height: 1.45;
     }
 
     .pricing-side h4 {
@@ -568,6 +690,10 @@
       margin: 0;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    .pricing-side .simple-list {
+      margin-top: 14px;
     }
 
     .callout {
@@ -643,15 +769,6 @@
     .contact-link span {
       color: var(--muted);
       font-weight: 600;
-    }
-
-    .form-meta {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--muted);
-      font-size: 13px;
     }
 
     form {
@@ -791,19 +908,29 @@
       flex-wrap: wrap;
     }
 
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
+    .footer-contacts {
+      display: grid;
+      gap: 8px;
     }
 
-    .footer-links a {
+    .footer-contact-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-contact-label {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .footer-contacts a {
       color: var(--muted);
       text-decoration: underline;
       text-decoration-color: rgba(228, 208, 139, 0.35);
     }
 
-    .footer-links a:hover {
+    .footer-contacts a:hover {
       color: var(--text);
     }
 
@@ -820,9 +947,17 @@
       .hero-grid {
         grid-template-columns: 1fr;
       }
+
+      .pricing-notes {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 720px) {
+      :root {
+        --anchor-offset: 48px;
+      }
+
       .nav {
         align-items: flex-start;
         flex-direction: column;
@@ -847,10 +982,93 @@
         max-width: none;
       }
 
-      .hero-actions,
+      .hero-copy {
+        text-align: center;
+      }
+
+      .hero-copy h2,
+      .hero-copy p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
       .form-actions {
         flex-direction: column;
         align-items: stretch;
+      }
+
+      .hero-actions {
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hero-actions > .btn,
+      .hero-actions > .phone-action {
+        flex: 0 1 260px;
+        width: min(100%, 260px);
+      }
+
+      .hero-actions .phone-copy-note {
+        text-align: center;
+      }
+
+      .hero-points {
+        justify-items: center;
+      }
+
+      .hero-points li {
+        width: min(100%, 32ch);
+        text-align: left;
+      }
+
+      .pricing-card,
+      .pricing-side {
+        padding: 14px;
+      }
+
+      .pricing-intro {
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .table-scroll {
+        border-radius: 14px;
+      }
+
+      table {
+        min-width: 560px;
+      }
+
+      caption {
+        padding: 12px 10px 8px;
+      }
+
+      .pricing-caption-title,
+      .pricing-assumptions,
+      th,
+      td,
+      .pricing-note strong,
+      .pricing-note span,
+      .pricing-side h4,
+      .pricing-side p,
+      .simple-list li {
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 9px 10px;
+      }
+
+      .pricing-notes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .pricing-note {
+        border-radius: 14px;
+        padding: 10px 12px;
       }
 
       .contact-link {
@@ -875,10 +1093,10 @@
     }
   </style>
 </head>
-<body>
+<body id="top">
   <header class="topbar">
     <div class="wrap nav">
-      <div class="brand">
+      <a class="brand" href="#top" aria-label="Back to top">
         <div class="logo">
           <img src="assets/print-shop-team.jpg" alt="Third Eye Print Co. team" />
         </div>
@@ -886,7 +1104,7 @@
           <h1>Third Eye Print Co.</h1>
           <p>Apparel, print, and signage - San Diego</p>
         </div>
-      </div>
+      </a>
 
       <nav class="nav-links" aria-label="Primary">
         <a href="#offerings">Offerings</a>
@@ -901,24 +1119,28 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <div class="eyebrow">One intake for merch, collateral, and event graphics</div>
-          <h2>Merch, marketing print, and event graphics without juggling three vendors.</h2>
+          <h2>Marketing, Merch, and Print without juggling three vendors.</h2>
           <p>
-            Third Eye Print Co. keeps the front end simple: tell us what you need, when you need it, and where it is going.
-            We quote the right production path for apparel, stickers, handouts, signage, and launch-ready bundles.
+            Third Eye Print Co. keeps it simple: tell us what you need, when you need it, and where it is going.<br />
+            <span class="hero-copy-followup">We provide apparel, stickers, signage, and launch-ready bundles.</span>
           </p>
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="#quote">Request a Quote</a>
-            <a class="btn" href="tel:+16192578389">Call or Text (619) 257-8389</a>
+            <div class="phone-action">
+              <a class="btn" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
+                <span>Call or Text</span>
+              </a>
+              <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
+            </div>
             <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
               View Instagram
             </a>
           </div>
 
           <ul class="hero-points">
-            <li>Typical response target: within one business day with next steps or follow-up questions.</li>
-            <li>Best fit for brand drops, event kits, teams, workwear, and retail launch support.</li>
+            <li>Best fit for businesses that need merch, event kits, workwear, team apparel, or retail launch support.</li>
+            <li>Most quote requests get a reply within 1-3 business days.</li>
             <li>Local pickup is available in San Diego. Shipping and sourced fulfillment can be quoted per project.</li>
           </ul>
         </div>
@@ -931,17 +1153,7 @@
           <div class="panel-stack">
             <div class="mini-card">
               <span class="mini-label">Best fit</span>
-              <strong>Brand launches, team apparel, event signage, and bundled print jobs.</strong>
-              <p>Simple quote flow first, then proofs, approvals, and production.</p>
-            </div>
-
-            <div class="mini-card">
-              <span class="mini-label">What to send</span>
-              <ul class="simple-list">
-                <li>Service type and quantity</li>
-                <li>Deadline or event date</li>
-                <li>Artwork link or rough concept</li>
-              </ul>
+              <strong>Business merch, team apparel, event signage, and bundled print jobs.</strong>
             </div>
 
             <div class="review-note">No catalog maze. Just a clean quote and approval process.</div>
@@ -954,10 +1166,6 @@
       <div class="wrap">
         <div class="section-head">
           <h3>Core offerings</h3>
-          <p>
-            The site stays intentionally narrow on the front end. These are the four lanes clients can understand quickly
-            without feeling dropped into a giant wholesale catalog.
-          </p>
         </div>
 
         <div class="offer-grid">
@@ -1002,9 +1210,6 @@
           </article>
         </div>
 
-        <div class="section-note">
-          Some categories can be fulfilled through trusted trade partners when that gives the client a better result.
-        </div>
       </div>
     </section>
 
@@ -1012,9 +1217,6 @@
       <div class="wrap">
         <div class="section-head">
           <h3>Starter packages</h3>
-          <p>
-            These help the client understand how the broader offering works without asking them to browse dozens of product pages.
-          </p>
         </div>
 
         <div class="package-grid">
@@ -1079,22 +1281,28 @@
       <div class="wrap">
         <div class="section-head">
           <h3>Apparel pricing snapshot</h3>
-          <p>
-            Apparel pricing can be shown cleanly. Everything else stays quote-based until you lock down minimums, margins, and supplier flow.
-          </p>
+          <p>Quick baseline pricing for standard screen-printed tees, so clients can estimate fast without decoding a wholesale sheet.</p>
         </div>
 
         <div class="pricing-layout">
           <div class="surface pricing-card">
+            <div class="pricing-intro">
+              <p>Use the order-size row and ink-color column to get a per-shirt estimate.</p>
+            </div>
+
             <div class="table-scroll" role="region" aria-label="Apparel pricing table" tabindex="0">
               <table>
+                <caption>
+                  <span class="pricing-caption-title">Base screen-print pricing</span>
+                  <span class="pricing-assumptions">Standard tees. One print location. Per-shirt pricing.</span>
+                </caption>
                 <thead>
                   <tr>
-                    <th>Qty</th>
-                    <th>1 Color</th>
-                    <th>2 Colors</th>
-                    <th>3 Colors</th>
-                    <th>4 Colors</th>
+                    <th>Order size</th>
+                    <th>1 ink color</th>
+                    <th>2 ink colors</th>
+                    <th>3 ink colors</th>
+                    <th>4 ink colors</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1109,26 +1317,40 @@
             </div>
 
             <div class="pricing-notes">
-              <div>- <strong>Screen setup:</strong> $25 per color</div>
-              <div>- <strong>Extra location:</strong> +$3.00 per shirt</div>
-              <div>- <strong>Size add-ons:</strong> +$2.50 for 2XL+ and +$3.50 for 3XL+</div>
-              <div>- <strong>Turnaround:</strong> usually 7 to 10 business days after approval</div>
-              <div>- <strong>Rush:</strong> +15% when schedule allows</div>
+              <div class="pricing-note">
+                <strong>Screen setup</strong>
+                <span>$25 per ink color</span>
+              </div>
+              <div class="pricing-note">
+                <strong>Extra print location</strong>
+                <span>Add $3.00 per shirt</span>
+              </div>
+              <div class="pricing-note">
+                <strong>Extended sizes</strong>
+                <span>Add $2.50 for 2XL+ and $3.50 for 3XL+</span>
+              </div>
+              <div class="pricing-note">
+                <strong>Turnaround</strong>
+                <span>Usually 7 to 10 business days after approval</span>
+              </div>
+              <div class="pricing-note">
+                <strong>Rush jobs</strong>
+                <span>Add 15% when the production schedule allows</span>
+              </div>
             </div>
           </div>
 
           <aside class="surface pricing-side">
-            <h4>Everything else is quote by spec</h4>
+            <h4>How to read it</h4>
             <p>
-              For collateral, stickers, labels, signage, and sourced pieces, the quote depends on the actual job details rather than a generic matrix.
+              This table is meant to answer the first question fast: roughly what does a tee run at this quantity and ink count?
             </p>
             <ul class="simple-list">
-              <li>Material or stock</li>
-              <li>Size, sides, and finish</li>
-              <li>Quantity and deadline</li>
-              <li>Pickup, shipping, or delivery needs</li>
+              <li>Pick your quantity row first.</li>
+              <li>Match it to the number of ink colors in the design.</li>
+              <li>Add setup, extra locations, or size add-ons if they apply.</li>
+              <li>Need hoodies, premium blanks, or non-apparel? Request a custom quote.</li>
             </ul>
-            <div class="callout">That keeps the site simple while still letting the business quote a broader mix of work.</div>
           </aside>
         </div>
       </div>
@@ -1167,7 +1389,6 @@
       <div class="wrap">
         <div class="section-head">
           <h3>Quick answers</h3>
-          <p>Enough detail to reduce friction without overexplaining the operation.</p>
         </div>
 
         <div class="faq-grid">
@@ -1183,7 +1404,7 @@
 
           <article class="surface card-block">
             <h4>Is everything produced in-house?</h4>
-            <p>No. The site is positioned to allow trusted trade fulfillment where that creates a cleaner result for the client.</p>
+            <p>T-shirts are produced in-house. Depending on the project, some items may be sourced through trusted partners.</p>
           </article>
         </div>
       </div>
@@ -1193,49 +1414,39 @@
       <div class="wrap">
         <div class="section-head">
           <h3>Request a quote</h3>
-          <p>Lead with the essentials. Extra detail is available, but it does not block the first contact.</p>
         </div>
 
         <div class="quote-grid">
           <aside class="surface contact-card">
             <h4>Contact</h4>
-            <p>Best for brands, teams, events, workwear programs, and launch support in San Diego and beyond.</p>
 
             <div class="contact-points">
-              <a class="contact-link" href="tel:+16192578389">
-                <strong>(619) 257-8389</strong>
-                <span>Call or text</span>
-              </a>
+              <div class="phone-action">
+                <a class="contact-link" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
+                  <strong>Call or text</strong>
+                </a>
+                <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
+              </div>
               <a class="contact-link" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
                 <strong>@thirdeyeprintco</strong>
                 <span>Instagram</span>
               </a>
             </div>
-
-            <div class="form-meta">
-              If a client would rather DM, ask them for service type, quantity, deadline, and any artwork link they already have.
-            </div>
-
-            <ul class="simple-list">
-              <li>Great when the client knows exactly what they want</li>
-              <li>Still works when they only have a rough idea and an event date</li>
-              <li>Local pickup and shipped jobs can both be scoped here</li>
-            </ul>
           </aside>
 
           <div class="surface form-card">
             <h4>Quote form</h4>
-            <p>Short up front. Optional detail below.</p>
+            <p>Optional detail below.</p>
 
             <form id="quoteForm" action="" method="POST" novalidate>
               <div class="field-grid">
                 <label for="name">
                   Name
-                  <input id="name" name="name" autocomplete="name" placeholder="Your name" required />
+                  <input id="name" name="name" autocomplete="name" placeholder="Your name" />
                 </label>
                 <label for="contact">
                   Phone or email
-                  <input id="contact" name="contact" autocomplete="email" placeholder="How should we reach you?" required />
+                  <input id="contact" name="contact" autocomplete="email" placeholder="How should we reach you?" />
                 </label>
               </div>
 
@@ -1309,7 +1520,6 @@
               <details class="details-more">
                 <summary>
                   Add optional project details
-                  <span>Art status, product type, budget, and delivery</span>
                 </summary>
 
                 <div class="details-body">
@@ -1391,7 +1601,7 @@
               </div>
 
               <div id="formMsg" class="form-status" role="status" aria-live="polite"></div>
-              <div class="deposit-note">
+              <div class="deposit-note" id="depositNote">
                 Deposit at checkout: <strong id="depositAmount">loading...</strong>
               </div>
               <div class="deposit-note">
@@ -1411,12 +1621,19 @@
         San Diego apparel, print, signage, and launch support.
       </div>
 
-      <div class="footer-links">
-        <a href="#offerings">Offerings</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#quote">Quote</a>
-        <a href="tel:+16192578389">Call or text</a>
-        <a href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">Instagram</a>
+      <div class="footer-contacts">
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Email:</span>
+          <a href="mailto:gamboaesai@gmail.com">gamboaesai@gmail.com</a>
+        </div>
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Phone:</span>
+          <a href="tel:+16192578389">+1 (619) 257-8389</a>
+        </div>
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Instagram:</span>
+          <a href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">@thirdeyeprintco</a>
+        </div>
       </div>
     </div>
   </footer>
@@ -1428,9 +1645,14 @@
     const form = document.getElementById("quoteForm");
     const msg = document.getElementById("formMsg");
     const payDepositBtn = document.getElementById("payDepositBtn");
+    const depositNote = document.getElementById("depositNote");
     const depositAmount = document.getElementById("depositAmount");
     const serviceTypeField = document.getElementById("serviceType");
     const notesField = document.getElementById("notes");
+    const artStatusField = document.getElementById("artStatus");
+    const colorsField = document.getElementById("colors");
+    const budgetField = document.getElementById("budget");
+    const fulfillmentField = document.getElementById("fulfillment");
     const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
     const quoteEmailTo = "gamboaesai@gmail.com";
 
@@ -1444,8 +1666,172 @@
 
     const depositCents = Number(runtimeConfig.stripeDepositCents || 0);
     const depositCurrency = String(runtimeConfig.stripeCurrency || "usd").toUpperCase();
+    const phoneCopyLinks = Array.from(document.querySelectorAll("[data-phone-copy]"));
+    const desktopPhoneMedia = window.matchMedia("(min-width: 721px)");
+    const fallbackPhoneNumber = "+1 (619) 257-8389";
+    const presetButtons = Array.from(document.querySelectorAll("[data-service-preset]"));
+    const servicePrefillNotes = new Map(
+      presetButtons
+        .map((button) => [
+          String(button.dataset.servicePreset || "").trim(),
+          String(button.dataset.prefillNote || "").trim()
+        ])
+        .filter(([preset, note]) => preset && note)
+    );
+    const dropdownNoteFields = [
+      { field: artStatusField, label: "Artwork status" },
+      { field: colorsField, label: "Ink or print colors" },
+      { field: budgetField, label: "Budget range" },
+      { field: fulfillmentField, label: "Fulfillment" }
+    ];
+    let autoNotesValue = "";
+    let manualNotesValue = notesField ? String(notesField.value || "").trim() : "";
 
-    document.querySelectorAll("[data-service-preset]").forEach((button) => {
+    [
+      ["Screen printing", "Need a screen printing quote."],
+      ["Embroidery", "Need an embroidery quote."],
+      ["Business cards / handouts", "Need business cards, handouts, or other paper print."],
+      ["Flyers / postcards / brochures", "Need flyers, postcards, brochures, or other paper print."],
+      ["Stickers / labels / hang tags", "Need stickers, labels, or hang tags."],
+      ["Banners / signs / displays", "Need banners, signs, or display graphics."],
+      ["Packaging and labels", "Need packaging support with labels, stickers, tags, or inserts."],
+      ["Mixed order / launch kit", "Need a mixed order with apparel and supporting print pieces."],
+      ["Event pack", "Need an event pack with apparel, handouts, and signage."],
+      ["Custom request", "Need help quoting a custom print project."]
+    ].forEach(([service, note]) => {
+      servicePrefillNotes.set(service, note);
+    });
+    const phoneCopyTimeouts = new WeakMap();
+
+    function trimFieldValue(field) {
+      return field ? String(field.value || "").trim() : "";
+    }
+
+    function showPhoneCopyNote(link, message) {
+      const wrapper = link.closest(".phone-action");
+      const note = wrapper ? wrapper.querySelector("[data-phone-copy-note]") : null;
+
+      if (!note) {
+        return;
+      }
+
+      const existingTimeoutId = phoneCopyTimeouts.get(note);
+      if (existingTimeoutId) {
+        window.clearTimeout(existingTimeoutId);
+      }
+
+      note.textContent = message;
+      note.classList.add("is-visible");
+
+      const timeoutId = window.setTimeout(() => {
+        note.classList.remove("is-visible");
+      }, 4400);
+
+      phoneCopyTimeouts.set(note, timeoutId);
+    }
+
+    async function copyTextToClipboard(value) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+
+      const tempInput = document.createElement("textarea");
+      tempInput.value = value;
+      tempInput.setAttribute("readonly", "");
+      tempInput.style.position = "absolute";
+      tempInput.style.left = "-9999px";
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      tempInput.setSelectionRange(0, tempInput.value.length);
+
+      const didCopy = document.execCommand("copy");
+      tempInput.remove();
+
+      if (!didCopy) {
+        throw new Error("Clipboard copy failed");
+      }
+    }
+
+    function stripAutoNotes(value) {
+      const normalizedValue = String(value || "").trim();
+
+      if (!autoNotesValue) {
+        return normalizedValue;
+      }
+
+      if (normalizedValue === autoNotesValue) {
+        return "";
+      }
+
+      if (normalizedValue.endsWith(autoNotesValue)) {
+        return normalizedValue.slice(0, normalizedValue.length - autoNotesValue.length).trim();
+      }
+
+      return normalizedValue.replace(autoNotesValue, "").trim();
+    }
+
+    function buildAutoNotes() {
+      const serviceType = trimFieldValue(serviceTypeField);
+      const selectedDetails = dropdownNoteFields
+        .map(({ field, label }) => {
+          const value = trimFieldValue(field);
+          return value ? `${label}: ${value}` : "";
+        })
+        .filter(Boolean);
+      const noteLines = [];
+      const serviceNote = servicePrefillNotes.get(serviceType) || "";
+
+      if (serviceNote) {
+        noteLines.push(serviceNote);
+      }
+
+      if (selectedDetails.length) {
+        noteLines.push("Selected details:");
+        selectedDetails.forEach((detail) => {
+          noteLines.push(`- ${detail}`);
+        });
+      }
+
+      return noteLines.join("\n");
+    }
+
+    function syncProjectNotes() {
+      if (!notesField) {
+        return;
+      }
+
+      manualNotesValue = stripAutoNotes(notesField.value);
+      autoNotesValue = buildAutoNotes();
+      notesField.value = [manualNotesValue, autoNotesValue].filter(Boolean).join("\n\n");
+    }
+
+    if (notesField) {
+      notesField.addEventListener("input", () => {
+        manualNotesValue = stripAutoNotes(notesField.value);
+      });
+    }
+
+    phoneCopyLinks.forEach((link) => {
+      link.addEventListener("click", async (event) => {
+        if (!desktopPhoneMedia.matches) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const phoneNumber = String(link.dataset.phoneCopy || "").trim() || fallbackPhoneNumber;
+
+        try {
+          await copyTextToClipboard(phoneNumber);
+          showPhoneCopyNote(link, `${phoneNumber} copied to clipboard`);
+        } catch (_error) {
+          showPhoneCopyNote(link, `Copy this number: ${phoneNumber}`);
+        }
+      });
+    });
+
+    presetButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const preset = String(button.dataset.servicePreset || "").trim();
         const prefillNote = String(button.dataset.prefillNote || "").trim();
@@ -1454,18 +1840,31 @@
           serviceTypeField.value = preset;
         }
 
-        if (notesField && prefillNote && !notesField.value.trim()) {
-          notesField.value = prefillNote;
+        if (preset && prefillNote) {
+          servicePrefillNotes.set(preset, prefillNote);
         }
 
+        syncProjectNotes();
         form.scrollIntoView({ behavior: "smooth", block: "start" });
         msg.textContent = preset ? `Preset loaded: ${preset}. Add any missing detail and send the quote.` : "";
       });
     });
 
+    if (serviceTypeField) {
+      serviceTypeField.addEventListener("change", syncProjectNotes);
+    }
+
+    dropdownNoteFields.forEach(({ field }) => {
+      if (field) {
+        field.addEventListener("change", syncProjectNotes);
+      }
+    });
+
     if (!stripeEnabled && payDepositBtn) {
       payDepositBtn.hidden = true;
-      depositAmount.textContent = "enabled after Stripe setup";
+      if (depositNote) {
+        depositNote.hidden = true;
+      }
     } else if (depositAmount) {
       if (depositCents > 0) {
         try {
@@ -1505,13 +1904,16 @@
       });
     }
 
-    function validateLead(lead) {
+    function canStartDeposit(lead) {
       return Boolean(lead.name) && Boolean(lead.contact);
     }
 
     function buildMailtoUrl(lead) {
       const serviceLabel = lead.serviceType || "Custom print quote";
-      const subject = `Quote request: ${serviceLabel} - ${lead.name}`;
+      const requesterLabel = lead.name || lead.company || lead.contact || "";
+      const subject = requesterLabel
+        ? `Quote request: ${serviceLabel} - ${requesterLabel}`
+        : `Quote request: ${serviceLabel}`;
       const bodyLines = [
         "New quote request",
         "",
@@ -1583,16 +1985,11 @@
       event.preventDefault();
       const lead = formDataToLead();
 
-      if (!validateLead(lead)) {
-        msg.textContent = "Please enter at least name and contact before submitting.";
-        return;
-      }
-
       msg.textContent = "Opening your email app with a prefilled quote request...";
       window.location.href = buildMailtoUrl(lead);
 
       window.setTimeout(() => {
-        msg.textContent = "If no email app opened, call or text (619) 257-8389.";
+        msg.textContent = "If no email app opened, call or text +1 (619) 257-8389.";
       }, 1200);
     });
 
@@ -1600,7 +1997,7 @@
       payDepositBtn.addEventListener("click", async () => {
         const lead = formDataToLead();
 
-        if (!validateLead(lead)) {
+        if (!canStartDeposit(lead)) {
           msg.textContent = "Please enter name and contact before paying the deposit.";
           return;
         }
