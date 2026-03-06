@@ -515,6 +515,35 @@
       padding: 18px;
     }
 
+    .pricing-intro {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .pricing-intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .pricing-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pricing-badge {
+      border: 1px solid rgba(228, 208, 139, 0.16);
+      border-radius: 999px;
+      background: rgba(228, 208, 139, 0.08);
+      color: var(--text);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      padding: 8px 12px;
+      text-transform: uppercase;
+    }
+
     .table-scroll {
       overflow: auto;
       border-radius: 18px;
@@ -527,6 +556,16 @@
       width: 100%;
       min-width: 620px;
       border-collapse: collapse;
+    }
+
+    caption {
+      padding: 14px 12px 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-align: left;
+      text-transform: uppercase;
     }
 
     th,
@@ -549,14 +588,30 @@
 
     .pricing-notes {
       display: grid;
-      gap: 8px;
+      gap: 10px;
       margin-top: 14px;
-      color: var(--muted);
-      font-size: 13px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .pricing-notes strong {
+    .pricing-note {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px 14px;
+    }
+
+    .pricing-note strong {
       color: var(--text);
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .pricing-note span {
+      color: var(--muted);
+      display: block;
+      font-size: 13px;
+      line-height: 1.45;
     }
 
     .pricing-side h4 {
@@ -568,6 +623,10 @@
       margin: 0;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    .pricing-side .simple-list {
+      margin-top: 14px;
     }
 
     .callout {
@@ -818,6 +877,10 @@
       .quote-grid,
       .pricing-layout,
       .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-notes {
         grid-template-columns: 1fr;
       }
     }
@@ -1072,19 +1135,30 @@
       <div class="wrap">
         <div class="section-head">
           <h3>Apparel pricing snapshot</h3>
+          <p>Quick baseline pricing for standard screen-printed tees, so clients can estimate fast without decoding a wholesale sheet.</p>
         </div>
 
         <div class="pricing-layout">
           <div class="surface pricing-card">
+            <div class="pricing-intro">
+              <p>Use the order-size row and ink-color column to get a per-shirt estimate. Final quotes adjust for garment choice, extra print locations, and extended sizes.</p>
+              <div class="pricing-badges" aria-label="Pricing assumptions">
+                <span class="pricing-badge">Standard tees</span>
+                <span class="pricing-badge">One print location</span>
+                <span class="pricing-badge">Per-shirt pricing</span>
+              </div>
+            </div>
+
             <div class="table-scroll" role="region" aria-label="Apparel pricing table" tabindex="0">
               <table>
+                <caption>Base screen-print pricing</caption>
                 <thead>
                   <tr>
-                    <th>Qty</th>
-                    <th>1 Color</th>
-                    <th>2 Colors</th>
-                    <th>3 Colors</th>
-                    <th>4 Colors</th>
+                    <th>Order size</th>
+                    <th>1 ink color</th>
+                    <th>2 ink colors</th>
+                    <th>3 ink colors</th>
+                    <th>4 ink colors</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1099,24 +1173,39 @@
             </div>
 
             <div class="pricing-notes">
-              <div>- <strong>Screen setup:</strong> $25 per color</div>
-              <div>- <strong>Extra location:</strong> +$3.00 per shirt</div>
-              <div>- <strong>Size add-ons:</strong> +$2.50 for 2XL+ and +$3.50 for 3XL+</div>
-              <div>- <strong>Turnaround:</strong> usually 7 to 10 business days after approval</div>
-              <div>- <strong>Rush:</strong> +15% when schedule allows</div>
+              <div class="pricing-note">
+                <strong>Screen setup</strong>
+                <span>$25 per ink color</span>
+              </div>
+              <div class="pricing-note">
+                <strong>Extra print location</strong>
+                <span>Add $3.00 per shirt</span>
+              </div>
+              <div class="pricing-note">
+                <strong>Extended sizes</strong>
+                <span>Add $2.50 for 2XL+ and $3.50 for 3XL+</span>
+              </div>
+              <div class="pricing-note">
+                <strong>Turnaround</strong>
+                <span>Usually 7 to 10 business days after approval</span>
+              </div>
+              <div class="pricing-note">
+                <strong>Rush jobs</strong>
+                <span>Add 15% when the production schedule allows</span>
+              </div>
             </div>
           </div>
 
           <aside class="surface pricing-side">
-            <h4>Everything else is quote by spec</h4>
+            <h4>How to read it</h4>
             <p>
-              For collateral, stickers, labels, signage, and sourced pieces, the quote depends on the actual job details rather than a generic matrix.
+              This table is meant to answer the first question fast: roughly what does a tee run at this quantity and ink count?
             </p>
             <ul class="simple-list">
-              <li>Material or stock</li>
-              <li>Size, sides, and finish</li>
-              <li>Quantity and deadline</li>
-              <li>Pickup, shipping, or delivery needs</li>
+              <li>Pick your quantity row first.</li>
+              <li>Match it to the number of ink colors in the design.</li>
+              <li>Add setup, extra locations, or size add-ons if they apply.</li>
+              <li>Need hoodies, premium blanks, or non-apparel? Request a custom quote.</li>
             </ul>
           </aside>
         </div>
