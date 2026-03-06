@@ -21,6 +21,7 @@
   />
   <style>
     :root {
+      color-scheme: dark;
       --bg: #0b0b0f;
       --panel: rgba(17, 18, 26, 0.86);
       --panel-strong: rgba(20, 21, 30, 0.96);
@@ -238,11 +239,13 @@
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 22px;
+      align-items: flex-start;
     }
 
     .hero-actions > .btn,
     .hero-actions > .phone-action {
       flex: 1 1 180px;
+      min-width: 0;
     }
 
     .hero-actions .btn {
@@ -256,6 +259,11 @@
     .phone-action {
       display: grid;
       gap: 6px;
+      min-width: 0;
+    }
+
+    .hero-actions .phone-action {
+      position: relative;
     }
 
     .phone-copy-note {
@@ -272,6 +280,13 @@
     .phone-copy-note.is-visible {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .hero-actions .phone-copy-note {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
     }
 
     .btn {
@@ -949,10 +964,19 @@
         max-width: none;
       }
 
-      .hero-actions,
       .form-actions {
         flex-direction: column;
         align-items: stretch;
+      }
+
+      .hero-actions {
+        align-items: flex-start;
+      }
+
+      .hero-actions > .btn,
+      .hero-actions > .phone-action {
+        flex: 0 1 260px;
+        width: min(100%, 260px);
       }
 
       .contact-link {
@@ -1024,7 +1048,7 @@
           </div>
 
           <ul class="hero-points">
-            <li>Best fit for independent businesses that need merch, event kits, workwear, team apparel, or retail launch support.</li>
+            <li>Best fit for businesses that need merch, event kits, workwear, team apparel, or retail launch support.</li>
             <li>Most quote requests get a reply within 1-3 business days.</li>
             <li>Local pickup is available in San Diego. Shipping and sourced fulfillment can be quoted per project.</li>
           </ul>
@@ -1038,7 +1062,7 @@
           <div class="panel-stack">
             <div class="mini-card">
               <span class="mini-label">Best fit</span>
-              <strong>Small-business merch, team apparel, event signage, and bundled print jobs.</strong>
+              <strong>Business merch, team apparel, event signage, and bundled print jobs.</strong>
               <p>Simple quote flow first, then proofs, approvals, and production.</p>
             </div>
 
