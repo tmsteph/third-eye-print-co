@@ -240,6 +240,15 @@
       margin-top: 22px;
     }
 
+    .hero-actions > .btn,
+    .hero-actions > .phone-action {
+      flex: 1 1 180px;
+    }
+
+    .hero-actions .btn {
+      width: 100%;
+    }
+
     .phone-mobile-number {
       display: inline;
     }
@@ -1602,7 +1611,7 @@
 
       const timeoutId = window.setTimeout(() => {
         note.classList.remove("is-visible");
-      }, 2200);
+      }, 4400);
 
       phoneCopyTimeouts.set(note, timeoutId);
     }
