@@ -244,27 +244,23 @@
       display: inline;
     }
 
-    .site-toast {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 50;
-      max-width: min(320px, calc(100vw - 32px));
-      padding: 12px 14px;
-      border: 1px solid rgba(228, 208, 139, 0.18);
-      border-radius: 16px;
-      background: rgba(10, 12, 18, 0.94);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
-      color: var(--text);
-      font-size: 13px;
+    .phone-action {
+      display: grid;
+      gap: 6px;
+    }
+
+    .phone-copy-note {
+      color: var(--muted);
+      font-size: 12px;
       line-height: 1.4;
+      min-height: 0;
       opacity: 0;
       pointer-events: none;
-      transform: translateY(10px);
+      transform: translateY(-4px);
       transition: opacity 0.18s ease, transform 0.18s ease;
     }
 
-    .site-toast.is-visible {
+    .phone-copy-note.is-visible {
       opacity: 1;
       transform: translateY(0);
     }
@@ -920,15 +916,6 @@
     }
 
     @media (max-width: 720px) {
-      .site-toast {
-        right: 12px;
-        left: 12px;
-        bottom: 12px;
-        max-width: none;
-      }
-    }
-
-    @media (max-width: 720px) {
       .nav {
         align-items: flex-start;
         flex-direction: column;
@@ -1015,10 +1002,13 @@
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="#quote">Request a Quote</a>
-            <a class="btn" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
-              <span>Call or Text</span>
-              <span class="phone-mobile-number">+1 (619) 257-8389</span>
-            </a>
+            <div class="phone-action">
+              <a class="btn" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
+                <span>Call or Text</span>
+                <span class="phone-mobile-number">+1 (619) 257-8389</span>
+              </a>
+              <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
+            </div>
             <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
               View Instagram
             </a>
@@ -1316,10 +1306,13 @@
             <p>Best for brands, teams, events, workwear programs, and launch support in San Diego and beyond.</p>
 
             <div class="contact-points">
-              <a class="contact-link" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
-                <strong>Call or text</strong>
-                <span class="phone-mobile-number">+1 (619) 257-8389</span>
-              </a>
+              <div class="phone-action">
+                <a class="contact-link" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
+                  <strong>Call or text</strong>
+                  <span class="phone-mobile-number">+1 (619) 257-8389</span>
+                </a>
+                <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
+              </div>
               <a class="contact-link" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
                 <strong>@thirdeyeprintco</strong>
                 <span>Instagram</span>
@@ -1573,27 +1566,47 @@
     let autoNotesValue = "";
     let manualNotesValue = notesField ? String(notesField.value || "").trim() : "";
 
-    servicePrefillNotes.set("Custom request", "Need help quoting a custom print project.");
-
-    const siteToast = document.createElement("div");
-    siteToast.className = "site-toast";
-    siteToast.setAttribute("role", "status");
-    siteToast.setAttribute("aria-live", "polite");
-    document.body.appendChild(siteToast);
-
-    let siteToastTimeoutId = 0;
+    [
+      ["Screen printing", "Need a screen printing quote."],
+      ["Embroidery", "Need an embroidery quote."],
+      ["Business cards / handouts", "Need business cards, handouts, or other paper print."],
+      ["Flyers / postcards / brochures", "Need flyers, postcards, brochures, or other paper print."],
+      ["Stickers / labels / hang tags", "Need stickers, labels, or hang tags."],
+      ["Banners / signs / displays", "Need banners, signs, or display graphics."],
+      ["Packaging and labels", "Need packaging support with labels, stickers, tags, or inserts."],
+      ["Mixed order / launch kit", "Need a mixed order with apparel and supporting print pieces."],
+      ["Event pack", "Need an event pack with apparel, handouts, and signage."],
+      ["Custom request", "Need help quoting a custom print project."]
+    ].forEach(([service, note]) => {
+      servicePrefillNotes.set(service, note);
+    });
+    const phoneCopyTimeouts = new WeakMap();
 
     function trimFieldValue(field) {
       return field ? String(field.value || "").trim() : "";
     }
 
-    function showSiteToast(message) {
-      window.clearTimeout(siteToastTimeoutId);
-      siteToast.textContent = message;
-      siteToast.classList.add("is-visible");
-      siteToastTimeoutId = window.setTimeout(() => {
-        siteToast.classList.remove("is-visible");
+    function showPhoneCopyNote(link, message) {
+      const wrapper = link.closest(".phone-action");
+      const note = wrapper ? wrapper.querySelector("[data-phone-copy-note]") : null;
+
+      if (!note) {
+        return;
+      }
+
+      const existingTimeoutId = phoneCopyTimeouts.get(note);
+      if (existingTimeoutId) {
+        window.clearTimeout(existingTimeoutId);
+      }
+
+      note.textContent = message;
+      note.classList.add("is-visible");
+
+      const timeoutId = window.setTimeout(() => {
+        note.classList.remove("is-visible");
       }, 2200);
+
+      phoneCopyTimeouts.set(note, timeoutId);
     }
 
     async function copyTextToClipboard(value) {
@@ -1690,9 +1703,9 @@
 
         try {
           await copyTextToClipboard(phoneNumber);
-          showSiteToast(`Copied ${phoneNumber}`);
+          showPhoneCopyNote(link, `Copied ${phoneNumber}`);
         } catch (_error) {
-          showSiteToast(`Use ${phoneNumber}`);
+          showPhoneCopyNote(link, `Use ${phoneNumber}`);
         }
       });
     });
