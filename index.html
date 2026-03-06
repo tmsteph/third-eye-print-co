@@ -1395,7 +1395,7 @@
                 Deposit at checkout: <strong id="depositAmount">loading...</strong>
               </div>
               <div class="deposit-note">
-                Quote requests save through the API and can also sync to the configured Gun relay.
+                Quote requests open a prefilled email draft to gamboaesai@gmail.com.
               </div>
             </form>
           </div>
@@ -1432,6 +1432,7 @@
     const serviceTypeField = document.getElementById("serviceType");
     const notesField = document.getElementById("notes");
     const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
+    const quoteEmailTo = "gamboaesai@gmail.com";
 
     const configuredRelayUrls = Array.isArray(runtimeConfig.gunRelayUrls)
       ? runtimeConfig.gunRelayUrls.map((value) => String(value || "").trim()).filter(Boolean)
@@ -1508,6 +1509,32 @@
       return Boolean(lead.name) && Boolean(lead.contact);
     }
 
+    function buildMailtoUrl(lead) {
+      const serviceLabel = lead.serviceType || "Custom print quote";
+      const subject = `Quote request: ${serviceLabel} - ${lead.name}`;
+      const bodyLines = [
+        "New quote request",
+        "",
+        `Name: ${lead.name || "-"}`,
+        `Contact: ${lead.contact || "-"}`,
+        `Company or brand: ${lead.company || "-"}`,
+        `Service type: ${lead.serviceType || "-"}`,
+        `Quantity: ${lead.quantity || "-"}`,
+        `Product or garment: ${lead.garment || "-"}`,
+        `Placement, size, or sides: ${lead.locations || "-"}`,
+        `Ink or print colors: ${lead.colors || "-"}`,
+        `Artwork status: ${lead.artStatus || "-"}`,
+        `Need by: ${lead.needBy || "-"}`,
+        `Budget range: ${lead.budget || "-"}`,
+        `Fulfillment: ${lead.fulfillment || "-"}`,
+        "",
+        "Project notes:",
+        lead.notes || "-"
+      ];
+
+      return `mailto:${quoteEmailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+    }
+
     async function saveLeadToApi(source, lead) {
       const response = await fetch("/api/lead", {
         method: "POST",
@@ -1561,23 +1588,12 @@
         return;
       }
 
-      setBusy(true);
-      msg.textContent = "Saving your quote request...";
+      msg.textContent = "Opening your email app with a prefilled quote request...";
+      window.location.href = buildMailtoUrl(lead);
 
-      Promise.all([
-        saveLeadToApi("quote_form", lead),
-        syncLeadToGun("quote_form", lead)
-      ])
-        .then(() => {
-          msg.textContent = "Quote request sent. We will contact you shortly.";
-          form.reset();
-        })
-        .catch(() => {
-          msg.textContent = "Could not save the quote right now. Call or text (619) 257-8389.";
-        })
-        .finally(() => {
-          setBusy(false);
-        });
+      window.setTimeout(() => {
+        msg.textContent = "If no email app opened, call or text (619) 257-8389.";
+      }, 1200);
     });
 
     if (payDepositBtn) {
