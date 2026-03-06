@@ -5,7 +5,8 @@
   "description": "Third Eye Print Co site with Stripe checkout + GunJS lead relay",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test:visual": "node scripts/visual-smoke.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

@@ -3,926 +3,1477 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Third Eye Print Co. — Apparel, Signs & Marketing Print (San Diego)</title>
-  <meta name="description" content="Third Eye Print Co. offers screen printing, embroidery, business cards, flyers, stickers, signs, and packaging support in San Diego. Get a quote today." />
+  <title>Third Eye Print Co. - Apparel, Signs, and Marketing Print</title>
+  <meta
+    name="description"
+    content="Third Eye Print Co. helps brands and teams quote screen printing, embroidery, stickers, handouts, signage, and launch kits from one clean intake."
+  />
   <meta name="theme-color" content="#0b0b0f" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-
-  <!-- Open Graph -->
   <meta property="og:title" content="Third Eye Print Co." />
-  <meta property="og:description" content="San Diego apparel, signs, stickers, and marketing print — quality, vision & craft." />
+  <meta property="og:description" content="Merch, marketing print, and event graphics without juggling three vendors." />
   <meta property="og:type" content="website" />
-
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
   <style>
-    :root{
-      --bg:#0b0b0f;
-      --panel:#11121a;
-      --panel2:#0f1016;
-      --text:#f3f4f6;
-      --muted:#b7bcc7;
-      --line:rgba(255,255,255,.12);
-      --accent:#e6d38a; /* warm gold */
-      --accent2:#6ee7ff; /* subtle cool glow */
-      --shadow: 0 12px 40px rgba(0,0,0,.45);
-      --radius: 18px;
-      --max: 1120px;
+    :root {
+      --bg: #0b0b0f;
+      --panel: rgba(17, 18, 26, 0.86);
+      --panel-strong: rgba(20, 21, 30, 0.96);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --text: #f5f5f2;
+      --muted: #bfc4cf;
+      --line: rgba(255, 255, 255, 0.12);
+      --line-strong: rgba(255, 255, 255, 0.2);
+      --accent: #e4d08b;
+      --accent-soft: rgba(228, 208, 139, 0.16);
+      --cool: #7cd9eb;
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.4);
+      --radius: 24px;
+      --max: 1140px;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background: radial-gradient(900px 500px at 20% -10%, rgba(110,231,255,.14), transparent 60%),
-                  radial-gradient(900px 500px at 90% 0%, rgba(230,211,138,.10), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      line-height:1.5;
+    * {
+      box-sizing: border-box;
     }
 
-    a{color:inherit; text-decoration:none}
-    .wrap{max-width:var(--max); margin:0 auto; padding:0 18px}
-    .topbar{
-      position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(10px);
-      background: rgba(11,11,15,.72);
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(680px 360px at 10% 0%, rgba(124, 217, 235, 0.16), transparent 60%),
+        radial-gradient(760px 420px at 100% 0%, rgba(228, 208, 139, 0.12), transparent 58%),
+        linear-gradient(180deg, #0a0a0d 0%, #0d0d11 100%);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 10, 14, 0.78);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-copy p {
+      margin: 3px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-links a {
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+      font-size: 13px;
+      transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      border-color: rgba(228, 208, 139, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-links .nav-cta {
+      border-color: transparent;
+      color: #0b0b0f;
+      background: linear-gradient(135deg, #f0db97, #d8bc64);
+      font-weight: 800;
+    }
+
+    .hero {
+      padding: 64px 0 24px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 16px rgba(228, 208, 139, 0.5);
+    }
+
+    .hero-copy h2 {
+      margin: 18px 0 12px;
+      font-family: "Fraunces", serif;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+      max-width: 12ch;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(228, 208, 139, 0.35);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn-primary {
+      border-color: transparent;
+      color: #0b0b0f;
+      background: linear-gradient(135deg, #f0db97, #d8bc64);
+    }
+
+    .btn-secondary {
+      border-color: rgba(124, 217, 235, 0.34);
+      color: #e5fbff;
+      background: rgba(124, 217, 235, 0.09);
+    }
+
+    .btn:disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .hero-points {
+      display: grid;
+      gap: 10px;
+      margin: 26px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .hero-points li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero-points li::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background: rgba(124, 217, 235, 0.85);
+      flex: 0 0 auto;
+    }
+
+    .surface {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel {
+      overflow: hidden;
+    }
+
+    .hero-photo {
+      aspect-ratio: 1.08 / 1;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background: #111;
+    }
+
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .panel-stack {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .mini-card {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .mini-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .mini-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .simple-list {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .simple-list li {
+      display: flex;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .simple-list li::before {
+      content: "+";
+      color: var(--accent);
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .review-note {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 0 4px 4px;
+    }
+
+    section {
+      padding: 26px 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .section-head h3 {
+      margin: 0;
+      font-family: "Fraunces", serif;
+      font-size: clamp(28px, 3.2vw, 36px);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .offer-grid,
+    .package-grid,
+    .step-grid,
+    .faq-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .offer-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .package-grid,
+    .step-grid,
+    .faq-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card-block {
+      padding: 18px;
+    }
+
+    .card-block h4 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .card-block p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .section-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .package-grid .card-block,
+    .faq-grid .card-block {
+      background: var(--panel-soft);
+    }
+
+    .package-grid .card-block h4,
+    .step-grid .card-block h4 {
+      font-size: 19px;
+    }
+
+    .package-list {
+      display: grid;
+      gap: 7px;
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .package-list li {
+      margin: 0;
+    }
+
+    .package-grid .btn {
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    .pricing-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 14px;
+    }
+
+    .pricing-card,
+    .pricing-side {
+      padding: 18px;
+    }
+
+    .table-scroll {
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.26);
+    }
+
+    table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    tr:hover td {
+      background: rgba(228, 208, 139, 0.06);
+    }
+
+    .pricing-notes {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pricing-notes strong {
+      color: var(--text);
+    }
+
+    .pricing-side h4 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .pricing-side p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .callout {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(124, 217, 235, 0.16);
+      background: rgba(124, 217, 235, 0.08);
+      color: #e4fbff;
+      font-size: 14px;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(228, 208, 139, 0.25);
+      background: rgba(228, 208, 139, 0.12);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .quote-section {
+      padding-bottom: 64px;
+    }
+
+    .quote-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+      gap: 14px;
+    }
+
+    .contact-card,
+    .form-card {
+      padding: 18px;
+    }
+
+    .contact-card h4,
+    .form-card h4 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    .contact-card p,
+    .form-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .contact-points {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      font-weight: 700;
+    }
+
+    .contact-link span {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .form-meta {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    form {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(5, 5, 8, 0.35);
+      color: var(--text);
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #8f96a3;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(228, 208, 139, 0.34);
+      background: rgba(5, 5, 8, 0.48);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 132px;
+      resize: vertical;
+    }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .preset {
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .preset:hover {
+      border-color: rgba(228, 208, 139, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .details-more {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+      overflow: hidden;
+    }
+
+    .details-more summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .details-more summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .details-more summary span {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .details-more[open] summary {
       border-bottom: 1px solid var(--line);
     }
-    .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:14px 0;
-      gap:14px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      min-width: 220px;
-    }
-    .logo{
-      width:42px; height:42px; border-radius:12px;
-      display:grid; place-items:center;
-      background: linear-gradient(145deg, rgba(230,211,138,.18), rgba(110,231,255,.10));
-      border:1px solid var(--line);
-      box-shadow: var(--shadow);
-      flex:0 0 auto;
-      overflow:hidden;
-    }
-    .logo img{
-      width:100%;
-      height:100%;
-      display:block;
-      object-fit:cover;
-    }
-    .brand h1{
-      margin:0; font-size:16px; letter-spacing:.3px; line-height:1.1;
-    }
-    .brand p{margin:2px 0 0; font-size:12px; color:var(--muted)}
-    .links{
-      display:flex; align-items:center; gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-    .links a{
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      font-size:13px;
-      color:var(--muted);
-    }
-    .links a:hover{color:var(--text); border-color: rgba(230,211,138,.35)}
-    .cta{
-      padding:10px 14px !important;
-      color:#0b0b0f !important;
-      border-color: transparent !important;
-      background: linear-gradient(135deg, var(--accent), rgba(230,211,138,.78)) !important;
-      font-weight:700;
+
+    .details-body {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
     }
 
-    /* Hero */
-    .hero{
-      padding:56px 0 26px;
-    }
-    .heroGrid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:18px;
-      align-items:stretch;
-    }
-    @media (max-width: 920px){
-      .heroGrid{grid-template-columns: 1fr; }
-      .brand{min-width:auto}
-      .links{justify-content:flex-start}
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
     }
 
-    .card{
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .heroCard{
-      padding:22px;
-      position:relative;
-      min-height: 290px;
-    }
-    .heroCard:before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(600px 220px at 20% 10%, rgba(230,211,138,.18), transparent 55%),
-                  radial-gradient(520px 240px at 95% 30%, rgba(110,231,255,.14), transparent 60%);
-      pointer-events:none;
-      opacity:.9;
-    }
-    .heroInner{position:relative}
-    .kicker{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+    .form-status,
+    .deposit-note {
       color: var(--muted);
-      font-size:13px;
+      font-size: 13px;
     }
-    .dot{
-      width:8px;height:8px;border-radius:50%;
-      background: var(--accent);
-      box-shadow: 0 0 14px rgba(230,211,138,.45);
-    }
-    .hero h2{
-      margin:14px 0 10px;
-      font-size: clamp(28px, 4vw, 44px);
-      line-height:1.08;
-      letter-spacing:-.3px;
-    }
-    .hero p{
-      margin:0 0 18px;
+
+    .footer {
+      padding: 28px 0 40px;
+      border-top: 1px solid var(--line);
       color: var(--muted);
-      font-size: 16px;
-      max-width: 62ch;
+      font-size: 13px;
     }
-    .heroActions{
-      display:flex; flex-wrap:wrap; gap:10px;
-      align-items:center;
+
+    .footer-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
     }
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center;
-      gap:10px;
-      padding:12px 14px;
-      border-radius: 14px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: underline;
+      text-decoration-color: rgba(228, 208, 139, 0.35);
+    }
+
+    .footer-links a:hover {
       color: var(--text);
-      font-weight:650;
-      font-size:14px;
-      cursor:pointer;
-      font:inherit;
-    }
-    .btn:hover{border-color: rgba(230,211,138,.35)}
-    .btnPrimary{
-      border:none;
-      color:#0b0b0f;
-      background: linear-gradient(135deg, var(--accent), rgba(230,211,138,.78));
-    }
-    .btnSecondary{
-      border-color: rgba(110,231,255,.45);
-      background: rgba(110,231,255,.10);
-      color: #dff9ff;
-    }
-    .btn:disabled{
-      opacity:.6;
-      cursor:not-allowed;
-    }
-    .btnGhost{color:var(--muted)}
-    .subnote{font-size:12px;color:var(--muted); margin-top:10px}
-
-    /* Side panel */
-    .side{
-      padding:18px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .side h3{margin:0; font-size:14px; color:var(--muted); letter-spacing:.4px; text-transform:uppercase}
-    .pillRow{display:flex; flex-wrap:wrap; gap:10px}
-    .pill{
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      color: var(--text);
-      font-size:13px;
-    }
-    .pill strong{color:var(--accent)}
-    .divider{height:1px;background:var(--line); margin:6px 0}
-
-    /* Sections */
-    section{padding:28px 0}
-    .sectionTitle{
-      display:flex; align-items:end; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      margin-bottom:12px;
-    }
-    .sectionTitle h3{
-      margin:0;
-      font-size:22px;
-      letter-spacing:-.2px;
-    }
-    .sectionTitle p{margin:0; color:var(--muted); font-size:14px}
-
-    .grid3{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:12px;
-    }
-    @media (max-width: 920px){
-      .grid3{grid-template-columns:1fr}
-    }
-    .item{
-      padding:16px;
-      border-radius: var(--radius);
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-    }
-    .item h4{margin:0 0 6px; font-size:16px}
-    .item p{margin:0; color:var(--muted); font-size:14px}
-    .serviceList{
-      margin:10px 0 0;
-      padding-left:18px;
-      color:var(--muted);
-      font-size:14px;
-      display:grid;
-      gap:6px;
-    }
-    .serviceList li{margin:0}
-    .actionRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:14px;
-    }
-    .smallPrint{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:13px;
     }
 
-    /* Pricing */
-    .pricingWrap{
-      padding:16px;
-      border-radius: var(--radius);
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      overflow:hidden;
-    }
-    .tableScroll{overflow:auto; border-radius:14px; border:1px solid var(--line); background: rgba(0,0,0,.22)}
-    table{
-      width:100%;
-      border-collapse: collapse;
-      min-width: 640px;
-    }
-    th, td{
-      padding:12px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      text-align:left;
-      font-size:14px;
-    }
-    th{color:var(--muted); font-weight:700; background: rgba(255,255,255,.03)}
-    tr:hover td{background: rgba(230,211,138,.05)}
-    .notes{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:13px;
-      display:grid;
-      gap:6px;
-    }
-    .notes strong{color:var(--text)}
-    .badge{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      color:var(--muted);
-      font-size:12px;
+    @media (max-width: 1024px) {
+      .offer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .package-grid,
+      .step-grid,
+      .faq-grid,
+      .quote-grid,
+      .pricing-layout,
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
-    /* Gallery */
-    .gallery{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:12px;
-    }
-    @media (max-width: 920px){
-      .gallery{grid-template-columns:1fr}
-    }
-    .ph{
-      border-radius: var(--radius);
-      border:1px solid var(--line);
-      background:
-        radial-gradient(220px 140px at 20% 20%, rgba(110,231,255,.16), transparent 60%),
-        radial-gradient(240px 160px at 90% 40%, rgba(230,211,138,.12), transparent 60%),
-        rgba(255,255,255,.02);
-      min-height: 160px;
-      display:flex; align-items:flex-end;
-      padding:14px;
-      color:var(--muted);
-      font-size:13px;
-    }
-    .galleryPhoto{
-      border-radius: var(--radius);
-      border:1px solid var(--line);
-      overflow:hidden;
-      min-height:160px;
-      background: rgba(255,255,255,.02);
-    }
-    .galleryPhoto img{
-      display:block;
-      width:100%;
-      height:100%;
-      min-height:160px;
-      object-fit:cover;
+    @media (max-width: 720px) {
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        width: 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        justify-content: flex-start;
+      }
+
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+
+      .offer-grid,
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .hero-copy h2 {
+        max-width: none;
+      }
+
+      .hero-actions,
+      .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
     }
 
-    /* Contact */
-    .contactGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+      }
     }
-    @media (max-width: 920px){ .contactGrid{grid-template-columns:1fr} }
-    form{
-      display:grid; gap:10px;
-    }
-    input, textarea, select{
-      width:100%;
-      padding:12px 12px;
-      border-radius: 14px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      color: var(--text);
-      outline:none;
-      font-size:14px;
-    }
-    textarea{min-height:120px; resize:vertical}
-    label{font-size:12px; color:var(--muted)}
-    .two{
-      display:grid; grid-template-columns:1fr 1fr; gap:10px;
-    }
-    @media (max-width: 600px){ .two{grid-template-columns:1fr} }
-    .formActions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-    }
-    .pillButton{
-      appearance:none;
-      cursor:pointer;
-      font:inherit;
-    }
-    .footer{
-      padding:22px 0 40px;
-      color:var(--muted);
-      border-top:1px solid var(--line);
-      margin-top:22px;
-      font-size:13px;
-    }
-    .miniLinks{display:flex; gap:12px; flex-wrap:wrap; margin-top:10px}
-    .miniLinks a{color:var(--muted); text-decoration:underline; text-decoration-color: rgba(230,211,138,.35)}
-    .miniLinks a:hover{color:var(--text)}
   </style>
 </head>
-
 <body>
   <header class="topbar">
-    <div class="wrap">
-      <div class="nav">
-        <div class="brand">
-          <div class="logo">
-            <img src="assets/print-shop-team.jpg" alt="Third Eye Print Co. logo" />
-          </div>
-	          <div>
-	            <h1>Third Eye Print Co.</h1>
-	            <p>Apparel, Print & Signage • San Diego</p>
-	          </div>
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="logo">
+          <img src="assets/print-shop-team.jpg" alt="Third Eye Print Co. team" />
         </div>
-
-	        <nav class="links" aria-label="Primary">
-	          <a href="#services">Services</a>
-	          <a href="#catalog">Catalog</a>
-	          <a href="#pricing">Pricing</a>
-	          <a href="#process">Process</a>
-	          <a href="#contact" class="cta">Get a Quote</a>
-	        </nav>
+        <div class="brand-copy">
+          <h1>Third Eye Print Co.</h1>
+          <p>Apparel, print, and signage - San Diego</p>
+        </div>
       </div>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#offerings">Offerings</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#process">Process</a>
+        <a href="#quote" class="nav-cta">Request a Quote</a>
+      </nav>
     </div>
   </header>
 
   <main>
-    <div class="wrap hero" id="top">
-      <div class="heroGrid">
-        <div class="card heroCard">
-          <div class="heroInner">
-	            <div class="kicker"><span class="dot"></span> Now quoting <strong style="color:var(--text)">apparel, print, signage, and launch kits</strong></div>
-	            <h2>One print partner for merch, marketing materials, and launch-ready brand kits.</h2>
-	            <p>
-	              Based in San Diego. Fast, clear communication. Consistent production. Clean details.
-	              From screen printed apparel and embroidery to stickers, business cards, flyers, banners, and packaging support,
-	              we can quote the job and route it through the right production path.
-	            </p>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">One intake for merch, collateral, and event graphics</div>
+          <h2>Merch, marketing print, and event graphics without juggling three vendors.</h2>
+          <p>
+            Third Eye Print Co. keeps the front end simple: tell us what you need, when you need it, and where it is going.
+            We quote the right production path for apparel, stickers, handouts, signage, and launch-ready bundles.
+          </p>
 
-	            <div class="heroActions">
-	              <a class="btn btnPrimary" href="#contact">Request a Quote</a>
-	              <a class="btn" href="#catalog">Browse the Catalog</a>
-	              <a class="btn" href="tel:+16192578389">Call / Text: (619) 257-8389</a>
-	              <a class="btn btnGhost" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">Instagram @thirdeyeprintco</a>
-	            </div>
-	            <div class="subnote">Typical turnaround: <strong style="color:var(--text)">7–10 business days</strong> after art approval for standard jobs. Rush available.</div>
-	          </div>
-	        </div>
-
-        <aside class="card side">
-	          <h3>Quick Info</h3>
-	          <div class="pillRow">
-	            <div class="pill"><strong>6+ yrs</strong> experience</div>
-	            <div class="pill">San Diego</div>
-	            <div class="pill">Apparel + paper + signage</div>
-	            <div class="pill">Quality-first</div>
-	          </div>
-	          <div class="divider"></div>
-	          <div class="pillRow">
-	            <div class="pill"><strong>Screen setup:</strong> $25 per color</div>
-	            <div class="pill"><strong>Rush:</strong> +15%</div>
-	            <div class="pill"><strong>Extra print location:</strong> +$3/shirt</div>
-	          </div>
-	          <div class="divider"></div>
-	          <div class="badge">Best for: merch drops • launch kits • events • workwear</div>
-	          <div class="badge">Ask about: stickers • handouts • banners • hang tags</div>
-	        </aside>
-	      </div>
-	    </div>
-
-    <section id="services">
-      <div class="wrap">
-	        <div class="sectionTitle">
-	          <h3>Services</h3>
-	          <p>Built for brands, artists, teams, events, and retail launches.</p>
-	        </div>
-
-	        <div class="grid3">
-	          <div class="item">
-	            <h4>Screen Printing</h4>
-	            <p>Clean, durable prints for tees, hoodies, crewnecks, totes, and more. Great for bulk runs and consistent color.</p>
-	          </div>
-	          <div class="item">
-	            <h4>Embroidery</h4>
-	            <p>Polished stitching for hats, beanies, jackets, polos, and workwear. Ideal for logos and premium brand feel.</p>
-	          </div>
-	          <div class="item">
-	            <h4>Business Cards & Handouts</h4>
-	            <p>Business cards, flyers, postcards, rack cards, and brochures for launches, events, menus, and leave-behinds.</p>
-	          </div>
-	          <div class="item">
-	            <h4>Stickers, Labels & Hang Tags</h4>
-	            <p>Branded stickers, product labels, hang tags, and lightweight packaging inserts that support merch and retail drops.</p>
-	          </div>
-	          <div class="item">
-	            <h4>Banners, Signs & Event Graphics</h4>
-	            <p>Vinyl banners, yard signs, rigid signs, posters, and event graphics that help your booth or storefront read clearly.</p>
-	          </div>
-	          <div class="item">
-	            <h4>Brand Support</h4>
-	            <p>We help you avoid common mistakes across garments, print specs, signage, and packaging so the finished job lands right.</p>
-	          </div>
-	        </div>
-	        <div class="smallPrint">Some categories can be produced in-house, while others are quoted and fulfilled through vetted trade partners.</div>
-	      </div>
-	    </section>
-
-	    <section id="catalog">
-	      <div class="wrap">
-	        <div class="sectionTitle">
-	          <h3>Quote-Ready Catalog</h3>
-	          <p>Low-friction bundles inspired by common 4over-style print needs.</p>
-	        </div>
-
-	        <div class="grid3">
-	          <div class="item">
-	            <h4>Brand Launch Kit</h4>
-	            <p>For new brands dropping merch and needing a clean first impression.</p>
-	            <ul class="serviceList">
-	              <li>Screen printed tees or hoodies</li>
-	              <li>Business cards or promo cards</li>
-	              <li>Stickers and hang tags</li>
-	            </ul>
-	            <div class="actionRow">
-	              <button class="btn" type="button" data-service-preset="Mixed order / launch kit" data-prefill-note="Need a launch kit with apparel plus cards, stickers, or tags.">Prefill Quote</button>
-	            </div>
-	          </div>
-	          <div class="item">
-	            <h4>Event Table Pack</h4>
-	            <p>For pop-ups, conventions, church events, and community outreach.</p>
-	            <ul class="serviceList">
-	              <li>Staff shirts or embroidered polos</li>
-	              <li>Flyers, postcards, or menus</li>
-	              <li>Banner or rigid event signage</li>
-	            </ul>
-	            <div class="actionRow">
-	              <button class="btn" type="button" data-service-preset="Event pack" data-prefill-note="Need an event pack with apparel, handouts, and signage.">Prefill Quote</button>
-	            </div>
-	          </div>
-	          <div class="item">
-	            <h4>Retail Packaging Pack</h4>
-	            <p>For product drops that need the packaging layer to feel deliberate.</p>
-	            <ul class="serviceList">
-	              <li>Roll labels or product stickers</li>
-	              <li>Hang tags and inserts</li>
-	              <li>Packaging support and sourced print pieces</li>
-	            </ul>
-	            <div class="actionRow">
-	              <button class="btn" type="button" data-service-preset="Packaging and labels" data-prefill-note="Need packaging support with labels, stickers, tags, or inserts.">Prefill Quote</button>
-	            </div>
-	          </div>
-	        </div>
-	      </div>
-	    </section>
-
-	    <section id="process">
-	      <div class="wrap">
-	        <div class="sectionTitle">
-	          <h3>How it works</h3>
-          <p>Simple process, no confusion.</p>
-        </div>
-
-	        <div class="grid3">
-	          <div class="item">
-	            <h4>1) Scope the job</h4>
-	            <p>Tell us the product, quantity, specs, timing, and artwork status. We confirm the right production path before quoting.</p>
-	          </div>
-	          <div class="item">
-	            <h4>2) Approve proof or plan</h4>
-	            <p>We verify placement, stock, size, colors, finishes, and sourcing. Once you approve, we move into production.</p>
-	          </div>
-	          <div class="item">
-	            <h4>3) Produce, ship, or hand off</h4>
-	            <p>Apparel, print, and signage follow the best-fit workflow for the job. Typical turnaround is 7–10 business days after approval.</p>
-	          </div>
-	        </div>
-	      </div>
-	    </section>
-
-    <section id="pricing">
-      <div class="wrap">
-	        <div class="sectionTitle">
-	          <h3>Apparel Pricing Snapshot</h3>
-	          <p>Screen printing on 100% cotton tees (S–XL included). Paper print, signage, labels, and packaging are quoted by spec.</p>
-	        </div>
-
-        <div class="pricingWrap">
-          <div class="tableScroll" role="region" aria-label="Pricing table" tabindex="0">
-            <table>
-              <thead>
-                <tr>
-                  <th>Qty</th>
-                  <th>1 Color</th>
-                  <th>2 Colors</th>
-                  <th>3 Colors</th>
-                  <th>4 Colors</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>12</td><td>$14.00</td><td>$16.00</td><td>$18.00</td><td>$20.00</td></tr>
-                <tr><td>24</td><td>$10.75</td><td>$12.75</td><td>$14.75</td><td>$16.75</td></tr>
-                <tr><td>36</td><td>$8.75</td><td>$10.25</td><td>$11.75</td><td>$13.25</td></tr>
-                <tr><td>48</td><td>$7.50</td><td>$9.00</td><td>$10.50</td><td>$12.00</td></tr>
-                <tr><td>72</td><td>$6.75</td><td>$8.25</td><td>$9.75</td><td>$11.25</td></tr>
-                <tr><td>100+</td><td>$6.50</td><td>$7.75</td><td>$9.00</td><td>$10.25</td></tr>
-              </tbody>
-            </table>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#quote">Request a Quote</a>
+            <a class="btn" href="tel:+16192578389">Call or Text (619) 257-8389</a>
+            <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
+              View Instagram
+            </a>
           </div>
 
-	          <div class="notes" aria-label="Pricing notes">
-	            <div>• <strong>Size add-ons:</strong> +$2.50 for 2XL+ • +$3.50 for 3XL+</div>
-	            <div>• <strong>Extra print location:</strong> +$3.00 per shirt</div>
-	            <div>• <strong>Screen setup:</strong> $25 per color</div>
-	            <div>• <strong>Rush orders:</strong> +15%</div>
-	            <div>• <strong>Turnaround:</strong> 7–10 business days after art approval</div>
-	            <div>• <strong>Other products:</strong> quoted from size, stock, finish, quantity, turnaround, and delivery needs</div>
-	          </div>
-	        </div>
-	      </div>
-	    </section>
-
-    <section id="faq">
-      <div class="wrap">
-	        <div class="sectionTitle">
-	          <h3>FAQ</h3>
-	          <p>Fast answers to common questions about the expanded catalog.</p>
-	        </div>
-
-	        <div class="grid3">
-	          <div class="item">
-	            <h4>What can you quote besides apparel?</h4>
-	            <p>We can now quote business cards, flyers, postcards, brochures, stickers, labels, hang tags, banners, signs, and mixed launch kits.</p>
-	          </div>
-	          <div class="item">
-	            <h4>Do you handle sourced products too?</h4>
-	            <p>Yes. Some products are produced in-house and some are routed through trusted trade partners so you can keep one quoting relationship.</p>
-	          </div>
-	          <div class="item">
-	            <h4>What files do you need?</h4>
-	            <p>Vector files are best (AI/EPS/SVG/PDF). High-res PNG works too. If you are not sure, send what you have and we will guide you.</p>
-	          </div>
-	        </div>
-	      </div>
-	    </section>
-
-    <section id="work">
-      <div class="wrap">
-        <div class="sectionTitle">
-          <h3>Recent work</h3>
-          <p>Replace these placeholders with your best photos (tees, close-ups, shop shots).</p>
+          <ul class="hero-points">
+            <li>Typical response target: within one business day with next steps or follow-up questions.</li>
+            <li>Best fit for brand drops, event kits, teams, workwear, and retail launch support.</li>
+            <li>Local pickup is available in San Diego. Shipping and sourced fulfillment can be quoted per project.</li>
+          </ul>
         </div>
 
-        <div class="gallery">
-          <figure class="galleryPhoto">
-            <img src="assets/print-shop-team.jpg" alt="Team photo from Third Eye Print Co. shop" loading="lazy" />
+        <aside class="surface hero-panel" aria-label="Quick review panel">
+          <figure class="hero-photo">
+            <img src="assets/print-shop-team.jpg" alt="Third Eye Print Co. shop team" loading="eager" />
           </figure>
-          <div class="ph">Gallery image 2 (press / shop)</div>
-          <div class="ph">Gallery image 3 (close-up detail)</div>
+
+          <div class="panel-stack">
+            <div class="mini-card">
+              <span class="mini-label">Best fit</span>
+              <strong>Brand launches, team apparel, event signage, and bundled print jobs.</strong>
+              <p>Simple quote flow first, then proofs, approvals, and production.</p>
+            </div>
+
+            <div class="mini-card">
+              <span class="mini-label">What to send</span>
+              <ul class="simple-list">
+                <li>Service type and quantity</li>
+                <li>Deadline or event date</li>
+                <li>Artwork link or rough concept</li>
+              </ul>
+            </div>
+
+            <div class="review-note">No catalog maze. Just a clean quote and approval process.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="offerings">
+      <div class="wrap">
+        <div class="section-head">
+          <h3>Core offerings</h3>
+          <p>
+            The site stays intentionally narrow on the front end. These are the four lanes clients can understand quickly
+            without feeling dropped into a giant wholesale catalog.
+          </p>
+        </div>
+
+        <div class="offer-grid">
+          <article class="surface card-block">
+            <h4>Screen printing</h4>
+            <p>Tees, hoodies, crewnecks, totes, and bulk apparel runs with clear print-location planning.</p>
+            <div class="tag-row">
+              <span class="tag">Merch drops</span>
+              <span class="tag">Teams</span>
+              <span class="tag">Workwear</span>
+            </div>
+          </article>
+
+          <article class="surface card-block">
+            <h4>Embroidery</h4>
+            <p>Hats, jackets, polos, beanies, and cleaner premium-logo placements for repeat use.</p>
+            <div class="tag-row">
+              <span class="tag">Uniforms</span>
+              <span class="tag">Premium branding</span>
+              <span class="tag">Small runs</span>
+            </div>
+          </article>
+
+          <article class="surface card-block">
+            <h4>Print collateral</h4>
+            <p>Business cards, flyers, postcards, brochures, menus, and handouts for launches and events.</p>
+            <div class="tag-row">
+              <span class="tag">Cards</span>
+              <span class="tag">Flyers</span>
+              <span class="tag">Brochures</span>
+            </div>
+          </article>
+
+          <article class="surface card-block">
+            <h4>Stickers and signage</h4>
+            <p>Stickers, labels, hang tags, banners, and display pieces that complete the brand presentation.</p>
+            <div class="tag-row">
+              <span class="tag">Labels</span>
+              <span class="tag">Banners</span>
+              <span class="tag">Event graphics</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="section-note">
+          Some categories can be fulfilled through trusted trade partners when that gives the client a better result.
         </div>
       </div>
     </section>
 
-    <section id="contact">
+    <section id="packages">
       <div class="wrap">
-        <div class="sectionTitle">
-          <h3>Get a quote</h3>
-          <p>Tell us what you’re making — we’ll reply with pricing + next steps.</p>
+        <div class="section-head">
+          <h3>Starter packages</h3>
+          <p>
+            These help the client understand how the broader offering works without asking them to browse dozens of product pages.
+          </p>
         </div>
 
-        <div class="contactGrid">
-	          <div class="item">
-	            <h4>Contact</h4>
-	            <p style="color:var(--muted); margin:0 0 10px;">
-	              San Diego • Apparel, marketing print, signage, and packaging support
-	            </p>
+        <div class="package-grid">
+          <article class="surface card-block">
+            <h4>Brand launch kit</h4>
+            <p>For new drops that need apparel plus a few supporting print pieces.</p>
+            <ul class="package-list">
+              <li>Screen printed shirts or hoodies</li>
+              <li>Business cards or promo cards</li>
+              <li>Stickers and hang tags</li>
+            </ul>
+            <button
+              class="btn"
+              type="button"
+              data-service-preset="Mixed order / launch kit"
+              data-prefill-note="Need a launch kit with apparel plus cards, stickers, or tags."
+            >
+              Prefill launch quote
+            </button>
+          </article>
 
-            <div class="pillRow" style="margin-bottom:10px;">
-              <a class="pill" href="tel:+16192578389"><strong>Call/Text:</strong> (619) 257-8389</a>
-              <a class="pill" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer"><strong>IG:</strong> @thirdeyeprintco</a>
+          <article class="surface card-block">
+            <h4>Event table pack</h4>
+            <p>For conventions, pop-ups, church events, and local activations.</p>
+            <ul class="package-list">
+              <li>Staff shirts or polos</li>
+              <li>Flyers, menus, or postcards</li>
+              <li>Banner or display signage</li>
+            </ul>
+            <button
+              class="btn"
+              type="button"
+              data-service-preset="Event pack"
+              data-prefill-note="Need an event pack with apparel, handouts, and signage."
+            >
+              Prefill event quote
+            </button>
+          </article>
+
+          <article class="surface card-block">
+            <h4>Retail support pack</h4>
+            <p>For product launches that need the packaging layer to feel more deliberate.</p>
+            <ul class="package-list">
+              <li>Labels or product stickers</li>
+              <li>Hang tags and inserts</li>
+              <li>Sourced print support around the package</li>
+            </ul>
+            <button
+              class="btn"
+              type="button"
+              data-service-preset="Packaging and labels"
+              data-prefill-note="Need packaging support with labels, stickers, tags, or inserts."
+            >
+              Prefill packaging quote
+            </button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="wrap">
+        <div class="section-head">
+          <h3>Apparel pricing snapshot</h3>
+          <p>
+            Apparel pricing can be shown cleanly. Everything else stays quote-based until you lock down minimums, margins, and supplier flow.
+          </p>
+        </div>
+
+        <div class="pricing-layout">
+          <div class="surface pricing-card">
+            <div class="table-scroll" role="region" aria-label="Apparel pricing table" tabindex="0">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Qty</th>
+                    <th>1 Color</th>
+                    <th>2 Colors</th>
+                    <th>3 Colors</th>
+                    <th>4 Colors</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>12</td><td>$14.00</td><td>$16.00</td><td>$18.00</td><td>$20.00</td></tr>
+                  <tr><td>24</td><td>$10.75</td><td>$12.75</td><td>$14.75</td><td>$16.75</td></tr>
+                  <tr><td>36</td><td>$8.75</td><td>$10.25</td><td>$11.75</td><td>$13.25</td></tr>
+                  <tr><td>48</td><td>$7.50</td><td>$9.00</td><td>$10.50</td><td>$12.00</td></tr>
+                  <tr><td>72</td><td>$6.75</td><td>$8.25</td><td>$9.75</td><td>$11.25</td></tr>
+                  <tr><td>100+</td><td>$6.50</td><td>$7.75</td><td>$9.00</td><td>$10.25</td></tr>
+                </tbody>
+              </table>
             </div>
 
-	            <div class="divider"></div>
+            <div class="pricing-notes">
+              <div>- <strong>Screen setup:</strong> $25 per color</div>
+              <div>- <strong>Extra location:</strong> +$3.00 per shirt</div>
+              <div>- <strong>Size add-ons:</strong> +$2.50 for 2XL+ and +$3.50 for 3XL+</div>
+              <div>- <strong>Turnaround:</strong> usually 7 to 10 business days after approval</div>
+              <div>- <strong>Rush:</strong> +15% when schedule allows</div>
+            </div>
+          </div>
 
-	            <p style="color:var(--muted); margin:10px 0 0;">
-	              Prefer DM? Message on Instagram and include:
-	              <strong style="color:var(--text)">service type</strong>, <strong style="color:var(--text)">quantity</strong>,
-	              <strong style="color:var(--text)">specs</strong>, and <strong style="color:var(--text)">deadline</strong>.
-	            </p>
-	            <div class="smallPrint">Local handoff is available in San Diego. Shipping and sourced fulfillment can be quoted per project.</div>
-	          </div>
+          <aside class="surface pricing-side">
+            <h4>Everything else is quote by spec</h4>
+            <p>
+              For collateral, stickers, labels, signage, and sourced pieces, the quote depends on the actual job details rather than a generic matrix.
+            </p>
+            <ul class="simple-list">
+              <li>Material or stock</li>
+              <li>Size, sides, and finish</li>
+              <li>Quantity and deadline</li>
+              <li>Pickup, shipping, or delivery needs</li>
+            </ul>
+            <div class="callout">That keeps the site simple while still letting the business quote a broader mix of work.</div>
+          </aside>
+        </div>
+      </div>
+    </section>
 
-	          <div class="item">
-	            <h4>Quote form</h4>
+    <section id="process">
+      <div class="wrap">
+        <div class="section-head">
+          <h3>How the quote flow works</h3>
+          <p>Simple on purpose. The client should understand the process in under twenty seconds.</p>
+        </div>
 
-	            <form id="quoteForm" action="" method="POST" novalidate>
-	              <div class="two">
-	                <div>
-	                  <label for="name">Name</label>
-	                  <input id="name" name="name" autocomplete="name" placeholder="Your name" required />
-	                </div>
-	                <div>
-	                  <label for="contact">Phone / Email</label>
-	                  <input id="contact" name="contact" autocomplete="email" placeholder="How should we reach you?" required />
-	                </div>
-	              </div>
+        <div class="step-grid">
+          <article class="surface card-block">
+            <div class="step-number">01</div>
+            <h4>Send the job</h4>
+            <p>Share the product, quantity, timing, and artwork status. If the job spans multiple categories, that is fine.</p>
+          </article>
 
-	              <div class="two">
-	                <div>
-	                  <label for="company">Company / Brand</label>
-	                  <input id="company" name="company" autocomplete="organization" placeholder="Optional" />
-	                </div>
-	                <div>
-	                  <label for="serviceType">Service Type</label>
-	                  <select id="serviceType" name="serviceType">
-	                    <option value="">Select a service…</option>
-	                    <option>Screen printing</option>
-	                    <option>Embroidery</option>
-	                    <option>Business cards / handouts</option>
-	                    <option>Flyers / postcards / brochures</option>
-	                    <option>Stickers / labels / hang tags</option>
-	                    <option>Banners / signs / displays</option>
-	                    <option>Packaging and labels</option>
-	                    <option>Mixed order / launch kit</option>
-	                    <option>Event pack</option>
-	                    <option>Custom request</option>
-	                  </select>
-	                </div>
-	              </div>
+          <article class="surface card-block">
+            <div class="step-number">02</div>
+            <h4>Review the scope</h4>
+            <p>Third Eye confirms the production path, asks for any missing specs, and sends back pricing or proof guidance.</p>
+          </article>
 
-	              <div class="pillRow" aria-label="Quote presets">
-	                <button class="pill pillButton" type="button" data-service-preset="Screen printing" data-prefill-note="Need a screen printed apparel quote.">Screen Print</button>
-	                <button class="pill pillButton" type="button" data-service-preset="Embroidery" data-prefill-note="Need an embroidery quote.">Embroidery</button>
-	                <button class="pill pillButton" type="button" data-service-preset="Flyers / postcards / brochures" data-prefill-note="Need a paper print quote for flyers, postcards, brochures, or cards.">Paper Print</button>
-	                <button class="pill pillButton" type="button" data-service-preset="Stickers / labels / hang tags" data-prefill-note="Need stickers, labels, or hang tags.">Labels + Stickers</button>
-	                <button class="pill pillButton" type="button" data-service-preset="Banners / signs / displays" data-prefill-note="Need banners, signs, or event display graphics.">Signs + Banners</button>
-	              </div>
-	              <div class="smallPrint">If you need multiple items, choose the closest fit or use <strong style="color:var(--text)">Mixed order / launch kit</strong> and describe the full job below.</div>
+          <article class="surface card-block">
+            <div class="step-number">03</div>
+            <h4>Approve and produce</h4>
+            <p>Once scope and proof are approved, the order moves into production, pickup, shipping, or sourced fulfillment.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-	              <div class="two">
-	                <div>
-	                  <label for="qty">Quantity</label>
-	                  <input id="qty" name="quantity" inputmode="numeric" placeholder="e.g., 48 shirts or 500 postcards" />
-	                </div>
-	                <div>
-	                  <label for="colors">Ink / Print Colors</label>
-	                  <select id="colors" name="colors">
-	                    <option value="">Select…</option>
-	                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5+</option>
+    <section id="faq">
+      <div class="wrap">
+        <div class="section-head">
+          <h3>Quick answers</h3>
+          <p>Enough detail to reduce friction without overexplaining the operation.</p>
+        </div>
+
+        <div class="faq-grid">
+          <article class="surface card-block">
+            <h4>What files should clients send?</h4>
+            <p>Vector files are best: AI, EPS, SVG, or PDF. High-resolution PNG files still work for many jobs.</p>
+          </article>
+
+          <article class="surface card-block">
+            <h4>Can mixed orders be quoted?</h4>
+            <p>Yes. Apparel, handouts, stickers, and signage can be quoted together when the client wants one coordinated project.</p>
+          </article>
+
+          <article class="surface card-block">
+            <h4>Is everything produced in-house?</h4>
+            <p>No. The site is positioned to allow trusted trade fulfillment where that creates a cleaner result for the client.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="quote" class="quote-section">
+      <div class="wrap">
+        <div class="section-head">
+          <h3>Request a quote</h3>
+          <p>Lead with the essentials. Extra detail is available, but it does not block the first contact.</p>
+        </div>
+
+        <div class="quote-grid">
+          <aside class="surface contact-card">
+            <h4>Contact</h4>
+            <p>Best for brands, teams, events, workwear programs, and launch support in San Diego and beyond.</p>
+
+            <div class="contact-points">
+              <a class="contact-link" href="tel:+16192578389">
+                <strong>(619) 257-8389</strong>
+                <span>Call or text</span>
+              </a>
+              <a class="contact-link" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
+                <strong>@thirdeyeprintco</strong>
+                <span>Instagram</span>
+              </a>
+            </div>
+
+            <div class="form-meta">
+              If a client would rather DM, ask them for service type, quantity, deadline, and any artwork link they already have.
+            </div>
+
+            <ul class="simple-list">
+              <li>Great when the client knows exactly what they want</li>
+              <li>Still works when they only have a rough idea and an event date</li>
+              <li>Local pickup and shipped jobs can both be scoped here</li>
+            </ul>
+          </aside>
+
+          <div class="surface form-card">
+            <h4>Quote form</h4>
+            <p>Short up front. Optional detail below.</p>
+
+            <form id="quoteForm" action="" method="POST" novalidate>
+              <div class="field-grid">
+                <label for="name">
+                  Name
+                  <input id="name" name="name" autocomplete="name" placeholder="Your name" required />
+                </label>
+                <label for="contact">
+                  Phone or email
+                  <input id="contact" name="contact" autocomplete="email" placeholder="How should we reach you?" required />
+                </label>
+              </div>
+
+              <div class="field-grid">
+                <label for="serviceType">
+                  Service type
+                  <select id="serviceType" name="serviceType">
+                    <option value="">Select a service...</option>
+                    <option>Screen printing</option>
+                    <option>Embroidery</option>
+                    <option>Business cards / handouts</option>
+                    <option>Flyers / postcards / brochures</option>
+                    <option>Stickers / labels / hang tags</option>
+                    <option>Banners / signs / displays</option>
+                    <option>Packaging and labels</option>
+                    <option>Mixed order / launch kit</option>
+                    <option>Event pack</option>
+                    <option>Custom request</option>
                   </select>
+                </label>
+                <label for="quantity">
+                  Quantity
+                  <input id="quantity" name="quantity" inputmode="numeric" placeholder="48 shirts or 500 cards" />
+                </label>
+              </div>
+
+              <div class="preset-row" aria-label="Quick presets">
+                <button
+                  class="preset"
+                  type="button"
+                  data-service-preset="Screen printing"
+                  data-prefill-note="Need a screen printed apparel quote."
+                >
+                  Screen print
+                </button>
+                <button
+                  class="preset"
+                  type="button"
+                  data-service-preset="Embroidery"
+                  data-prefill-note="Need an embroidery quote."
+                >
+                  Embroidery
+                </button>
+                <button
+                  class="preset"
+                  type="button"
+                  data-service-preset="Flyers / postcards / brochures"
+                  data-prefill-note="Need a paper print quote for flyers, postcards, brochures, or cards."
+                >
+                  Paper print
+                </button>
+                <button
+                  class="preset"
+                  type="button"
+                  data-service-preset="Banners / signs / displays"
+                  data-prefill-note="Need banners, signs, or display graphics."
+                >
+                  Signs
+                </button>
+              </div>
+
+              <label for="notes">
+                Project notes
+                <textarea
+                  id="notes"
+                  name="notes"
+                  placeholder="What are you making, what date matters, and do you already have artwork?"
+                ></textarea>
+              </label>
+
+              <details class="details-more">
+                <summary>
+                  Add optional project details
+                  <span>Art status, product type, budget, and delivery</span>
+                </summary>
+
+                <div class="details-body">
+                  <div class="field-grid">
+                    <label for="company">
+                      Company or brand
+                      <input id="company" name="company" autocomplete="organization" placeholder="Optional" />
+                    </label>
+                    <label for="artStatus">
+                      Artwork status
+                      <select id="artStatus" name="artStatus">
+                        <option value="">Select...</option>
+                        <option>Print-ready artwork</option>
+                        <option>Need light setup help</option>
+                        <option>Need design support</option>
+                        <option>Still figuring it out</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div class="field-grid">
+                    <label for="garment">
+                      Product or garment
+                      <input id="garment" name="garment" placeholder="T-shirt, flyer, sticker, banner, etc." />
+                    </label>
+                    <label for="locations">
+                      Placement, size, or sides
+                      <input id="locations" name="locations" placeholder="Front and back, 24x36, two-sided, sleeve" />
+                    </label>
+                  </div>
+
+                  <div class="field-grid">
+                    <label for="colors">
+                      Ink or print colors
+                      <select id="colors" name="colors">
+                        <option value="">Select...</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5+</option>
+                      </select>
+                    </label>
+                    <label for="needBy">
+                      Need by
+                      <input id="needBy" name="needBy" placeholder="MM/DD or event date" />
+                    </label>
+                  </div>
+
+                  <div class="field-grid">
+                    <label for="budget">
+                      Budget range
+                      <select id="budget" name="budget">
+                        <option value="">Select...</option>
+                        <option>Under $250</option>
+                        <option>$250 - $500</option>
+                        <option>$500 - $1,000</option>
+                        <option>$1,000 - $2,500</option>
+                        <option>$2,500+</option>
+                      </select>
+                    </label>
+                    <label for="fulfillment">
+                      Fulfillment
+                      <select id="fulfillment" name="fulfillment">
+                        <option value="">Select...</option>
+                        <option>San Diego pickup</option>
+                        <option>Ship to one location</option>
+                        <option>Need delivery options</option>
+                        <option>Not sure yet</option>
+                      </select>
+                    </label>
+                  </div>
                 </div>
+              </details>
+
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Send quote request</button>
+                <button class="btn btn-secondary" type="button" id="payDepositBtn">Secure deposit</button>
               </div>
 
-	              <div class="two">
-	                <div>
-	                  <label for="garment">Product / Garment</label>
-	                  <input id="garment" name="garment" placeholder="T-shirt / flyer / sticker / banner / etc." />
-	                </div>
-	                <div>
-	                  <label for="locations">Placement / Size / Sides</label>
-	                  <input id="locations" name="locations" placeholder="Front / back / 2-sided / 24x36 / sleeve" />
-	                </div>
-	              </div>
-
-	              <div class="two">
-	                <div>
-	                  <label for="artStatus">Artwork Status</label>
-	                  <select id="artStatus" name="artStatus">
-	                    <option value="">Select…</option>
-	                    <option>Print-ready artwork</option>
-	                    <option>Need light setup help</option>
-	                    <option>Need design support</option>
-	                    <option>Still figuring it out</option>
-	                  </select>
-	                </div>
-	                <div>
-	                  <label for="needBy">Need By</label>
-	                  <input id="needBy" name="needBy" placeholder="MM/DD or event date" />
-	                </div>
-	              </div>
-
-	              <div class="two">
-	                <div>
-	                  <label for="budget">Budget Range</label>
-	                  <select id="budget" name="budget">
-	                    <option value="">Select…</option>
-	                    <option>Under $250</option>
-	                    <option>$250 - $500</option>
-	                    <option>$500 - $1,000</option>
-	                    <option>$1,000 - $2,500</option>
-	                    <option>$2,500+</option>
-	                  </select>
-	                </div>
-	                <div>
-	                  <label for="fulfillment">Fulfillment</label>
-	                  <select id="fulfillment" name="fulfillment">
-	                    <option value="">Select…</option>
-	                    <option>San Diego pickup</option>
-	                    <option>Ship to one location</option>
-	                    <option>Need delivery options</option>
-	                    <option>Not sure yet</option>
-	                  </select>
-	                </div>
-	              </div>
-
-	              <div>
-	                <label for="notes">Notes / link to artwork</label>
-	                <textarea id="notes" name="notes" placeholder="Drop a Drive link, list the exact products you need, or describe the project."></textarea>
-	              </div>
-
-              <div class="formActions">
-                <button class="btn btnPrimary" type="submit">Send Quote</button>
-                <button class="btn btnSecondary" type="button" id="payDepositBtn">Pay Deposit</button>
+              <div id="formMsg" class="form-status" role="status" aria-live="polite"></div>
+              <div class="deposit-note">
+                Deposit at checkout: <strong id="depositAmount">loading...</strong>
               </div>
-              <div id="formMsg" class="subnote" role="status" aria-live="polite"></div>
-
-	              <div class="subnote">
-	                Deposit shown at checkout: <strong id="depositAmount" style="color:var(--text)">loading...</strong>
-	              </div>
-              <div class="subnote">
-                Quote leads are stored by API and can also sync to your Gun relay when configured.
+              <div class="deposit-note">
+                Quote requests save through the API and can also sync to the configured Gun relay.
               </div>
             </form>
           </div>
-        </div>
-
-	        <div class="footer">
-	          <div><strong style="color:var(--text)">Third Eye Print Co.</strong> — San Diego apparel, print, signage, and brand support.</div>
-          <div class="miniLinks">
-            <a href="#top">Back to top</a>
-            <a href="#pricing">Pricing</a>
-            <a href="tel:+16192578389">Call/Text</a>
-            <a href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">Instagram</a>
-          </div>
-          <div style="margin-top:10px;">© <span id="year"></span> Third Eye Print Co. All rights reserved.</div>
         </div>
       </div>
     </section>
   </main>
 
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>
+        <strong style="color: var(--text);">Third Eye Print Co.</strong><br />
+        San Diego apparel, print, signage, and launch support.
+      </div>
+
+      <div class="footer-links">
+        <a href="#offerings">Offerings</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#quote">Quote</a>
+        <a href="tel:+16192578389">Call or text</a>
+        <a href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
   <script src="/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
   <script>
     const runtimeConfig = window.THIRD_EYE_CONFIG || {};
-
-    // Year
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Smooth scrolling for same-page anchors
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener("click", (e) => {
-        const id = a.getAttribute("href");
-        if (!id || id === "#") return;
-        const el = document.querySelector(id);
-        if (!el) return;
-        e.preventDefault();
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    });
-
-	    const form = document.getElementById("quoteForm");
-	    const msg = document.getElementById("formMsg");
-	    const payDepositBtn = document.getElementById("payDepositBtn");
-	    const depositAmount = document.getElementById("depositAmount");
-	    const serviceTypeField = document.getElementById("serviceType");
-	    const notesField = document.getElementById("notes");
-	    const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
+    const form = document.getElementById("quoteForm");
+    const msg = document.getElementById("formMsg");
+    const payDepositBtn = document.getElementById("payDepositBtn");
+    const depositAmount = document.getElementById("depositAmount");
+    const serviceTypeField = document.getElementById("serviceType");
+    const notesField = document.getElementById("notes");
+    const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
 
     const configuredRelayUrls = Array.isArray(runtimeConfig.gunRelayUrls)
       ? runtimeConfig.gunRelayUrls.map((value) => String(value || "").trim()).filter(Boolean)
       : [];
     const legacyRelayUrl = String(runtimeConfig.gunRelayUrl || "").trim();
     const gunRelayUrls = configuredRelayUrls.length ? configuredRelayUrls : (legacyRelayUrl ? [legacyRelayUrl] : []);
-	    const gun = window.Gun && gunRelayUrls.length ? window.Gun(gunRelayUrls) : null;
-	    const gunLeads = gun ? gun.get("third-eye-print-co").get("leads") : null;
+    const gun = window.Gun && gunRelayUrls.length ? window.Gun(gunRelayUrls) : null;
+    const gunLeads = gun ? gun.get("third-eye-print-co").get("leads") : null;
 
-	    const depositCents = Number(runtimeConfig.stripeDepositCents || 0);
-	    const depositCurrency = String(runtimeConfig.stripeCurrency || "usd").toUpperCase();
+    const depositCents = Number(runtimeConfig.stripeDepositCents || 0);
+    const depositCurrency = String(runtimeConfig.stripeCurrency || "usd").toUpperCase();
 
-	    document.querySelectorAll("[data-service-preset]").forEach((button) => {
-	      button.addEventListener("click", () => {
-	        const preset = String(button.dataset.servicePreset || "").trim();
-	        const prefillNote = String(button.dataset.prefillNote || "").trim();
+    document.querySelectorAll("[data-service-preset]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const preset = String(button.dataset.servicePreset || "").trim();
+        const prefillNote = String(button.dataset.prefillNote || "").trim();
 
-	        if (serviceTypeField && preset) {
-	          serviceTypeField.value = preset;
-	        }
+        if (serviceTypeField && preset) {
+          serviceTypeField.value = preset;
+        }
 
-	        if (notesField && prefillNote && !notesField.value.trim()) {
-	          notesField.value = prefillNote;
-	        }
+        if (notesField && prefillNote && !notesField.value.trim()) {
+          notesField.value = prefillNote;
+        }
 
-	        form.scrollIntoView({ behavior: "smooth", block: "start" });
-	        msg.textContent = preset ? `Quote preset loaded: ${preset}. Add any job details and submit.` : "";
-	      });
-	    });
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+        msg.textContent = preset ? `Preset loaded: ${preset}. Add any missing detail and send the quote.` : "";
+      });
+    });
 
-	    if (payDepositBtn && !stripeEnabled) {
-	      payDepositBtn.disabled = true;
-	      payDepositBtn.textContent = "Deposit Coming Soon";
-	    }
-
-	    if (depositAmount) {
-	      if (!stripeEnabled) {
-	        depositAmount.textContent = "available after Stripe setup";
-	      } else if (depositCents > 0) {
-	        try {
-	          const depositLabel = (depositCents / 100).toLocaleString(undefined, {
-	            style: "currency",
+    if (!stripeEnabled && payDepositBtn) {
+      payDepositBtn.hidden = true;
+      depositAmount.textContent = "enabled after Stripe setup";
+    } else if (depositAmount) {
+      if (depositCents > 0) {
+        try {
+          depositAmount.textContent = (depositCents / 100).toLocaleString(undefined, {
+            style: "currency",
             currency: depositCurrency
           });
-          depositAmount.textContent = depositLabel;
         } catch (_error) {
           depositAmount.textContent = `${(depositCents / 100).toFixed(2)} ${depositCurrency}`;
         }
-	      } else {
-	        depositAmount.textContent = "configured in Stripe";
-	      }
-	    }
+      } else {
+        depositAmount.textContent = "configured in Stripe";
+      }
+    }
 
     const paymentStatus = new URLSearchParams(window.location.search).get("payment");
     if (paymentStatus === "success") {
       msg.textContent = "Deposit received. We will follow up with next production steps.";
-    }
-    if (paymentStatus === "cancelled") {
-      msg.textContent = "Deposit canceled. You can submit the quote or retry payment anytime.";
+    } else if (paymentStatus === "cancelled") {
+      msg.textContent = "Deposit canceled. You can still send the quote and receive a payment link later.";
     }
 
     function formDataToLead() {
@@ -990,8 +1541,8 @@
       return body.url;
     }
 
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
       const lead = formDataToLead();
 
       if (!validateLead(lead)) {
@@ -1011,37 +1562,39 @@
           form.reset();
         })
         .catch(() => {
-          msg.textContent = "Could not save the quote right now. Call/text (619) 257-8389.";
+          msg.textContent = "Could not save the quote right now. Call or text (619) 257-8389.";
         })
         .finally(() => {
           setBusy(false);
         });
     });
 
-	    payDepositBtn.addEventListener("click", async () => {
-	      const lead = formDataToLead();
+    if (payDepositBtn) {
+      payDepositBtn.addEventListener("click", async () => {
+        const lead = formDataToLead();
 
-      if (!validateLead(lead)) {
-        msg.textContent = "Please enter name and contact before paying the deposit.";
-        return;
-      }
+        if (!validateLead(lead)) {
+          msg.textContent = "Please enter name and contact before paying the deposit.";
+          return;
+        }
 
-      try {
-        setBusy(true);
-        msg.textContent = "Preparing secure Stripe checkout...";
+        try {
+          setBusy(true);
+          msg.textContent = "Preparing secure Stripe checkout...";
 
-        await Promise.all([
-          saveLeadToApi("quote_deposit_intent", lead),
-          syncLeadToGun("quote_deposit_intent", lead)
-        ]);
+          await Promise.all([
+            saveLeadToApi("quote_deposit_intent", lead),
+            syncLeadToGun("quote_deposit_intent", lead)
+          ]);
 
-        const checkoutUrl = await createCheckoutSession(lead);
-        window.location.assign(checkoutUrl);
-      } catch (_error) {
-        msg.textContent = "Checkout is unavailable right now. Submit quote and we will send a payment link.";
-        setBusy(false);
-      }
-    });
+          const checkoutUrl = await createCheckoutSession(lead);
+          window.location.assign(checkoutUrl);
+        } catch (_error) {
+          msg.textContent = "Checkout is unavailable right now. Send the quote and we will follow up.";
+          setBusy(false);
+        }
+      });
+    }
   </script>
 </body>
 </html>

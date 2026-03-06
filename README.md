@@ -37,6 +37,16 @@ npm start
 http://localhost:8787
 ```
 
+## Visual smoke checks
+
+Run the local screenshot smoke test:
+
+```bash
+npm run test:visual
+```
+
+This writes screenshots and a small report to `artifacts/screenshots/`.
+
 ## API routes
 
 - `POST /api/lead`: Saves quote lead to `LEAD_FILE` (`./data/leads.jsonl` by default).
