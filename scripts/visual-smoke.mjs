@@ -112,9 +112,9 @@ try {
     "Request a quote"
   ]);
   await assertHtmlContains(`${BASE_URL}/auth/`, [
-    "Admin sign in",
-    "Open admin dashboard",
-    "Create Gun identity"
+    "Portal sign in",
+    "Open portal",
+    "Create portal login"
   ]);
   await assertHtmlContains(`${BASE_URL}/admin/`, [
     "Reactive lead feed, no long-lived app server.",

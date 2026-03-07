@@ -183,6 +183,18 @@
       font-weight: 800;
     }
 
+    .nav-links .nav-portal {
+      border-color: rgba(228, 208, 139, 0.28);
+      color: var(--text);
+      background: rgba(228, 208, 139, 0.08);
+      font-weight: 700;
+    }
+
+    .nav-links .nav-portal:hover {
+      border-color: rgba(228, 208, 139, 0.45);
+      background: rgba(228, 208, 139, 0.14);
+    }
+
     .hero {
       position: relative;
       isolation: isolate;
@@ -1110,6 +1122,7 @@
         <a href="#offerings">Offerings</a>
         <a href="#pricing">Pricing</a>
         <a href="#process">Process</a>
+        <a href="/auth/" class="nav-portal">Portal Login</a>
         <a href="#quote" class="nav-cta">Request a Quote</a>
       </nav>
     </div>
@@ -1127,6 +1140,7 @@
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="#quote">Request a Quote</a>
+            <a class="btn btn-secondary" href="/auth/">Portal Login</a>
             <div class="phone-action">
               <a class="btn" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
                 <span>Call or Text</span>

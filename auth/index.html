@@ -283,10 +283,10 @@
     <section class="form-panel" aria-labelledby="authTitle">
       <div class="eyebrow">Third Eye Print Co.</div>
       <div>
-        <h1 id="authTitle">Admin sign in</h1>
+        <h1 id="authTitle">Portal sign in</h1>
         <p class="intro">
-          Use your Gun alias and password. Access is granted only when the authenticated public key is listed in
-          <code>ADMIN_PUBS</code>.
+          Admins will use this portal to review quotes, deposits, and orders. Customer order history, saved payment
+          methods, and account tools are staged next.
         </p>
       </div>
 
@@ -309,10 +309,14 @@
         </div>
 
         <p id="status" class="status" aria-live="polite"></p>
+        <p class="status">
+          Admin access is live today through the <code>ADMIN_PUBS</code> allowlist. Customer accounts will land on
+          this same entry point once order history and billing tools are wired up.
+        </p>
 
         <div class="actions">
-          <button id="signInButton" class="primary" type="submit">Open admin dashboard</button>
-          <button id="createButton" class="secondary" type="button">Create Gun identity</button>
+          <button id="signInButton" class="primary" type="submit">Open portal</button>
+          <button id="createButton" class="secondary" type="button">Create portal login</button>
         </div>
       </form>
 
@@ -322,23 +326,23 @@
       </div>
     </section>
 
-    <aside class="aside" aria-label="Admin dashboard preview">
+    <aside class="aside" aria-label="Portal roadmap preview">
       <div>
-        <h2>Vercel static frontend, Gun/SEA auth, Gun-backed lead data.</h2>
+        <h2>One portal for admins now, customers next.</h2>
         <p>
-          This flow avoids a long-lived app server. Stripe stays in serverless functions, while admin auth and lead
-          reads happen directly through Gun.
+          The auth surface is shared on purpose. Admin review tools are first, and the same portal can expand into
+          customer order history, approvals, and payment preferences without moving off the Gun/Vercel setup.
         </p>
       </div>
 
       <ul class="feature-list">
         <li class="feature">
-          <strong>Admin access by public key</strong>
-          <span>SEA authenticates the user; the dashboard checks the resulting <code>pub</code> against <code>ADMIN_PUBS</code>.</span>
+          <strong>Admin review tools live first</strong>
+          <span>SEA authenticates the user and the current dashboard admits admins whose <code>pub</code> is listed in <code>ADMIN_PUBS</code>.</span>
         </li>
         <li class="feature">
-          <strong>Reactive lead dashboard</strong>
-          <span>Quote and deposit events are written to Gun directly, so the admin view updates without polling a server.</span>
+          <strong>Customer workspace next</strong>
+          <span>Past orders, approvals, and saved billing details can be layered onto the same portal once the order graph is defined.</span>
         </li>
         <li class="feature">
           <strong>Small serverless surface</strong>
@@ -347,8 +351,8 @@
       </ul>
 
       <p class="footnote">
-        If access is denied after sign-in, copy the displayed <code>pub</code> and add it to <code>ADMIN_PUBS</code> in
-        Vercel or your local <code>.env</code>.
+        If an admin is denied after sign-in, copy the displayed <code>pub</code> and add it to <code>ADMIN_PUBS</code>
+        in Vercel or your local <code>.env</code>.
       </p>
     </aside>
   </main>
@@ -413,8 +417,8 @@
       createButton.disabled = pending;
       aliasInput.disabled = pending;
       passwordInput.disabled = pending;
-      signInButton.textContent = pending && mode === "signin" ? "Signing in..." : "Open admin dashboard";
-      createButton.textContent = pending && mode === "create" ? "Creating identity..." : "Create Gun identity";
+      signInButton.textContent = pending && mode === "signin" ? "Signing in..." : "Open portal";
+      createButton.textContent = pending && mode === "create" ? "Creating identity..." : "Create portal login";
     }
 
     function readStoredCredentials() {
