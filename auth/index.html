@@ -310,8 +310,9 @@
 
         <p id="status" class="status" aria-live="polite"></p>
         <p class="status">
-          Admin access is live today through the <code>ADMIN_PUBS</code> allowlist. Customer accounts will land on
-          this same entry point once order history and billing tools are wired up.
+          Admin access is live today through <code>ADMIN_PUBS</code>, the local
+          <code>third-eye-print-co/admins</code> graph, and a one-time bootstrap for <code>tmsteph@3dvr</code>.
+          Customer accounts will land on this same entry point once order history and billing tools are wired up.
         </p>
 
         <div class="actions">
@@ -338,7 +339,7 @@
       <ul class="feature-list">
         <li class="feature">
           <strong>Admin review tools live first</strong>
-          <span>SEA authenticates the user and the current dashboard admits admins whose <code>pub</code> is listed in <code>ADMIN_PUBS</code>.</span>
+          <span>SEA authenticates the user and the current dashboard admits admins by <code>pub</code> allowlist or the local <code>third-eye-print-co/admins</code> graph.</span>
         </li>
         <li class="feature">
           <strong>Customer workspace next</strong>
@@ -351,9 +352,9 @@
       </ul>
 
       <p class="footnote">
-        Existing <code>3dvr-portal</code> admins can sign in with the same relay and credentials. If a new admin is
-        denied, copy the displayed <code>pub</code> and add it to <code>ADMIN_PUBS</code> in Vercel or your local
-        <code>.env</code>.
+        Right now only the existing <code>tmsteph@3dvr</code> admin identity bootstraps from the 3DVR portal. Any
+        additional Third Eye admins should be added locally through <code>third-eye-print-co/admins</code> or
+        <code>ADMIN_PUBS</code>.
       </p>
     </aside>
   </main>

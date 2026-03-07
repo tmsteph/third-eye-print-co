@@ -3,7 +3,7 @@
 Third Eye Print Co site with:
 - Stripe Checkout deposit flow
 - GunJS relay as the lead database
-- Gun/SEA admin auth with pub-key allowlisting (`/auth/`, `/admin/`)
+- Gun/SEA admin auth with pub-key allowlisting + local admin graph (`/auth/`, `/admin/`)
 - Vercel serverless functions for public config + Stripe checkout
 
 ## Setup
@@ -25,7 +25,7 @@ cp .env.example .env
 - `SITE_URL` (for local dev: `http://localhost:8787`, production example: `https://third-eye.3dvr.tech`)
 - `GUN_RELAY_URLS` (comma-separated relay peers, recommended)
 - `GUN_RELAY_URL` (single relay fallback, optional)
-- `ADMIN_PUBS` (comma-separated Gun public keys allowed into `/admin/`)
+- `ADMIN_PUBS` (comma-separated Gun public keys allowed into `/admin/`, optional if you manage admins in Gun)
 - `QUOTE_EMAIL_TO` (public quote mailto target)
 
 4. Run the Vercel dev server:
@@ -58,5 +58,6 @@ This writes screenshots and a small report to `artifacts/screenshots/`.
 ## Admin auth
 
 - Gun aliases sign in via SEA on `/auth/`.
-- Admin access is granted when the authenticated user `pub` appears in `ADMIN_PUBS`.
+- Admin access is granted when the authenticated user `pub` appears in `ADMIN_PUBS` or their alias/pub is present in `third-eye-print-co/admins`.
+- `tmsteph@3dvr` is the only 3DVR admin identity that bootstraps into Third Eye by default.
 - Lead data is read live from `third-eye-print-co/leads` in Gun; there is no server-owned lead database in production.

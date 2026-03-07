@@ -965,15 +965,6 @@
         return;
       }
 
-      if (!adminPubs.length) {
-        showNotice(
-          "ADMIN_PUBS is empty",
-          "Admin access is controlled by a public-key allowlist.",
-          "Add at least one Gun public key to <code>ADMIN_PUBS</code>, then reload this page."
-        );
-        return;
-      }
-
       const stored = portalAuth.readStoredCredentials();
       if (!stored.alias || !stored.password) {
         redirectToAuth();

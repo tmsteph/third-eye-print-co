@@ -4,6 +4,10 @@
     password: "thirdEyeAdminPassword",
     pub: "thirdEyeAdminPub",
   };
+  const BOOTSTRAP_ADMIN_ALIASES = [
+    "tmsteph",
+    "tmsteph@3dvr",
+  ];
 
   function normalizeIdentity(value) {
     return String(value || "").trim();
@@ -11,6 +15,10 @@
 
   function unique(values) {
     return Array.from(new Set(values.filter(Boolean)));
+  }
+
+  function isBootstrapAdminAlias(alias) {
+    return BOOTSTRAP_ADMIN_ALIASES.includes(normalizeIdentity(alias).toLowerCase());
   }
 
   function buildAliasCandidates(identity) {
@@ -23,10 +31,11 @@
       return [normalized];
     }
 
+    // Prefer canonical site aliases before falling back to a legacy bare alias.
     return unique([
-      normalized,
-      `${normalized}@3dvr`,
       `${normalized}@thirdeye`,
+      `${normalized}@3dvr`,
+      normalized,
     ]);
   }
 
@@ -144,8 +153,14 @@
     const checks = [
       { mode: "site_alias", node: gun.get(namespace).get("admins").get(alias) },
       { mode: "site_pub", node: pub ? gun.get(namespace).get("admins").get(pub) : null },
-      { mode: "portal_alias", node: gun.get("3dvr-portal").get("admins").get(alias) },
     ];
+
+    if (isBootstrapAdminAlias(alias)) {
+      checks.push({
+        mode: "bootstrap_portal_alias",
+        node: gun.get("3dvr-portal").get("admins").get(alias),
+      });
+    }
 
     for (const check of checks) {
       if (!check.node) {
@@ -162,6 +177,7 @@
   }
 
   global.ThirdEyePortalAuth = {
+    BOOTSTRAP_ADMIN_ALIASES,
     STORAGE_KEYS,
     authenticateUser,
     buildAliasCandidates,
