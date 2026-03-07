@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
+  DEFAULT_GUN_RELAY_URLS,
   createPublicRuntimeConfig,
   parseAdminPubs,
   parseGunRelayUrls,
@@ -25,6 +26,12 @@ test("parseAdminPubs returns unique trimmed pub keys", () => {
   });
 
   assert.deepEqual(adminPubs, ["pub-1", "pub-2"]);
+});
+
+test("parseGunRelayUrls falls back to the shared 3dvr relays", () => {
+  const relayUrls = parseGunRelayUrls({});
+
+  assert.deepEqual(relayUrls, DEFAULT_GUN_RELAY_URLS);
 });
 
 test("createPublicRuntimeConfig exposes only safe client config", () => {

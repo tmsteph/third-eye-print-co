@@ -292,8 +292,8 @@
 
       <form id="authForm" novalidate>
         <div class="field">
-          <label for="alias">Gun alias</label>
-          <input id="alias" name="alias" autocomplete="username" placeholder="owner@thirdeye" required />
+          <label for="alias">Username or Gun alias</label>
+          <input id="alias" name="alias" autocomplete="username" placeholder="tmsteph or tmsteph@3dvr" required />
         </div>
 
         <div class="field">
@@ -351,8 +351,9 @@
       </ul>
 
       <p class="footnote">
-        If an admin is denied after sign-in, copy the displayed <code>pub</code> and add it to <code>ADMIN_PUBS</code>
-        in Vercel or your local <code>.env</code>.
+        Existing <code>3dvr-portal</code> admins can sign in with the same relay and credentials. If a new admin is
+        denied, copy the displayed <code>pub</code> and add it to <code>ADMIN_PUBS</code> in Vercel or your local
+        <code>.env</code>.
       </p>
     </aside>
   </main>
@@ -361,17 +362,15 @@
   <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
   <script src="/gun-init.js"></script>
+  <script src="/portal-auth.js"></script>
   <script>
-    const STORAGE_KEYS = {
-      alias: "thirdEyeAdminAlias",
-      password: "thirdEyeAdminPassword",
-      pub: "thirdEyeAdminPub"
-    };
-
-    const runtimeConfig = window.THIRD_EYE_CONFIG || {};
+    const portalAuth = window.ThirdEyePortalAuth || {};
     const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
       ? window.ThirdEyeGun.createContext()
       : { gun: null, user: null, peers: [] };
+    const namespace = window.ThirdEyeGun && typeof window.ThirdEyeGun.getNamespace === "function"
+      ? window.ThirdEyeGun.getNamespace()
+      : "third-eye-print-co";
     const adminPubs = window.ThirdEyeGun && typeof window.ThirdEyeGun.getAdminPubs === "function"
       ? window.ThirdEyeGun.getAdminPubs()
       : [];
@@ -421,84 +420,47 @@
       createButton.textContent = pending && mode === "create" ? "Creating identity..." : "Create portal login";
     }
 
-    function readStoredCredentials() {
-      return {
-        alias: localStorage.getItem(STORAGE_KEYS.alias) || "",
-        password: localStorage.getItem(STORAGE_KEYS.password) || ""
-      };
-    }
-
-    function writeStoredCredentials(alias, password, pub) {
-      localStorage.setItem(STORAGE_KEYS.alias, alias);
-      localStorage.setItem(STORAGE_KEYS.password, password);
-      if (pub) {
-        localStorage.setItem(STORAGE_KEYS.pub, pub);
-      }
-    }
-
-    function clearStoredCredentials() {
-      Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
-    }
-
-    function leaveUser() {
-      if (gunContext.user && typeof gunContext.user.leave === "function") {
-        gunContext.user.leave();
-      }
-    }
-
-    function isAuthorizedPub(pub) {
-      return Boolean(pub) && adminPubs.includes(pub);
-    }
-
-    function authUser(alias, password) {
-      return new Promise((resolve) => {
-        gunContext.user.auth(alias, password, (ack) => resolve(ack || {}));
-      });
-    }
-
-    function createUser(alias, password) {
-      return new Promise((resolve) => {
-        gunContext.user.create(alias, password, (ack) => resolve(ack || {}));
-      });
-    }
-
     async function completeAuth(alias, password) {
-      const pub = gunContext.user && gunContext.user.is ? gunContext.user.is.pub : "";
-      if (!isAuthorizedPub(pub)) {
-        clearStoredCredentials();
-        leaveUser();
+      const access = await portalAuth.resolveAdminAccess({
+        gun: gunContext.gun,
+        user: gunContext.user,
+        alias,
+        adminPubs,
+        namespace
+      });
+      if (!access.ok) {
+        portalAuth.clearStoredCredentials();
+        portalAuth.leaveUser(gunContext.user);
         setStatus(
-          adminPubs.length
-            ? `Authenticated, but pub is not allowlisted: ${pub || "unknown"}. Add it to ADMIN_PUBS, then try again.`
-            : "Authenticated, but ADMIN_PUBS is empty. Add your pub key to ADMIN_PUBS and reload.",
+          `Authenticated as ${alias}, but admin access is not enabled yet. Pub: ${access.pub || "unknown"}.`,
           "error"
         );
         return;
       }
 
-      writeStoredCredentials(alias, password, pub);
+      portalAuth.writeStoredCredentials(alias, password, access.pub);
       setStatus("Admin access confirmed. Redirecting...", "success");
       window.location.assign(nextUrl);
     }
 
-    async function handleSignIn(alias, password) {
-      const ack = await authUser(alias, password);
-      if (ack.err) {
-        setStatus(ack.err, "error");
+    async function handleSignIn(identity, password) {
+      const result = await portalAuth.authenticateUser(gunContext.user, identity, password);
+      if (!result.ok) {
+        setStatus(result.error, "error");
         return;
       }
 
-      await completeAuth(alias, password);
+      await completeAuth(result.alias, password);
     }
 
-    async function handleCreate(alias, password) {
-      const createAck = await createUser(alias, password);
-      if (createAck.err && !String(createAck.err).includes("User already created")) {
-        setStatus(createAck.err, "error");
+    async function handleCreate(identity, password) {
+      const result = await portalAuth.createUser(gunContext.user, identity, password);
+      if (!result.ok) {
+        setStatus(result.error, "error");
         return;
       }
 
-      await handleSignIn(alias, password);
+      await handleSignIn(result.alias, password);
     }
 
     async function boot() {
@@ -512,14 +474,9 @@
         return;
       }
 
-      const stored = readStoredCredentials();
+      const stored = portalAuth.readStoredCredentials();
       if (stored.alias && !aliasInput.value.trim()) {
         aliasInput.value = stored.alias;
-      }
-
-      if (adminPubs.length === 0) {
-        setStatus("ADMIN_PUBS is empty. Add at least one authorized Gun pub before using admin auth.", "error");
-        return;
       }
 
       if (!stored.alias || !stored.password) {

@@ -529,16 +529,15 @@
   <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
   <script src="/gun-init.js"></script>
+  <script src="/portal-auth.js"></script>
   <script>
-    const STORAGE_KEYS = {
-      alias: "thirdEyeAdminAlias",
-      password: "thirdEyeAdminPassword",
-      pub: "thirdEyeAdminPub"
-    };
-
+    const portalAuth = window.ThirdEyePortalAuth || {};
     const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
       ? window.ThirdEyeGun.createContext()
       : { gun: null, user: null, root: null, peers: [] };
+    const namespace = window.ThirdEyeGun && typeof window.ThirdEyeGun.getNamespace === "function"
+      ? window.ThirdEyeGun.getNamespace()
+      : "third-eye-print-co";
     const adminPubs = window.ThirdEyeGun && typeof window.ThirdEyeGun.getAdminPubs === "function"
       ? window.ThirdEyeGun.getAdminPubs()
       : [];
@@ -578,30 +577,6 @@
         .replace(/>/g, "&gt;")
         .replace(/\"/g, "&quot;")
         .replace(/'/g, "&#39;");
-    }
-
-    function readStoredCredentials() {
-      return {
-        alias: localStorage.getItem(STORAGE_KEYS.alias) || "",
-        password: localStorage.getItem(STORAGE_KEYS.password) || "",
-        pub: localStorage.getItem(STORAGE_KEYS.pub) || ""
-      };
-    }
-
-    function clearStoredCredentials() {
-      Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
-    }
-
-    function leaveUser() {
-      if (gunContext.user && typeof gunContext.user.leave === "function") {
-        gunContext.user.leave();
-      }
-    }
-
-    function authUser(alias, password) {
-      return new Promise((resolve) => {
-        gunContext.user.auth(alias, password, (ack) => resolve(ack || {}));
-      });
     }
 
     function setStatus(message, tone) {
@@ -999,39 +974,46 @@
         return;
       }
 
-      const stored = readStoredCredentials();
+      const stored = portalAuth.readStoredCredentials();
       if (!stored.alias || !stored.password) {
         redirectToAuth();
         return;
       }
 
       setStatus("Verifying admin Gun session...");
-      const ack = await authUser(stored.alias, stored.password);
-      if (ack.err) {
-        clearStoredCredentials();
+      const authResult = await portalAuth.authenticateUser(gunContext.user, stored.alias, stored.password);
+      if (!authResult.ok) {
+        portalAuth.clearStoredCredentials();
         redirectToAuth();
         return;
       }
 
-      const pub = gunContext.user && gunContext.user.is ? gunContext.user.is.pub : "";
-      if (!pub || !adminPubs.includes(pub)) {
-        clearStoredCredentials();
-        leaveUser();
+      const access = await portalAuth.resolveAdminAccess({
+        gun: gunContext.gun,
+        user: gunContext.user,
+        alias: authResult.alias,
+        adminPubs,
+        namespace
+      });
+      if (!access.ok) {
+        portalAuth.clearStoredCredentials();
+        portalAuth.leaveUser(gunContext.user);
         showNotice(
           "Authenticated pub is not allowlisted",
-          "The provided Gun identity is valid but does not have admin access for this site.",
-          `Authenticated pub: <code>${escapeHtml(pub || "unknown")}</code>`
+          "The provided Gun identity is valid but does not have admin access for this site yet.",
+          `Authenticated alias: <code>${escapeHtml(authResult.alias || "unknown")}</code><br />Authenticated pub: <code>${escapeHtml(access.pub || "unknown")}</code>`
         );
         return;
       }
 
       authorizedUser = {
-        alias: stored.alias,
-        pub
+        alias: authResult.alias,
+        pub: access.pub,
+        mode: access.mode
       };
 
-      sessionUserEl.textContent = `Signed in as ${stored.alias}`;
-      setStatus("Admin access confirmed. Listening for Gun lead updates.", "success");
+      sessionUserEl.textContent = `Signed in as ${authResult.alias}`;
+      setStatus(`Admin access confirmed via ${access.mode.replace("_", " ")}. Listening for Gun lead updates.`, "success");
       subscribeToLeads();
     }
 
@@ -1051,8 +1033,8 @@
       renderDashboard();
     });
     logoutButton.addEventListener("click", () => {
-      clearStoredCredentials();
-      leaveUser();
+      portalAuth.clearStoredCredentials();
+      portalAuth.leaveUser(gunContext.user);
       redirectToAuth();
     });
 
