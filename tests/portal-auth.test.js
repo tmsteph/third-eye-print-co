@@ -87,37 +87,119 @@ test("authenticateUser prefers canonical suffixed aliases before bare aliases", 
   );
 });
 
-test("resolveAdminAccess only bootstraps tmsteph from the 3dvr portal admin graph", async () => {
+test("resolveAdminAccess rejects bootstrap access when the authenticated pub does not match", async () => {
   const portalAuth = loadPortalAuth();
   const gun = createGunGraph({
-    "3dvr-portal": {
-      admins: {
-        "tmsteph@3dvr": { alias: "tmsteph@3dvr" },
-        "other@3dvr": { alias: "other@3dvr" },
-      },
-    },
     "third-eye-print-co": {
       admins: {},
     },
   });
 
-  const tmstephAccess = await portalAuth.resolveAdminAccess({
+  const otherAccess = await portalAuth.resolveAdminAccess({
     gun,
-    user: { is: { pub: "pub-tmsteph" } },
+    user: {
+      is: {
+        pub: "Cg-NVNIbxWPDBqX7OmllJQqjxy2t3KA_U2DqQBjcPQ8.1fppECqamDOHh2tKt1G5t8Yd21NjBCZ3C6qunST3lvg",
+      },
+    },
+    alias: "other@3dvr",
+    adminPubs: [],
+    namespace: "third-eye-print-co",
+  });
+  const wrongPubAccess = await portalAuth.resolveAdminAccess({
+    gun,
+    user: { is: { pub: "pub-not-tmsteph" } },
     alias: "tmsteph@3dvr",
     adminPubs: [],
     namespace: "third-eye-print-co",
   });
+
+  assert.equal(otherAccess.ok, false);
+  assert.equal(wrongPubAccess.ok, false);
+});
+
+test("resolveAdminAccess bootstraps tmsteph from the configured SEA pub", async () => {
+  const portalAuth = loadPortalAuth();
+  const gun = createGunGraph({
+    "third-eye-print-co": {
+      admins: {},
+    },
+  });
+
+  const access = await portalAuth.resolveAdminAccess({
+    gun,
+    user: {
+      is: {
+        pub: "Cg-NVNIbxWPDBqX7OmllJQqjxy2t3KA_U2DqQBjcPQ8.1fppECqamDOHh2tKt1G5t8Yd21NjBCZ3C6qunST3lvg",
+      },
+    },
+    alias: "tmsteph@3dvr",
+    adminPubs: [],
+    namespace: "third-eye-print-co",
+  });
+
+  assert.equal(access.ok, true);
+  assert.equal(access.mode, "bootstrap_identity");
+});
+
+test("ensureBootstrapAdminAccess seeds the local admin graph for tmsteph", async () => {
+  const portalAuth = loadPortalAuth();
+  const writes = [];
+  const gun = {
+    get(key) {
+      return createWritableNode([key]);
+    },
+  };
+
+  function createWritableNode(pathParts) {
+    return {
+      get(key) {
+        return createWritableNode([...pathParts, key]);
+      },
+      put(value, callback) {
+        writes.push({ path: pathParts.join("/"), value });
+        callback({});
+      },
+    };
+  }
+
+  const result = await portalAuth.ensureBootstrapAdminAccess({
+    gun,
+    alias: "tmsteph@3dvr",
+    pub: "Cg-NVNIbxWPDBqX7OmllJQqjxy2t3KA_U2DqQBjcPQ8.1fppECqamDOHh2tKt1G5t8Yd21NjBCZ3C6qunST3lvg",
+    namespace: "third-eye-print-co",
+  });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(
+    writes.map((entry) => entry.path),
+    [
+      "third-eye-print-co/admins/tmsteph@3dvr",
+      "third-eye-print-co/admins/Cg-NVNIbxWPDBqX7OmllJQqjxy2t3KA_U2DqQBjcPQ8.1fppECqamDOHh2tKt1G5t8Yd21NjBCZ3C6qunST3lvg",
+    ]
+  );
+});
+
+test("resolveAdminAccess denies unrelated 3dvr aliases", async () => {
+  const portalAuth = loadPortalAuth();
+  const gun = createGunGraph({
+    "third-eye-print-co": {
+      admins: {},
+    },
+  });
+
   const otherAccess = await portalAuth.resolveAdminAccess({
     gun,
-    user: { is: { pub: "pub-other" } },
+    user: {
+      is: {
+        pub: "Cg-NVNIbxWPDBqX7OmllJQqjxy2t3KA_U2DqQBjcPQ8.1fppECqamDOHh2tKt1G5t8Yd21NjBCZ3C6qunST3lvg",
+      },
+    },
     alias: "other@3dvr",
     adminPubs: [],
     namespace: "third-eye-print-co",
   });
 
-  assert.equal(tmstephAccess.ok, true);
-  assert.equal(tmstephAccess.mode, "bootstrap_portal_alias");
   assert.equal(otherAccess.ok, false);
 });
 

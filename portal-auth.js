@@ -4,9 +4,12 @@
     password: "thirdEyeAdminPassword",
     pub: "thirdEyeAdminPub",
   };
-  const BOOTSTRAP_ADMIN_ALIASES = [
-    "tmsteph",
-    "tmsteph@3dvr",
+  const BOOTSTRAP_ADMINS = [
+    {
+      aliases: ["tmsteph", "tmsteph@3dvr"],
+      pub: "Cg-NVNIbxWPDBqX7OmllJQqjxy2t3KA_U2DqQBjcPQ8.1fppECqamDOHh2tKt1G5t8Yd21NjBCZ3C6qunST3lvg",
+      username: "tmsteph",
+    },
   ];
 
   function normalizeIdentity(value) {
@@ -17,8 +20,26 @@
     return Array.from(new Set(values.filter(Boolean)));
   }
 
-  function isBootstrapAdminAlias(alias) {
-    return BOOTSTRAP_ADMIN_ALIASES.includes(normalizeIdentity(alias).toLowerCase());
+  function normalizeAlias(value) {
+    return normalizeIdentity(value).toLowerCase();
+  }
+
+  function normalizePub(value) {
+    return normalizeIdentity(value);
+  }
+
+  function findBootstrapAdmin({ alias, pub }) {
+    const normalizedAlias = normalizeAlias(alias);
+    const normalizedPub = normalizePub(pub);
+
+    return BOOTSTRAP_ADMINS.find((entry) => {
+      const aliasMatch = entry.aliases.some((candidate) => normalizeAlias(candidate) === normalizedAlias);
+      if (!aliasMatch) {
+        return false;
+      }
+
+      return !entry.pub || normalizePub(entry.pub) === normalizedPub;
+    }) || null;
   }
 
   function buildAliasCandidates(identity) {
@@ -140,6 +161,40 @@
     });
   }
 
+  function put(node, value) {
+    return new Promise((resolve) => {
+      if (!node || typeof node.put !== "function") {
+        resolve({ ok: false, error: "Node is not writable." });
+        return;
+      }
+
+      node.put(value, (ack) => {
+        if (ack && ack.err) {
+          resolve({ ok: false, error: String(ack.err) });
+          return;
+        }
+
+        resolve({ ok: true, ack: ack || {} });
+      });
+    });
+  }
+
+  function buildBootstrapAdminRecord(entry, alias, pub) {
+    const normalizedAlias = normalizeIdentity(alias);
+    const username = normalizeIdentity(entry && entry.username)
+      || normalizedAlias.split("@")[0]
+      || "admin";
+
+    return {
+      alias: normalizedAlias,
+      username,
+      pub: normalizePub(pub),
+      addedAt: Date.now(),
+      addedBy: "bootstrap",
+      source: "bootstrap_identity",
+    };
+  }
+
   async function resolveAdminAccess({ gun, user, alias, adminPubs = [], namespace = "third-eye-print-co" }) {
     const pub = user && user.is ? user.is.pub || "" : "";
     if (pub && adminPubs.includes(pub)) {
@@ -155,13 +210,6 @@
       { mode: "site_pub", node: pub ? gun.get(namespace).get("admins").get(pub) : null },
     ];
 
-    if (isBootstrapAdminAlias(alias)) {
-      checks.push({
-        mode: "bootstrap_portal_alias",
-        node: gun.get("3dvr-portal").get("admins").get(alias),
-      });
-    }
-
     for (const check of checks) {
       if (!check.node) {
         continue;
@@ -173,16 +221,48 @@
       }
     }
 
+    const bootstrapAdmin = findBootstrapAdmin({ alias, pub });
+    if (bootstrapAdmin) {
+      return { ok: true, mode: "bootstrap_identity", pub, alias };
+    }
+
     return { ok: false, mode: "none", pub, alias };
   }
 
+  async function ensureBootstrapAdminAccess({ gun, alias, pub, namespace = "third-eye-print-co" }) {
+    const bootstrapAdmin = findBootstrapAdmin({ alias, pub });
+    if (!bootstrapAdmin || !gun || typeof gun.get !== "function") {
+      return { ok: false, mode: "skipped" };
+    }
+
+    const adminRecord = buildBootstrapAdminRecord(bootstrapAdmin, alias, pub);
+    const adminRoot = gun.get(namespace).get("admins");
+    const writes = [
+      put(adminRoot.get(adminRecord.alias), adminRecord),
+    ];
+
+    if (adminRecord.pub) {
+      writes.push(put(adminRoot.get(adminRecord.pub), adminRecord));
+    }
+
+    const results = await Promise.all(writes);
+    const failed = results.find((result) => !result.ok);
+    if (failed) {
+      return { ok: false, mode: "bootstrap_identity", error: failed.error || "Failed to persist bootstrap admin." };
+    }
+
+    return { ok: true, mode: "bootstrap_identity", record: adminRecord };
+  }
+
   global.ThirdEyePortalAuth = {
-    BOOTSTRAP_ADMIN_ALIASES,
+    BOOTSTRAP_ADMINS,
     STORAGE_KEYS,
     authenticateUser,
     buildAliasCandidates,
     clearStoredCredentials,
     createUser,
+    ensureBootstrapAdminAccess,
+    findBootstrapAdmin,
     leaveUser,
     readStoredCredentials,
     resolveAdminAccess,

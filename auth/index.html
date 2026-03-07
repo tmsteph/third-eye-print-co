@@ -311,7 +311,7 @@
         <p id="status" class="status" aria-live="polite"></p>
         <p class="status">
           Admin access is live today through <code>ADMIN_PUBS</code>, the local
-          <code>third-eye-print-co/admins</code> graph, and a one-time bootstrap for <code>tmsteph@3dvr</code>.
+          <code>third-eye-print-co/admins</code> graph, and a bootstrap for <code>tmsteph@3dvr</code>.
           Customer accounts will land on this same entry point once order history and billing tools are wired up.
         </p>
 
@@ -352,7 +352,8 @@
       </ul>
 
       <p class="footnote">
-        Right now only the existing <code>tmsteph@3dvr</code> admin identity bootstraps from the 3DVR portal. Any
+        Right now only the existing <code>tmsteph@3dvr</code> admin identity bootstraps with its matching SEA public
+        key. Any
         additional Third Eye admins should be added locally through <code>third-eye-print-co/admins</code> or
         <code>ADMIN_PUBS</code>.
       </p>
@@ -437,6 +438,15 @@
           "error"
         );
         return;
+      }
+
+      if (access.mode === "bootstrap_identity" && typeof portalAuth.ensureBootstrapAdminAccess === "function") {
+        await portalAuth.ensureBootstrapAdminAccess({
+          gun: gunContext.gun,
+          alias,
+          pub: access.pub,
+          namespace
+        });
       }
 
       portalAuth.writeStoredCredentials(alias, password, access.pub);
