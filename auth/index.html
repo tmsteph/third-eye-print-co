@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Third Eye Admin Sign In</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09090c;
+      --panel: rgba(18, 18, 24, 0.88);
+      --panel-strong: rgba(13, 13, 18, 0.96);
+      --line: rgba(255, 255, 255, 0.1);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #f8f5ed;
+      --muted: #c1c0ba;
+      --accent: #e2ba67;
+      --accent-strong: #f1cf8a;
+      --cool: #84d7e4;
+      --danger: #ff9682;
+      --success: #8fdca7;
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(520px 300px at 0% 0%, rgba(132, 215, 228, 0.15), transparent 60%),
+        radial-gradient(540px 320px at 100% 0%, rgba(226, 186, 103, 0.14), transparent 58%),
+        linear-gradient(180deg, #09090c 0%, #0f0f14 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      width: min(1020px, 100%);
+      display: grid;
+      grid-template-columns: minmax(0, 430px) minmax(0, 1fr);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+    }
+
+    .form-panel {
+      padding: 42px 34px;
+      background: var(--panel-strong);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(226, 186, 103, 0.45);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Fraunces", serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+
+    .intro {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 34ch;
+    }
+
+    .status {
+      min-height: 22px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .status[data-tone="error"] {
+      color: var(--danger);
+    }
+
+    .status[data-tone="success"] {
+      color: var(--success);
+    }
+
+    form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font: inherit;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: rgba(226, 186, 103, 0.6);
+      box-shadow: 0 0 0 3px rgba(226, 186, 103, 0.16);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .primary,
+    .secondary {
+      border-radius: 18px;
+      padding: 15px 18px;
+      font-weight: 800;
+    }
+
+    .primary {
+      border: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #17130c;
+      box-shadow: 0 16px 36px rgba(226, 186, 103, 0.2);
+    }
+
+    .secondary {
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+    }
+
+    .primary:disabled,
+    .secondary:disabled {
+      opacity: 0.55;
+      cursor: progress;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .meta a {
+      color: var(--cool);
+    }
+
+    .aside {
+      padding: 42px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      background:
+        radial-gradient(260px 180px at 100% 0%, rgba(226, 186, 103, 0.1), transparent 60%),
+        linear-gradient(180deg, rgba(20, 21, 28, 0.76), rgba(11, 11, 15, 0.92));
+    }
+
+    .aside h2 {
+      margin: 0;
+      font-family: "Fraunces", serif;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+
+    .aside p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 40ch;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 14px;
+    }
+
+    .feature {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .feature span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .footnote {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95em;
+    }
+
+    @media (max-width: 860px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .aside {
+        border-top: 1px solid var(--line);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="form-panel" aria-labelledby="authTitle">
+      <div class="eyebrow">Third Eye Print Co.</div>
+      <div>
+        <h1 id="authTitle">Admin sign in</h1>
+        <p class="intro">
+          Use your Gun alias and password. Access is granted only when the authenticated public key is listed in
+          <code>ADMIN_PUBS</code>.
+        </p>
+      </div>
+
+      <form id="authForm" novalidate>
+        <div class="field">
+          <label for="alias">Gun alias</label>
+          <input id="alias" name="alias" autocomplete="username" placeholder="owner@thirdeye" required />
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Enter admin password"
+            required
+          />
+        </div>
+
+        <p id="status" class="status" aria-live="polite"></p>
+
+        <div class="actions">
+          <button id="signInButton" class="primary" type="submit">Open admin dashboard</button>
+          <button id="createButton" class="secondary" type="button">Create Gun identity</button>
+        </div>
+      </form>
+
+      <div class="meta">
+        <span id="relayMeta">Checking relay configuration...</span>
+        <a href="/">Return to site</a>
+      </div>
+    </section>
+
+    <aside class="aside" aria-label="Admin dashboard preview">
+      <div>
+        <h2>Vercel static frontend, Gun/SEA auth, Gun-backed lead data.</h2>
+        <p>
+          This flow avoids a long-lived app server. Stripe stays in serverless functions, while admin auth and lead
+          reads happen directly through Gun.
+        </p>
+      </div>
+
+      <ul class="feature-list">
+        <li class="feature">
+          <strong>Admin access by public key</strong>
+          <span>SEA authenticates the user; the dashboard checks the resulting <code>pub</code> against <code>ADMIN_PUBS</code>.</span>
+        </li>
+        <li class="feature">
+          <strong>Reactive lead dashboard</strong>
+          <span>Quote and deposit events are written to Gun directly, so the admin view updates without polling a server.</span>
+        </li>
+        <li class="feature">
+          <strong>Small serverless surface</strong>
+          <span>Vercel only handles public runtime config and Stripe checkout session creation.</span>
+        </li>
+      </ul>
+
+      <p class="footnote">
+        If access is denied after sign-in, copy the displayed <code>pub</code> and add it to <code>ADMIN_PUBS</code> in
+        Vercel or your local <code>.env</code>.
+      </p>
+    </aside>
+  </main>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
+  <script src="/gun-init.js"></script>
+  <script>
+    const STORAGE_KEYS = {
+      alias: "thirdEyeAdminAlias",
+      password: "thirdEyeAdminPassword",
+      pub: "thirdEyeAdminPub"
+    };
+
+    const runtimeConfig = window.THIRD_EYE_CONFIG || {};
+    const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
+      ? window.ThirdEyeGun.createContext()
+      : { gun: null, user: null, peers: [] };
+    const adminPubs = window.ThirdEyeGun && typeof window.ThirdEyeGun.getAdminPubs === "function"
+      ? window.ThirdEyeGun.getAdminPubs()
+      : [];
+
+    const authForm = document.getElementById("authForm");
+    const aliasInput = document.getElementById("alias");
+    const passwordInput = document.getElementById("password");
+    const signInButton = document.getElementById("signInButton");
+    const createButton = document.getElementById("createButton");
+    const statusEl = document.getElementById("status");
+    const relayMetaEl = document.getElementById("relayMeta");
+    const nextUrl = sanitizeNext(new URLSearchParams(window.location.search).get("next"));
+
+    function sanitizeNext(value) {
+      if (!value || typeof value !== "string") {
+        return "/admin/";
+      }
+
+      try {
+        const candidate = new URL(value, window.location.origin);
+        if (candidate.origin !== window.location.origin) {
+          return "/admin/";
+        }
+
+        return `${candidate.pathname}${candidate.search}${candidate.hash}` || "/admin/";
+      } catch (_error) {
+        return "/admin/";
+      }
+    }
+
+    function setStatus(message, tone) {
+      statusEl.textContent = message || "";
+      if (tone) {
+        statusEl.dataset.tone = tone;
+        return;
+      }
+
+      delete statusEl.dataset.tone;
+    }
+
+    function setPending(pending, mode = "signin") {
+      signInButton.disabled = pending;
+      createButton.disabled = pending;
+      aliasInput.disabled = pending;
+      passwordInput.disabled = pending;
+      signInButton.textContent = pending && mode === "signin" ? "Signing in..." : "Open admin dashboard";
+      createButton.textContent = pending && mode === "create" ? "Creating identity..." : "Create Gun identity";
+    }
+
+    function readStoredCredentials() {
+      return {
+        alias: localStorage.getItem(STORAGE_KEYS.alias) || "",
+        password: localStorage.getItem(STORAGE_KEYS.password) || ""
+      };
+    }
+
+    function writeStoredCredentials(alias, password, pub) {
+      localStorage.setItem(STORAGE_KEYS.alias, alias);
+      localStorage.setItem(STORAGE_KEYS.password, password);
+      if (pub) {
+        localStorage.setItem(STORAGE_KEYS.pub, pub);
+      }
+    }
+
+    function clearStoredCredentials() {
+      Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
+    }
+
+    function leaveUser() {
+      if (gunContext.user && typeof gunContext.user.leave === "function") {
+        gunContext.user.leave();
+      }
+    }
+
+    function isAuthorizedPub(pub) {
+      return Boolean(pub) && adminPubs.includes(pub);
+    }
+
+    function authUser(alias, password) {
+      return new Promise((resolve) => {
+        gunContext.user.auth(alias, password, (ack) => resolve(ack || {}));
+      });
+    }
+
+    function createUser(alias, password) {
+      return new Promise((resolve) => {
+        gunContext.user.create(alias, password, (ack) => resolve(ack || {}));
+      });
+    }
+
+    async function completeAuth(alias, password) {
+      const pub = gunContext.user && gunContext.user.is ? gunContext.user.is.pub : "";
+      if (!isAuthorizedPub(pub)) {
+        clearStoredCredentials();
+        leaveUser();
+        setStatus(
+          adminPubs.length
+            ? `Authenticated, but pub is not allowlisted: ${pub || "unknown"}. Add it to ADMIN_PUBS, then try again.`
+            : "Authenticated, but ADMIN_PUBS is empty. Add your pub key to ADMIN_PUBS and reload.",
+          "error"
+        );
+        return;
+      }
+
+      writeStoredCredentials(alias, password, pub);
+      setStatus("Admin access confirmed. Redirecting...", "success");
+      window.location.assign(nextUrl);
+    }
+
+    async function handleSignIn(alias, password) {
+      const ack = await authUser(alias, password);
+      if (ack.err) {
+        setStatus(ack.err, "error");
+        return;
+      }
+
+      await completeAuth(alias, password);
+    }
+
+    async function handleCreate(alias, password) {
+      const createAck = await createUser(alias, password);
+      if (createAck.err && !String(createAck.err).includes("User already created")) {
+        setStatus(createAck.err, "error");
+        return;
+      }
+
+      await handleSignIn(alias, password);
+    }
+
+    async function boot() {
+      const peers = Array.isArray(gunContext.peers) ? gunContext.peers : [];
+      relayMetaEl.textContent = peers.length
+        ? `${peers.length} Gun relay peer${peers.length === 1 ? "" : "s"} configured`
+        : "No Gun relay peers configured yet";
+
+      if (!gunContext.gun || !gunContext.user) {
+        setStatus("Gun is unavailable. Check the relay script and reload.", "error");
+        return;
+      }
+
+      const stored = readStoredCredentials();
+      if (stored.alias && !aliasInput.value.trim()) {
+        aliasInput.value = stored.alias;
+      }
+
+      if (adminPubs.length === 0) {
+        setStatus("ADMIN_PUBS is empty. Add at least one authorized Gun pub before using admin auth.", "error");
+        return;
+      }
+
+      if (!stored.alias || !stored.password) {
+        return;
+      }
+
+      setPending(true, "signin");
+      setStatus("Restoring previous admin session...");
+      await handleSignIn(stored.alias, stored.password);
+      setPending(false);
+    }
+
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const alias = aliasInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!alias || !password) {
+        setStatus("Enter the Gun alias and password.", "error");
+        return;
+      }
+
+      setPending(true, "signin");
+      setStatus("Verifying Gun identity...");
+      await handleSignIn(alias, password);
+      setPending(false);
+    });
+
+    createButton.addEventListener("click", async () => {
+      const alias = aliasInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!alias || !password) {
+        setStatus("Enter the Gun alias and password before creating an identity.", "error");
+        return;
+      }
+
+      setPending(true, "create");
+      setStatus("Creating Gun identity...");
+      await handleCreate(alias, password);
+      setPending(false);
+    });
+
+    boot();
+  </script>
+</body>
+</html>

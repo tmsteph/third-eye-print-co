@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Third Eye Admin Dashboard</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08080b;
+      --panel: rgba(15, 15, 21, 0.9);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --line: rgba(255, 255, 255, 0.1);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #f8f6ef;
+      --muted: #bdbbb2;
+      --accent: #e2ba67;
+      --cool: #84d7e4;
+      --danger: #ff9382;
+      --success: #97d8a1;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.35);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(520px 300px at 0% 0%, rgba(132, 215, 228, 0.12), transparent 60%),
+        radial-gradient(620px 360px at 100% 0%, rgba(226, 186, 103, 0.1), transparent 60%),
+        linear-gradient(180deg, #08080b 0%, #0e0e14 100%);
+      padding: 24px 16px 48px;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1220px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero {
+      padding: 26px;
+      display: grid;
+      gap: 18px;
+      background:
+        radial-gradient(280px 160px at 100% 0%, rgba(226, 186, 103, 0.12), transparent 60%),
+        linear-gradient(180deg, rgba(17, 18, 25, 0.96), rgba(10, 10, 14, 0.96));
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(226, 186, 103, 0.45);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+    }
+
+    h1 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+      max-width: 12ch;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      max-width: 64ch;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      border-radius: 16px;
+      padding: 12px 16px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--accent), #f0d394);
+      color: #1a140b;
+    }
+
+    .btn-danger {
+      color: var(--danger);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .status {
+      display: none;
+      border-radius: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(132, 215, 228, 0.2);
+      background: rgba(132, 215, 228, 0.08);
+      color: var(--text);
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status[data-tone="error"] {
+      border-color: rgba(255, 147, 130, 0.28);
+      background: rgba(255, 147, 130, 0.1);
+      color: var(--danger);
+    }
+
+    .status[data-tone="success"] {
+      border-color: rgba(151, 216, 161, 0.24);
+      background: rgba(151, 216, 161, 0.1);
+      color: var(--success);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      padding: 18px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric strong {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      line-height: 1;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .breakdown {
+      display: grid;
+      gap: 10px;
+    }
+
+    .breakdown-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .breakdown-item span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .breakdown-item strong {
+      color: var(--accent);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(2, minmax(0, 0.8fr)) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      padding: 12px 14px;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline: none;
+      border-color: rgba(226, 186, 103, 0.6);
+      box-shadow: 0 0 0 3px rgba(226, 186, 103, 0.14);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1040px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .lead-name {
+      font-weight: 700;
+    }
+
+    .lead-meta,
+    .lead-notes {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .empty {
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px dashed var(--line-strong);
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .notice {
+      display: none;
+    }
+
+    .notice.show {
+      display: grid;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95em;
+    }
+
+    @media (max-width: 920px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">Third Eye Admin</div>
+          <h1>Reactive lead feed, no long-lived app server.</h1>
+          <p>
+            Gun stores the quote pipeline and SEA authenticates the admin. Vercel only handles the checkout secret
+            path and public runtime config.
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn" href="/">View public site</a>
+          <button id="refreshButton" class="btn btn-primary" type="button">Refresh snapshot</button>
+          <button id="logoutButton" class="btn btn-danger" type="button">Log out</button>
+        </div>
+      </div>
+
+      <div class="hero-meta">
+        <span id="sessionUser">Checking Gun session...</span>
+        <span id="relayMeta">Checking relay configuration...</span>
+        <span id="lastLoaded">Waiting for lead records...</span>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+    </section>
+
+    <section id="noticeCard" class="card notice" aria-live="polite">
+      <div class="card-head">
+        <div>
+          <h2 id="noticeTitle">Admin access unavailable</h2>
+          <p id="noticeCopy">The dashboard needs a valid Gun admin session before it can read the lead graph.</p>
+        </div>
+      </div>
+      <div id="noticeBody" class="empty"></div>
+    </section>
+
+    <section id="dashboardShell" class="stack" hidden>
+      <section class="metrics" id="metrics"></section>
+
+      <section class="grid">
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <h2>Lead sources</h2>
+              <p>Which site actions are writing into the Gun lead graph.</p>
+            </div>
+          </div>
+          <div id="sourceBreakdown" class="breakdown"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <h2>Requested services</h2>
+              <p>Top categories coming through the quote form.</p>
+            </div>
+          </div>
+          <div id="serviceBreakdown" class="breakdown"></div>
+        </article>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h2>Lead feed</h2>
+            <p>Live records from <code>third-eye-print-co/leads</code> in Gun. Newest entries render first.</p>
+          </div>
+          <div id="resultsMeta" class="hero-meta"></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="field">
+            <label for="searchInput">Search</label>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Name, contact, company, service, notes..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="field">
+            <label for="sourceFilter">Source</label>
+            <select id="sourceFilter">
+              <option value="">All sources</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="serviceFilter">Service</label>
+            <select id="serviceFilter">
+              <option value="">All services</option>
+            </select>
+          </div>
+
+          <button id="clearFiltersButton" class="btn" type="button">Clear filters</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Created</th>
+                <th>Client</th>
+                <th>Source</th>
+                <th>Service</th>
+                <th>Order Details</th>
+                <th>Timing / Budget</th>
+                <th>Tracking</th>
+              </tr>
+            </thead>
+            <tbody id="leadTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
+  <script src="/gun-init.js"></script>
+  <script>
+    const STORAGE_KEYS = {
+      alias: "thirdEyeAdminAlias",
+      password: "thirdEyeAdminPassword",
+      pub: "thirdEyeAdminPub"
+    };
+
+    const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
+      ? window.ThirdEyeGun.createContext()
+      : { gun: null, user: null, root: null, peers: [] };
+    const adminPubs = window.ThirdEyeGun && typeof window.ThirdEyeGun.getAdminPubs === "function"
+      ? window.ThirdEyeGun.getAdminPubs()
+      : [];
+    const leadsNode = gunContext.root && typeof gunContext.root.get === "function"
+      ? gunContext.root.get("leads")
+      : null;
+
+    const metricsEl = document.getElementById("metrics");
+    const sourceBreakdownEl = document.getElementById("sourceBreakdown");
+    const serviceBreakdownEl = document.getElementById("serviceBreakdown");
+    const leadTableBody = document.getElementById("leadTableBody");
+    const statusEl = document.getElementById("status");
+    const sessionUserEl = document.getElementById("sessionUser");
+    const relayMetaEl = document.getElementById("relayMeta");
+    const lastLoadedEl = document.getElementById("lastLoaded");
+    const resultsMetaEl = document.getElementById("resultsMeta");
+    const dashboardShell = document.getElementById("dashboardShell");
+    const noticeCard = document.getElementById("noticeCard");
+    const noticeTitle = document.getElementById("noticeTitle");
+    const noticeCopy = document.getElementById("noticeCopy");
+    const noticeBody = document.getElementById("noticeBody");
+    const searchInput = document.getElementById("searchInput");
+    const sourceFilter = document.getElementById("sourceFilter");
+    const serviceFilter = document.getElementById("serviceFilter");
+    const refreshButton = document.getElementById("refreshButton");
+    const logoutButton = document.getElementById("logoutButton");
+    const clearFiltersButton = document.getElementById("clearFiltersButton");
+
+    const leadRecords = {};
+    let authorizedUser = null;
+    let latestRenderAt = 0;
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function readStoredCredentials() {
+      return {
+        alias: localStorage.getItem(STORAGE_KEYS.alias) || "",
+        password: localStorage.getItem(STORAGE_KEYS.password) || "",
+        pub: localStorage.getItem(STORAGE_KEYS.pub) || ""
+      };
+    }
+
+    function clearStoredCredentials() {
+      Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
+    }
+
+    function leaveUser() {
+      if (gunContext.user && typeof gunContext.user.leave === "function") {
+        gunContext.user.leave();
+      }
+    }
+
+    function authUser(alias, password) {
+      return new Promise((resolve) => {
+        gunContext.user.auth(alias, password, (ack) => resolve(ack || {}));
+      });
+    }
+
+    function setStatus(message, tone) {
+      if (!message) {
+        statusEl.classList.remove("show");
+        statusEl.textContent = "";
+        delete statusEl.dataset.tone;
+        return;
+      }
+
+      statusEl.classList.add("show");
+      statusEl.textContent = message;
+      if (tone) {
+        statusEl.dataset.tone = tone;
+        return;
+      }
+
+      delete statusEl.dataset.tone;
+    }
+
+    function showNotice(title, copy, body) {
+      dashboardShell.hidden = true;
+      noticeCard.classList.add("show");
+      noticeTitle.textContent = title;
+      noticeCopy.textContent = copy;
+      noticeBody.innerHTML = body;
+    }
+
+    function hideNotice() {
+      noticeCard.classList.remove("show");
+    }
+
+    function formatDate(value) {
+      const parsed = Date.parse(value || "");
+      if (!parsed) {
+        return "Unknown";
+      }
+
+      return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).format(parsed);
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat().format(Number(value || 0));
+    }
+
+    function formatBreakdownLabel(value) {
+      return value || "Unspecified";
+    }
+
+    function summarizeText(values) {
+      return values.filter(Boolean).join(" | ");
+    }
+
+    function contactMarkup(value) {
+      const cleanValue = String(value || "").trim();
+      if (!cleanValue) {
+        return "-";
+      }
+
+      if (cleanValue.includes("@")) {
+        const href = `mailto:${encodeURIComponent(cleanValue)}`;
+        return `<a href="${href}">${escapeHtml(cleanValue)}</a>`;
+      }
+
+      return escapeHtml(cleanValue);
+    }
+
+    function sortedBreakdownEntries(record) {
+      return Object.entries(record || {}).sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]));
+    }
+
+    function normalizeRecord(data, key) {
+      if (!data || typeof data !== "object") {
+        return null;
+      }
+
+      const source = String(data.source || "").trim();
+      const createdAt = String(data.createdAt || "").trim();
+      const hasLeadFields = [
+        data.name,
+        data.contact,
+        data.company,
+        data.serviceType,
+        data.notes
+      ].some((value) => String(value || "").trim());
+
+      if (!source && !createdAt && !hasLeadFields) {
+        return null;
+      }
+
+      return {
+        id: String(data.id || key || "").trim() || String(key || ""),
+        quoteId: String(data.quoteId || "").trim(),
+        source: source || "quote",
+        createdAt,
+        name: String(data.name || "").trim(),
+        company: String(data.company || "").trim(),
+        contact: String(data.contact || "").trim(),
+        serviceType: String(data.serviceType || "").trim(),
+        quantity: String(data.quantity || "").trim(),
+        colors: String(data.colors || "").trim(),
+        garment: String(data.garment || "").trim(),
+        locations: String(data.locations || "").trim(),
+        artStatus: String(data.artStatus || "").trim(),
+        needBy: String(data.needBy || "").trim(),
+        budget: String(data.budget || "").trim(),
+        fulfillment: String(data.fulfillment || "").trim(),
+        notes: String(data.notes || "").trim(),
+        checkoutSessionId: String(data.checkoutSessionId || "").trim()
+      };
+    }
+
+    function getLeadEntries() {
+      return Object.values(leadRecords).sort((left, right) => {
+        const leftTime = Date.parse(left.createdAt || "") || 0;
+        const rightTime = Date.parse(right.createdAt || "") || 0;
+        return rightTime - leftTime || right.id.localeCompare(left.id);
+      });
+    }
+
+    function summarizeLeads(entries) {
+      const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+      const sourceBreakdown = {};
+      const serviceBreakdown = {};
+      let recent7Days = 0;
+      let depositIntentCount = 0;
+      let depositCheckoutCount = 0;
+
+      entries.forEach((entry) => {
+        const source = entry.source || "unknown";
+        const service = entry.serviceType || "Unspecified";
+        const createdAt = Date.parse(entry.createdAt || "");
+
+        sourceBreakdown[source] = (sourceBreakdown[source] || 0) + 1;
+        serviceBreakdown[service] = (serviceBreakdown[service] || 0) + 1;
+
+        if (createdAt && createdAt >= sevenDaysAgo) {
+          recent7Days += 1;
+        }
+
+        if (source === "quote_deposit_intent") {
+          depositIntentCount += 1;
+        }
+
+        if (source === "deposit_checkout") {
+          depositCheckoutCount += 1;
+        }
+      });
+
+      return {
+        totalLeads: entries.length,
+        recent7Days,
+        depositIntentCount,
+        depositCheckoutCount,
+        sourceBreakdown,
+        serviceBreakdown
+      };
+    }
+
+    function renderMetrics(summary) {
+      const cards = [
+        { label: "Total events", value: formatNumber(summary.totalLeads) },
+        { label: "Saved in last 7 days", value: formatNumber(summary.recent7Days) },
+        { label: "Deposit intent clicks", value: formatNumber(summary.depositIntentCount) },
+        { label: "Checkout sessions created", value: formatNumber(summary.depositCheckoutCount) }
+      ];
+
+      metricsEl.innerHTML = cards.map((card) => `
+        <article class="metric">
+          <span>${escapeHtml(card.label)}</span>
+          <strong>${escapeHtml(card.value)}</strong>
+        </article>
+      `).join("");
+    }
+
+    function renderBreakdown(target, entries, emptyLabel) {
+      if (!entries.length) {
+        target.innerHTML = `<div class="empty">${escapeHtml(emptyLabel)}</div>`;
+        return;
+      }
+
+      target.innerHTML = entries.map(([label, count]) => `
+        <div class="breakdown-item">
+          <span>${escapeHtml(formatBreakdownLabel(label))}</span>
+          <strong>${escapeHtml(formatNumber(count))}</strong>
+        </div>
+      `).join("");
+    }
+
+    function syncFilterOptions(select, values, fallbackLabel) {
+      const currentValue = select.value;
+      const options = [`<option value="">${escapeHtml(fallbackLabel)}</option>`]
+        .concat(values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`));
+      select.innerHTML = options.join("");
+
+      if (values.includes(currentValue)) {
+        select.value = currentValue;
+      }
+    }
+
+    function filteredLeads(entries) {
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedSource = sourceFilter.value;
+      const selectedService = serviceFilter.value;
+
+      return entries.filter((entry) => {
+        const service = entry.serviceType || "Unspecified";
+        const haystack = [
+          entry.id,
+          entry.quoteId,
+          entry.source,
+          entry.name,
+          entry.contact,
+          entry.company,
+          entry.serviceType,
+          entry.quantity,
+          entry.garment,
+          entry.locations,
+          entry.notes,
+          entry.needBy,
+          entry.budget,
+          entry.checkoutSessionId
+        ].join(" ").toLowerCase();
+
+        if (selectedSource && entry.source !== selectedSource) {
+          return false;
+        }
+
+        if (selectedService && service !== selectedService) {
+          return false;
+        }
+
+        if (query && !haystack.includes(query)) {
+          return false;
+        }
+
+        return true;
+      });
+    }
+
+    function renderLeadTable(entries) {
+      if (!entries.length) {
+        leadTableBody.innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="empty">No lead records match the current filters.</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      leadTableBody.innerHTML = entries.map((entry) => {
+        const orderDetails = summarizeText([
+          entry.quantity ? `Qty ${entry.quantity}` : "",
+          entry.garment || "",
+          entry.colors ? `${entry.colors} colors` : "",
+          entry.locations || "",
+          entry.artStatus || ""
+        ]);
+        const timingBudget = summarizeText([
+          entry.needBy ? `Need by ${entry.needBy}` : "",
+          entry.budget ? `Budget ${entry.budget}` : "",
+          entry.fulfillment || ""
+        ]);
+        const tracking = summarizeText([
+          entry.quoteId ? `Quote ${entry.quoteId}` : "",
+          entry.checkoutSessionId ? `Stripe ${entry.checkoutSessionId}` : ""
+        ]);
+
+        return `
+          <tr>
+            <td>
+              <strong>${escapeHtml(formatDate(entry.createdAt))}</strong>
+              <span class="lead-meta">${escapeHtml(entry.id || "-")}</span>
+            </td>
+            <td>
+              <div class="lead-name">${escapeHtml(entry.name || "Unknown lead")}</div>
+              <span class="lead-meta">${contactMarkup(entry.contact)}</span>
+              <span class="lead-meta">${escapeHtml(entry.company || "No company provided")}</span>
+            </td>
+            <td>
+              <span class="badge">${escapeHtml(entry.source || "unknown")}</span>
+            </td>
+            <td>
+              <span class="badge">${escapeHtml(entry.serviceType || "Unspecified")}</span>
+            </td>
+            <td>
+              ${escapeHtml(orderDetails || "-")}
+              <span class="lead-notes">${escapeHtml(entry.notes || "No additional notes.")}</span>
+            </td>
+            <td>${escapeHtml(timingBudget || "-")}</td>
+            <td>${escapeHtml(tracking || "-")}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderResultsMeta(filteredCount, totalCount) {
+      const parts = [
+        `${formatNumber(filteredCount)} showing`,
+        `${formatNumber(totalCount)} total Gun records`
+      ];
+
+      if (authorizedUser && authorizedUser.pub) {
+        parts.push(`pub ${authorizedUser.pub.slice(0, 16)}...`);
+      }
+
+      resultsMetaEl.textContent = parts.join(" | ");
+    }
+
+    function renderDashboard() {
+      const entries = getLeadEntries();
+      const summary = summarizeLeads(entries);
+      renderMetrics(summary);
+      renderBreakdown(
+        sourceBreakdownEl,
+        sortedBreakdownEntries(summary.sourceBreakdown),
+        "No source activity has been recorded yet."
+      );
+      renderBreakdown(
+        serviceBreakdownEl,
+        sortedBreakdownEntries(summary.serviceBreakdown),
+        "No service categories are available yet."
+      );
+
+      const sourceOptions = Array.from(new Set(entries.map((entry) => entry.source || "unknown"))).sort();
+      const serviceOptions = Array.from(new Set(entries.map((entry) => entry.serviceType || "Unspecified"))).sort();
+
+      syncFilterOptions(sourceFilter, sourceOptions, "All sources");
+      syncFilterOptions(serviceFilter, serviceOptions, "All services");
+
+      const filtered = filteredLeads(entries);
+      renderLeadTable(filtered);
+      renderResultsMeta(filtered.length, entries.length);
+
+      latestRenderAt = Date.now();
+      lastLoadedEl.textContent = entries.length
+        ? `Latest event ${formatDate(entries[0].createdAt)}`
+        : "Connected, but no Gun lead records have arrived yet.";
+
+      dashboardShell.hidden = false;
+      hideNotice();
+    }
+
+    function redirectToAuth() {
+      window.location.replace(`/auth/?next=${encodeURIComponent("/admin/")}`);
+    }
+
+    function subscribeToLeads() {
+      if (!leadsNode || typeof leadsNode.map !== "function") {
+        showNotice(
+          "Gun lead graph unavailable",
+          "The dashboard could not attach to the configured Gun namespace.",
+          "Check <code>GUN_RELAY_URLS</code> and reload the page."
+        );
+        return;
+      }
+
+      leadsNode.map().on((data, key) => {
+        const normalized = normalizeRecord(data, key);
+        if (!normalized) {
+          return;
+        }
+
+        leadRecords[key] = normalized;
+        renderDashboard();
+      });
+    }
+
+    async function boot() {
+      const peers = Array.isArray(gunContext.peers) ? gunContext.peers : [];
+      relayMetaEl.textContent = peers.length
+        ? `${peers.length} Gun relay peer${peers.length === 1 ? "" : "s"} configured`
+        : "No Gun relay peers configured";
+
+      if (!gunContext.gun || !gunContext.user) {
+        showNotice(
+          "Gun is unavailable",
+          "The admin dashboard needs Gun + SEA to authenticate and read lead data.",
+          "Reload the page after confirming the Gun scripts can load."
+        );
+        return;
+      }
+
+      if (!adminPubs.length) {
+        showNotice(
+          "ADMIN_PUBS is empty",
+          "Admin access is controlled by a public-key allowlist.",
+          "Add at least one Gun public key to <code>ADMIN_PUBS</code>, then reload this page."
+        );
+        return;
+      }
+
+      const stored = readStoredCredentials();
+      if (!stored.alias || !stored.password) {
+        redirectToAuth();
+        return;
+      }
+
+      setStatus("Verifying admin Gun session...");
+      const ack = await authUser(stored.alias, stored.password);
+      if (ack.err) {
+        clearStoredCredentials();
+        redirectToAuth();
+        return;
+      }
+
+      const pub = gunContext.user && gunContext.user.is ? gunContext.user.is.pub : "";
+      if (!pub || !adminPubs.includes(pub)) {
+        clearStoredCredentials();
+        leaveUser();
+        showNotice(
+          "Authenticated pub is not allowlisted",
+          "The provided Gun identity is valid but does not have admin access for this site.",
+          `Authenticated pub: <code>${escapeHtml(pub || "unknown")}</code>`
+        );
+        return;
+      }
+
+      authorizedUser = {
+        alias: stored.alias,
+        pub
+      };
+
+      sessionUserEl.textContent = `Signed in as ${stored.alias}`;
+      setStatus("Admin access confirmed. Listening for Gun lead updates.", "success");
+      subscribeToLeads();
+    }
+
+    searchInput.addEventListener("input", renderDashboard);
+    sourceFilter.addEventListener("change", renderDashboard);
+    serviceFilter.addEventListener("change", renderDashboard);
+    refreshButton.addEventListener("click", () => {
+      if (!dashboardShell.hidden) {
+        renderDashboard();
+        setStatus("Snapshot refreshed from the local Gun state.", "success");
+      }
+    });
+    clearFiltersButton.addEventListener("click", () => {
+      searchInput.value = "";
+      sourceFilter.value = "";
+      serviceFilter.value = "";
+      renderDashboard();
+    });
+    logoutButton.addEventListener("click", () => {
+      clearStoredCredentials();
+      leaveUser();
+      redirectToAuth();
+    });
+
+    boot();
+  </script>
+</body>
+</html>
