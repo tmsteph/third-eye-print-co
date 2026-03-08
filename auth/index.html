@@ -285,14 +285,14 @@
       <div>
         <h1 id="authTitle">Portal sign in</h1>
         <p class="intro">
-          Admins will use this portal to review quotes, deposits, and orders. Customer order history, saved payment
-          methods, and account tools are staged next.
+          Sign in if you already have a portal account, or create one here. Admins can review quotes and orders now,
+          and customer history and billing tools will land on the same account later.
         </p>
       </div>
 
       <form id="authForm" novalidate>
         <div class="field">
-          <label for="alias">Username or Gun alias</label>
+          <label for="alias">Username or alias</label>
           <input id="alias" name="alias" autocomplete="username" placeholder="username or username@thirdeye" required />
         </div>
 
@@ -303,23 +303,33 @@
             name="password"
             type="password"
             autocomplete="current-password"
-            placeholder="Enter admin password"
+            placeholder="Enter your password"
             required
           />
         </div>
 
         <p id="status" class="status" aria-live="polite"></p>
         <p class="status">
-          Admin access is live today through <code>ADMIN_PUBS</code>, the local
+          Anyone can create a portal account today. Admin access is granted through <code>ADMIN_PUBS</code>, the local
           <code>third-eye-print-co/admins</code> graph, and a bootstrap for <code>tmsteph@3dvr</code>.
-          Customer accounts will land on this same entry point once order history and billing tools are wired up.
         </p>
 
         <div class="actions">
           <button id="signInButton" class="primary" type="submit">Open portal</button>
-          <button id="createButton" class="secondary" type="button">Create portal login</button>
+          <button id="createButton" class="secondary" type="button">Create account</button>
         </div>
       </form>
+
+      <div class="feature-list" aria-label="Portal account help">
+        <div class="feature">
+          <strong>Create an account</strong>
+          <span>Use a new username and password, then click <code>Create account</code>. Admin access can be added later without making them recreate the account.</span>
+        </div>
+        <div class="feature">
+          <strong>Password reset</strong>
+          <span>If someone loses access, an admin can issue fresh credentials from the dashboard today. Self-service recovery can layer on later if we want it.</span>
+        </div>
+      </div>
 
       <div class="meta">
         <span id="relayMeta">Checking relay configuration...</span>
@@ -338,8 +348,8 @@
 
       <ul class="feature-list">
         <li class="feature">
-          <strong>Admin review tools live first</strong>
-          <span>SEA authenticates the user and the current dashboard admits admins by <code>pub</code> allowlist or the local <code>third-eye-print-co/admins</code> graph.</span>
+          <strong>Shared account system first</strong>
+          <span>Anyone can create a portal account now, and admins can promote approved accounts later without changing the login surface.</span>
         </li>
         <li class="feature">
           <strong>Customer workspace next</strong>
@@ -353,9 +363,8 @@
 
       <p class="footnote">
         Right now only the existing <code>tmsteph@3dvr</code> admin identity bootstraps with its matching SEA public
-        key. Any
-        additional Third Eye admins should be added locally through <code>third-eye-print-co/admins</code> or
-        <code>ADMIN_PUBS</code>.
+        key. Additional admins should be promoted locally through <code>third-eye-print-co/admins</code>,
+        <code>ADMIN_PUBS</code>, or the admin dashboard account tools.
       </p>
     </aside>
   </main>
@@ -419,10 +428,31 @@
       aliasInput.disabled = pending;
       passwordInput.disabled = pending;
       signInButton.textContent = pending && mode === "signin" ? "Signing in..." : "Open portal";
-      createButton.textContent = pending && mode === "create" ? "Creating identity..." : "Create portal login";
+      createButton.textContent = pending && mode === "create" ? "Creating account..." : "Create account";
     }
 
-    async function completeAuth(alias, password) {
+    function accountMessage(alias, pub, source) {
+      const subject = source === "create" ? "Portal account created." : "Sign-in confirmed.";
+      return `${subject} Alias: ${alias}. Pub: ${pub || "unknown"}. Customer workspace is coming next, and an admin can promote this account or issue replacement credentials later.`;
+    }
+
+    async function completeAuth(alias, password, source) {
+      const accountResult = typeof portalAuth.syncPortalAccount === "function"
+        ? await portalAuth.syncPortalAccount({
+          gun: gunContext.gun,
+          namespace,
+          alias,
+          pub: gunContext.user && gunContext.user.is ? gunContext.user.is.pub || "" : "",
+          source: source === "create" ? "portal_signup" : "portal_signin",
+          lastLoginAt: new Date().toISOString()
+        })
+        : { ok: true, record: { alias, pub: gunContext.user && gunContext.user.is ? gunContext.user.is.pub || "" : "" } };
+
+      if (!accountResult.ok) {
+        setStatus(accountResult.error || "Could not save the portal account metadata.", "error");
+        return;
+      }
+
       const access = await portalAuth.resolveAdminAccess({
         gun: gunContext.gun,
         user: gunContext.user,
@@ -433,10 +463,7 @@
       if (!access.ok) {
         portalAuth.clearStoredCredentials();
         portalAuth.leaveUser(gunContext.user);
-        setStatus(
-          `Authenticated as ${alias}, but admin access is not enabled yet. Pub: ${access.pub || "unknown"}.`,
-          "error"
-        );
+        setStatus(accountMessage(alias, accountResult.record && accountResult.record.pub ? accountResult.record.pub : access.pub, source), "success");
         return;
       }
 
@@ -461,7 +488,7 @@
         return;
       }
 
-      await completeAuth(result.alias, password);
+      await completeAuth(result.alias, password, "signin");
     }
 
     async function handleCreate(identity, password) {
@@ -471,17 +498,23 @@
         return;
       }
 
-      await handleSignIn(result.alias, password);
+      const authResult = await portalAuth.authenticateUser(gunContext.user, result.alias, password);
+      if (!authResult.ok) {
+        setStatus(authResult.error, "error");
+        return;
+      }
+
+      await completeAuth(authResult.alias, password, "create");
     }
 
     async function boot() {
       const peers = Array.isArray(gunContext.peers) ? gunContext.peers : [];
       relayMetaEl.textContent = peers.length
-        ? `${peers.length} Gun relay peer${peers.length === 1 ? "" : "s"} configured`
-        : "No Gun relay peers configured yet";
+        ? "Live updates connected"
+        : "Live updates unavailable";
 
       if (!gunContext.gun || !gunContext.user) {
-        setStatus("Gun is unavailable. Check the relay script and reload.", "error");
+        setStatus("The portal is unavailable right now. Reload and try again.", "error");
         return;
       }
 
@@ -495,7 +528,7 @@
       }
 
       setPending(true, "signin");
-      setStatus("Restoring previous admin session...");
+      setStatus("Restoring previous session...");
       await handleSignIn(stored.alias, stored.password);
       setPending(false);
     }
@@ -506,12 +539,12 @@
       const password = passwordInput.value;
 
       if (!alias || !password) {
-        setStatus("Enter the Gun alias and password.", "error");
+        setStatus("Enter your username and password.", "error");
         return;
       }
 
       setPending(true, "signin");
-      setStatus("Verifying Gun identity...");
+      setStatus("Verifying account...");
       await handleSignIn(alias, password);
       setPending(false);
     });
@@ -521,12 +554,12 @@
       const password = passwordInput.value;
 
       if (!alias || !password) {
-        setStatus("Enter the Gun alias and password before creating an identity.", "error");
+        setStatus("Enter a username and password before creating an account.", "error");
         return;
       }
 
       setPending(true, "create");
-      setStatus("Creating Gun identity...");
+      setStatus("Creating account...");
       await handleCreate(alias, password);
       setPending(false);
     });

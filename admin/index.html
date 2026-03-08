@@ -380,6 +380,70 @@
       line-height: 1.6;
     }
 
+    .account-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .account-row {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .account-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .account-copy {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .account-copy span {
+      color: var(--muted);
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .account-meta-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .account-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .note {
+      min-height: 22px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .note[data-tone="error"] {
+      color: var(--danger);
+    }
+
+    .note[data-tone="success"] {
+      color: var(--success);
+    }
+
     .notice {
       display: none;
     }
@@ -521,6 +585,50 @@
           </table>
         </div>
       </section>
+
+      <section class="grid">
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <h2>Portal accounts</h2>
+              <p>Review everyone who has created a portal account and promote approved users to admin.</p>
+            </div>
+            <div id="accountMeta" class="hero-meta"></div>
+          </div>
+
+          <p id="accountStatus" class="note" aria-live="polite"></p>
+          <div id="accountList" class="account-list"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <h2>Password reset</h2>
+              <p>Issue fresh credentials when someone loses access. This creates a new alias and archives the old record.</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="resetCurrentInput">Current account</label>
+            <input id="resetCurrentInput" type="text" placeholder="username or alias to recover" />
+          </div>
+
+          <div class="field">
+            <label for="resetNextInput">New username</label>
+            <input id="resetNextInput" type="text" placeholder="new username (creates a fresh alias)" />
+          </div>
+
+          <div class="field">
+            <label for="resetPasswordInput">Temporary password</label>
+            <input id="resetPasswordInput" type="password" placeholder="share with the user so they can sign in" />
+          </div>
+
+          <div class="account-actions">
+            <button id="resetAccountButton" class="btn btn-primary" type="button">Reset credentials</button>
+          </div>
+          <p id="resetAccountStatus" class="note" aria-live="polite"></p>
+        </article>
+      </section>
     </section>
   </main>
 
@@ -540,8 +648,12 @@
     const adminPubs = window.ThirdEyeGun && typeof window.ThirdEyeGun.getAdminPubs === "function"
       ? window.ThirdEyeGun.getAdminPubs()
       : [];
+    const graphKeys = portalAuth.GRAPH_KEYS || {};
     const leadsNode = gunContext.root && typeof gunContext.root.get === "function"
       ? gunContext.root.get("leads")
+      : null;
+    const accountsNode = gunContext.root && typeof gunContext.root.get === "function"
+      ? gunContext.root.get(graphKeys.accounts || "portalAccounts")
       : null;
 
     const metricsEl = document.getElementById("metrics");
@@ -564,8 +676,17 @@
     const refreshButton = document.getElementById("refreshButton");
     const logoutButton = document.getElementById("logoutButton");
     const clearFiltersButton = document.getElementById("clearFiltersButton");
+    const accountMetaEl = document.getElementById("accountMeta");
+    const accountListEl = document.getElementById("accountList");
+    const accountStatusEl = document.getElementById("accountStatus");
+    const resetCurrentInput = document.getElementById("resetCurrentInput");
+    const resetNextInput = document.getElementById("resetNextInput");
+    const resetPasswordInput = document.getElementById("resetPasswordInput");
+    const resetAccountButton = document.getElementById("resetAccountButton");
+    const resetAccountStatusEl = document.getElementById("resetAccountStatus");
 
     const leadRecords = {};
+    const accountRecords = {};
     let authorizedUser = null;
     let latestRenderAt = 0;
 
@@ -596,6 +717,20 @@
       delete statusEl.dataset.tone;
     }
 
+    function setNote(element, message, tone) {
+      if (!element) {
+        return;
+      }
+
+      element.textContent = message || "";
+      if (tone) {
+        element.dataset.tone = tone;
+        return;
+      }
+
+      delete element.dataset.tone;
+    }
+
     function showNotice(title, copy, body) {
       dashboardShell.hidden = true;
       noticeCard.classList.add("show");
@@ -622,6 +757,11 @@
 
     function formatNumber(value) {
       return new Intl.NumberFormat().format(Number(value || 0));
+    }
+
+    function timeValue(value) {
+      const parsed = Date.parse(String(value || ""));
+      return Number.isFinite(parsed) ? parsed : 0;
     }
 
     function formatBreakdownLabel(value) {
@@ -691,11 +831,59 @@
       };
     }
 
+    function normalizeAccountRecord(data, key) {
+      if (!data || typeof data !== "object") {
+        return null;
+      }
+
+      const alias = String(data.alias || key || "").trim() || String(key || "").trim();
+      const pub = String(data.pub || "").trim();
+      const username = String(data.username || "").trim() || (alias.includes("@") ? alias.split("@")[0] : alias);
+      const role = String(data.role || "").trim() || "member";
+      const status = String(data.status || "").trim() || "active";
+      const createdAt = String(data.createdAt || "").trim();
+      const lastLogin = String(data.lastLogin || "").trim();
+      const updatedAt = String(data.updatedAt || "").trim();
+
+      if (![alias, pub, username, role, createdAt, lastLogin, updatedAt].some(Boolean)) {
+        return null;
+      }
+
+      return {
+        alias,
+        pub,
+        username,
+        role,
+        status,
+        createdAt,
+        lastLogin,
+        updatedAt,
+        promotedAt: String(data.promotedAt || "").trim(),
+        promotedBy: String(data.promotedBy || "").trim(),
+        recoveredFrom: String(data.recoveredFrom || "").trim(),
+        recoveredTo: String(data.recoveredTo || "").trim(),
+        archived: Boolean(data.archived || status === "archived"),
+      };
+    }
+
     function getLeadEntries() {
       return Object.values(leadRecords).sort((left, right) => {
         const leftTime = Date.parse(left.createdAt || "") || 0;
         const rightTime = Date.parse(right.createdAt || "") || 0;
         return rightTime - leftTime || right.id.localeCompare(left.id);
+      });
+    }
+
+    function getAccountEntries() {
+      return Object.values(accountRecords).sort((left, right) => {
+        const roleDelta = Number(right.role === "admin") - Number(left.role === "admin");
+        if (roleDelta) {
+          return roleDelta;
+        }
+
+        const leftTime = timeValue(left.lastLogin || left.createdAt || left.updatedAt);
+        const rightTime = timeValue(right.lastLogin || right.createdAt || right.updatedAt);
+        return rightTime - leftTime || left.alias.localeCompare(right.alias);
       });
     }
 
@@ -877,6 +1065,107 @@
       }).join("");
     }
 
+    function prepareReset(entry) {
+      resetCurrentInput.value = entry.alias;
+      resetNextInput.value = "";
+      resetPasswordInput.value = "";
+      setNote(
+        resetAccountStatusEl,
+        `Prepared a reset for ${entry.alias}. Choose a new username and temporary password.`,
+        "success"
+      );
+      resetNextInput.focus();
+    }
+
+    async function handlePromoteAccount(alias) {
+      if (!authorizedUser || !authorizedUser.alias) {
+        setNote(accountStatusEl, "Admin session is required before you can promote accounts.", "error");
+        return;
+      }
+
+      setNote(accountStatusEl, `Promoting ${alias} to admin...`);
+      const result = await portalAuth.promotePortalAdmin({
+        gun: gunContext.gun,
+        namespace,
+        actorAlias: authorizedUser.alias,
+        targetIdentity: alias
+      });
+
+      if (!result || !result.ok) {
+        setNote(accountStatusEl, result && result.error ? result.error : "Could not promote that account.", "error");
+        return;
+      }
+
+      const normalized = normalizeAccountRecord(result.record, result.record.alias);
+      if (normalized) {
+        accountRecords[normalized.alias] = normalized;
+        renderAccounts();
+      }
+
+      setNote(accountStatusEl, `${alias} now has admin access.`, "success");
+    }
+
+    function renderAccounts() {
+      const activeAccounts = getAccountEntries().filter((entry) => !entry.archived && entry.status !== "archived");
+      const adminCount = activeAccounts.filter((entry) => entry.role === "admin").length;
+      accountMetaEl.textContent = activeAccounts.length
+        ? `${formatNumber(activeAccounts.length)} active account${activeAccounts.length === 1 ? "" : "s"} | ${formatNumber(adminCount)} admin${adminCount === 1 ? "" : "s"}`
+        : "No portal accounts yet";
+
+      if (!activeAccounts.length) {
+        accountListEl.innerHTML = `<div class="empty">No portal accounts have been created yet.</div>`;
+        return;
+      }
+
+      accountListEl.innerHTML = activeAccounts.map((entry) => {
+        const meta = [
+          `Created ${formatDate(entry.createdAt)}`,
+          entry.lastLogin ? `Last sign-in ${formatDate(entry.lastLogin)}` : "",
+          entry.promotedAt ? `Promoted ${formatDate(entry.promotedAt)}` : "",
+          entry.pub ? `Pub ${entry.pub.slice(0, 16)}...` : "No pub recorded yet"
+        ].filter(Boolean);
+        const actions = entry.role === "admin"
+          ? `<span class="badge">Admin access active</span>`
+          : `<button class="btn btn-primary" type="button" data-action="promote" data-alias="${escapeHtml(entry.alias)}">Promote to admin</button>`;
+
+        return `
+          <article class="account-row">
+            <div class="account-top">
+              <div class="account-copy">
+                <strong>${escapeHtml(entry.username || entry.alias)}</strong>
+                <span>${escapeHtml(entry.alias)}</span>
+              </div>
+              <div class="account-actions">
+                ${actions}
+                <button class="btn" type="button" data-action="prepare-reset" data-alias="${escapeHtml(entry.alias)}">Prepare reset</button>
+              </div>
+            </div>
+            <div class="account-meta-grid">
+              <span class="badge">${escapeHtml(entry.role)}</span>
+              <span class="badge">${escapeHtml(entry.status)}</span>
+              ${meta.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      accountListEl.querySelectorAll("button[data-action=\"promote\"]").forEach((button) => {
+        button.addEventListener("click", () => {
+          handlePromoteAccount(button.dataset.alias || "");
+        });
+      });
+
+      accountListEl.querySelectorAll("button[data-action=\"prepare-reset\"]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const alias = button.dataset.alias || "";
+          const entry = accountRecords[alias];
+          if (entry) {
+            prepareReset(entry);
+          }
+        });
+      });
+    }
+
     function renderResultsMeta(filteredCount, totalCount) {
       const parts = [
         `${formatNumber(filteredCount)} showing`,
@@ -949,6 +1238,75 @@
       });
     }
 
+    function subscribeToAccounts() {
+      if (!accountsNode || typeof accountsNode.map !== "function") {
+        accountListEl.innerHTML = `<div class="empty">Portal account data is unavailable right now.</div>`;
+        accountMetaEl.textContent = "Account tools unavailable";
+        return;
+      }
+
+      accountsNode.map().on((data, key) => {
+        const normalized = normalizeAccountRecord(data, key);
+        if (!normalized) {
+          delete accountRecords[key];
+          renderAccounts();
+          return;
+        }
+
+        accountRecords[normalized.alias] = normalized;
+        renderAccounts();
+      });
+    }
+
+    async function handleResetAccount() {
+      if (!authorizedUser || !authorizedUser.alias) {
+        setNote(resetAccountStatusEl, "Admin session is required before you can reset credentials.", "error");
+        return;
+      }
+
+      const currentIdentity = resetCurrentInput.value.trim();
+      const nextIdentity = resetNextInput.value.trim();
+      const tempPassword = resetPasswordInput.value;
+
+      if (!currentIdentity || !nextIdentity || !tempPassword) {
+        setNote(resetAccountStatusEl, "Enter the current account, new username, and temporary password.", "error");
+        return;
+      }
+
+      resetAccountButton.disabled = true;
+      setNote(resetAccountStatusEl, "Creating fresh credentials...");
+
+      const result = await portalAuth.resetPortalCredentials({
+        gun: gunContext.gun,
+        namespace,
+        actorAlias: authorizedUser.alias,
+        currentIdentity,
+        nextIdentity,
+        tempPassword
+      });
+
+      resetAccountButton.disabled = false;
+
+      if (!result || !result.ok) {
+        setNote(
+          resetAccountStatusEl,
+          result && result.error ? result.error : "Could not reset the account credentials.",
+          "error"
+        );
+        return;
+      }
+
+      resetCurrentInput.value = "";
+      resetNextInput.value = "";
+      resetPasswordInput.value = "";
+      setNote(
+        resetAccountStatusEl,
+        `Fresh credentials ready. New alias: ${result.nextAlias}. Temporary password: ${result.tempPassword}.`,
+        "success"
+      );
+      setNote(accountStatusEl, `${result.currentAlias} was reset to ${result.nextAlias}.`, "success");
+    }
+
     async function boot() {
       const peers = Array.isArray(gunContext.peers) ? gunContext.peers : [];
       relayMetaEl.textContent = peers.length
@@ -1005,6 +1363,8 @@
       sessionUserEl.textContent = `Signed in as ${authResult.alias}`;
       setStatus("Admin access confirmed. Loading latest activity.", "success");
       subscribeToLeads();
+      renderAccounts();
+      subscribeToAccounts();
     }
 
     searchInput.addEventListener("input", renderDashboard);
@@ -1022,6 +1382,7 @@
       serviceFilter.value = "";
       renderDashboard();
     });
+    resetAccountButton.addEventListener("click", handleResetAccount);
     logoutButton.addEventListener("click", () => {
       portalAuth.clearStoredCredentials();
       portalAuth.leaveUser(gunContext.user);

@@ -114,7 +114,7 @@ try {
   await assertHtmlContains(`${BASE_URL}/auth/`, [
     "Portal sign in",
     "Open portal",
-    "Create portal login"
+    "Create account"
   ]);
   await assertHtmlContains(`${BASE_URL}/admin/`, [
     "Quotes and orders, in one place.",

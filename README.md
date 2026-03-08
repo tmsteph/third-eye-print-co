@@ -58,6 +58,8 @@ This writes screenshots and a small report to `artifacts/screenshots/`.
 ## Admin auth
 
 - Gun aliases sign in via SEA on `/auth/`.
+- Anyone can create a portal account on `/auth/`; accounts are recorded in `third-eye-print-co/portalAccounts`.
 - Admin access is granted when the authenticated user `pub` appears in `ADMIN_PUBS` or their alias/pub is present in `third-eye-print-co/admins`.
+- The admin dashboard can promote portal accounts to admin and issue fresh credentials when someone loses access.
 - `tmsteph@3dvr` is the only 3DVR admin identity that bootstraps into Third Eye by default, and it seeds a local `third-eye-print-co/admins` record after a successful sign-in.
 - Lead data is read live from `third-eye-print-co/leads` in Gun; there is no server-owned lead database in production.
