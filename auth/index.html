@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Third Eye Portal Sign In</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09090c;
+      --panel: rgba(18, 18, 24, 0.88);
+      --panel-strong: rgba(13, 13, 18, 0.96);
+      --line: rgba(255, 255, 255, 0.1);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #f8f5ed;
+      --muted: #c1c0ba;
+      --accent: #e2ba67;
+      --accent-strong: #f1cf8a;
+      --cool: #84d7e4;
+      --danger: #ff9682;
+      --success: #8fdca7;
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(520px 300px at 0% 0%, rgba(132, 215, 228, 0.15), transparent 60%),
+        radial-gradient(540px 320px at 100% 0%, rgba(226, 186, 103, 0.14), transparent 58%),
+        linear-gradient(180deg, #09090c 0%, #0f0f14 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      width: min(1020px, 100%);
+      display: grid;
+      grid-template-columns: minmax(0, 430px) minmax(0, 1fr);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+    }
+
+    .form-panel {
+      padding: 42px 34px;
+      background: var(--panel-strong);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(226, 186, 103, 0.45);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Fraunces", serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+
+    .intro {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 34ch;
+    }
+
+    .status {
+      min-height: 22px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .status[data-tone="error"] {
+      color: var(--danger);
+    }
+
+    .status[data-tone="success"] {
+      color: var(--success);
+    }
+
+    form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font: inherit;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: rgba(226, 186, 103, 0.6);
+      box-shadow: 0 0 0 3px rgba(226, 186, 103, 0.16);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .primary,
+    .secondary {
+      border-radius: 18px;
+      padding: 15px 18px;
+      font-weight: 800;
+    }
+
+    .primary {
+      border: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #17130c;
+      box-shadow: 0 16px 36px rgba(226, 186, 103, 0.2);
+    }
+
+    .secondary {
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+    }
+
+    .primary:disabled,
+    .secondary:disabled {
+      opacity: 0.55;
+      cursor: progress;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .meta a {
+      color: var(--cool);
+    }
+
+    .aside {
+      padding: 42px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      background:
+        radial-gradient(260px 180px at 100% 0%, rgba(226, 186, 103, 0.1), transparent 60%),
+        linear-gradient(180deg, rgba(20, 21, 28, 0.76), rgba(11, 11, 15, 0.92));
+    }
+
+    .aside h2 {
+      margin: 0;
+      font-family: "Fraunces", serif;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+
+    .aside p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 40ch;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 14px;
+    }
+
+    .feature {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .feature span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .footnote {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95em;
+    }
+
+    @media (max-width: 860px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .aside {
+        border-top: 1px solid var(--line);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="form-panel" aria-labelledby="authTitle">
+      <div class="eyebrow">Third Eye Print Co.</div>
+      <div>
+        <h1 id="authTitle">Portal sign in</h1>
+        <p class="intro">
+          Sign in if you already have a portal account, or create one here. Approved admins can review quotes and
+          orders now, and customer order history and billing tools can use this same login later.
+        </p>
+      </div>
+
+      <form id="authForm" novalidate>
+        <div class="field">
+          <label for="alias">Username or alias</label>
+          <input id="alias" name="alias" autocomplete="username" placeholder="username or username@thirdeye" required />
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <p id="status" class="status" aria-live="polite"></p>
+        <p class="status">
+          Anyone can create a portal account today. If someone needs admin access later, an existing admin can promote
+          that account without making them sign up again.
+        </p>
+
+        <div class="actions">
+          <button id="signInButton" class="primary" type="submit">Open portal</button>
+          <button id="createButton" class="secondary" type="button">Create account</button>
+        </div>
+      </form>
+
+      <div class="feature-list" aria-label="Portal account help">
+        <div class="feature">
+          <strong>Create an account</strong>
+          <span>Use a new username and password, then click <code>Create account</code>. The same account can be promoted to admin later if needed.</span>
+        </div>
+        <div class="feature">
+          <strong>Password reset</strong>
+          <span>If someone loses access, an admin can issue fresh credentials from the dashboard today.</span>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span id="relayMeta">Checking relay configuration...</span>
+        <a href="/">Return to site</a>
+      </div>
+    </section>
+
+    <aside class="aside" aria-label="Portal roadmap preview">
+      <div>
+        <h2>One account system, expanding over time.</h2>
+        <p>
+          This login is shared on purpose. Start with internal quote and order access now, then expand into customer
+          order history, approvals, and billing tools without moving people to a separate account system.
+        </p>
+      </div>
+
+      <ul class="feature-list">
+        <li class="feature">
+          <strong>Create once, reuse later</strong>
+          <span>Anyone can create a portal account now, and approved users can be promoted to admin later without changing how they sign in.</span>
+        </li>
+        <li class="feature">
+          <strong>Admin recovery is built in</strong>
+          <span>Admins can issue replacement credentials from the dashboard when someone loses access.</span>
+        </li>
+        <li class="feature">
+          <strong>Customer tools can layer in next</strong>
+          <span>Order history, approvals, and saved billing details can be added to this same portal as the customer workspace takes shape.</span>
+        </li>
+      </ul>
+
+      <p class="footnote">
+        If you need admin access, create an account first and an existing admin can promote it from the dashboard.
+      </p>
+    </aside>
+  </main>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
+  <script src="/gun-init.js"></script>
+  <script src="/portal-auth.js"></script>
+  <script>
+    const portalAuth = window.ThirdEyePortalAuth || {};
+    const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
+      ? window.ThirdEyeGun.createContext()
+      : { gun: null, user: null, peers: [] };
+    const namespace = window.ThirdEyeGun && typeof window.ThirdEyeGun.getNamespace === "function"
+      ? window.ThirdEyeGun.getNamespace()
+      : "third-eye-print-co";
+    const adminPubs = window.ThirdEyeGun && typeof window.ThirdEyeGun.getAdminPubs === "function"
+      ? window.ThirdEyeGun.getAdminPubs()
+      : [];
+
+    const authForm = document.getElementById("authForm");
+    const aliasInput = document.getElementById("alias");
+    const passwordInput = document.getElementById("password");
+    const signInButton = document.getElementById("signInButton");
+    const createButton = document.getElementById("createButton");
+    const statusEl = document.getElementById("status");
+    const relayMetaEl = document.getElementById("relayMeta");
+    const nextUrl = sanitizeNext(new URLSearchParams(window.location.search).get("next"));
+    const portalUrl = "/portal/";
+
+    function sanitizeNext(value) {
+      if (!value || typeof value !== "string") {
+        return "/admin/";
+      }
+
+      try {
+        const candidate = new URL(value, window.location.origin);
+        if (candidate.origin !== window.location.origin) {
+          return "/admin/";
+        }
+
+        return `${candidate.pathname}${candidate.search}${candidate.hash}` || "/admin/";
+      } catch (_error) {
+        return "/admin/";
+      }
+    }
+
+    function setStatus(message, tone) {
+      statusEl.textContent = message || "";
+      if (tone) {
+        statusEl.dataset.tone = tone;
+        return;
+      }
+
+      delete statusEl.dataset.tone;
+    }
+
+    function setPending(pending, mode = "signin") {
+      signInButton.disabled = pending;
+      createButton.disabled = pending;
+      aliasInput.disabled = pending;
+      passwordInput.disabled = pending;
+      signInButton.textContent = pending && mode === "signin" ? "Signing in..." : "Open portal";
+      createButton.textContent = pending && mode === "create" ? "Creating account..." : "Create account";
+    }
+
+    function portalRedirectUrl(source) {
+      const params = new URLSearchParams();
+      params.set("state", source === "create" ? "created" : "signed-in");
+      return `${portalUrl}?${params.toString()}`;
+    }
+
+    async function completeAuth(alias, password, source) {
+      const currentPub = gunContext.user && gunContext.user.is ? gunContext.user.is.pub || "" : "";
+      const accountResult = typeof portalAuth.syncPortalAccount === "function"
+        ? await portalAuth.syncPortalAccount({
+          gun: gunContext.gun,
+          namespace,
+          alias,
+          pub: currentPub,
+          source: source === "create" ? "portal_signup" : "portal_signin",
+          lastLoginAt: new Date().toISOString()
+        })
+        : { ok: true, record: { alias, pub: currentPub } };
+
+      if (!accountResult.ok) {
+        setStatus(accountResult.error || "Could not save the portal account metadata.", "error");
+        return;
+      }
+
+      const access = await portalAuth.resolveAdminAccess({
+        gun: gunContext.gun,
+        user: gunContext.user,
+        alias,
+        adminPubs,
+        namespace
+      });
+      if (!access.ok) {
+        portalAuth.writeStoredCredentials(
+          alias,
+          password,
+          accountResult.record && accountResult.record.pub ? accountResult.record.pub : currentPub
+        );
+        setStatus("Portal account ready. Redirecting...", "success");
+        window.location.assign(portalRedirectUrl(source));
+        return;
+      }
+
+      if (access.mode === "bootstrap_identity" && typeof portalAuth.ensureBootstrapAdminAccess === "function") {
+        await portalAuth.ensureBootstrapAdminAccess({
+          gun: gunContext.gun,
+          alias,
+          pub: access.pub,
+          namespace
+        });
+      }
+
+      portalAuth.writeStoredCredentials(alias, password, access.pub);
+      setStatus("Admin access confirmed. Redirecting...", "success");
+      window.location.assign(nextUrl);
+    }
+
+    async function handleSignIn(identity, password) {
+      const result = await portalAuth.authenticateUser(gunContext.user, identity, password);
+      if (!result.ok) {
+        setStatus(result.error, "error");
+        return;
+      }
+
+      await completeAuth(result.alias, password, "signin");
+    }
+
+    async function handleCreate(identity, password) {
+      const result = await portalAuth.createUser(gunContext.user, identity, password);
+      if (!result.ok) {
+        setStatus(result.error, "error");
+        return;
+      }
+
+      const authResult = await portalAuth.authenticateUser(gunContext.user, result.alias, password);
+      if (!authResult.ok) {
+        setStatus(authResult.error, "error");
+        return;
+      }
+
+      await completeAuth(authResult.alias, password, "create");
+    }
+
+    async function boot() {
+      const peers = Array.isArray(gunContext.peers) ? gunContext.peers : [];
+      relayMetaEl.textContent = peers.length
+        ? "Live updates connected"
+        : "Live updates unavailable";
+
+      if (!gunContext.gun || !gunContext.user) {
+        setStatus("The portal is unavailable right now. Reload and try again.", "error");
+        return;
+      }
+
+      const stored = portalAuth.readStoredCredentials();
+      if (stored.alias && !aliasInput.value.trim()) {
+        aliasInput.value = stored.alias;
+      }
+
+      if (!stored.alias || !stored.password) {
+        return;
+      }
+
+      setPending(true, "signin");
+      setStatus("Restoring previous session...");
+      await handleSignIn(stored.alias, stored.password);
+      setPending(false);
+    }
+
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const alias = aliasInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!alias || !password) {
+        setStatus("Enter your username and password.", "error");
+        return;
+      }
+
+      setPending(true, "signin");
+      setStatus("Verifying account...");
+      await handleSignIn(alias, password);
+      setPending(false);
+    });
+
+    createButton.addEventListener("click", async () => {
+      const alias = aliasInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!alias || !password) {
+        setStatus("Enter a username and password before creating an account.", "error");
+        return;
+      }
+
+      setPending(true, "create");
+      setStatus("Creating account...");
+      await handleCreate(alias, password);
+      setPending(false);
+    });
+
+    boot();
+  </script>
+</body>
+</html>

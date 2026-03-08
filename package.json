@@ -2,15 +2,13 @@
   "name": "third-eye-print-co",
   "version": "1.0.0",
   "private": true,
-  "description": "Third Eye Print Co site with Stripe checkout + GunJS lead relay",
-  "main": "server.js",
+  "description": "Third Eye Print Co static Vercel site with Stripe checkout + GunJS relay",
   "scripts": {
-    "start": "node server.js",
+    "dev:vercel": "vercel dev --listen 127.0.0.1:8787",
+    "test": "node --test",
     "test:visual": "node scripts/visual-smoke.mjs"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.21.2",
     "stripe": "^14.0.0"
   }
 }

@@ -35,7 +35,7 @@ function run(command, args) {
   });
 }
 
-async function waitForServer(url, attempts = 40) {
+async function waitForServer(url, attempts = 100) {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
       const response = await fetch(url);
@@ -97,13 +97,9 @@ function getFileSize(filePath) {
   return fs.statSync(filePath).size;
 }
 
-const server = spawn("node", ["server.js"], {
+const server = spawn("vercel", ["dev", "--yes", "--listen", `${HOST}:${PORT}`], {
   cwd: ROOT,
-  env: {
-    ...process.env,
-    PORT: String(PORT),
-    SITE_URL: BASE_URL
-  },
+  env: { ...process.env },
   stdio: "inherit"
 });
 
@@ -114,6 +110,19 @@ try {
     "Core offerings",
     "Starter packages",
     "Request a quote"
+  ]);
+  await assertHtmlContains(`${BASE_URL}/auth/`, [
+    "Portal sign in",
+    "Open portal",
+    "Create account"
+  ]);
+  await assertHtmlContains(`${BASE_URL}/portal/`, [
+    "What this page is for",
+    "What is coming next"
+  ]);
+  await assertHtmlContains(`${BASE_URL}/admin/`, [
+    "Quotes and orders, in one place.",
+    "Lead feed"
   ]);
 
   const outputs = [];

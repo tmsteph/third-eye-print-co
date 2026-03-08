@@ -115,6 +115,15 @@
       padding: 14px 0;
     }
 
+    .nav-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
     .brand {
       display: flex;
       align-items: center;
@@ -158,9 +167,20 @@
       gap: 10px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      min-width: 0;
     }
 
-    .nav-links a {
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex: 0 0 auto;
+    }
+
+    .nav-links a,
+    .nav-actions a {
       padding: 10px 12px;
       border-radius: 999px;
       border: 1px solid var(--line);
@@ -170,17 +190,39 @@
       transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover,
+    .nav-actions a:hover {
       color: var(--text);
       border-color: rgba(228, 208, 139, 0.3);
       background: rgba(255, 255, 255, 0.05);
     }
 
-    .nav-links .nav-cta {
+    .nav-actions .nav-cta {
       border-color: transparent;
       color: #0b0b0f;
       background: linear-gradient(135deg, #f0db97, #d8bc64);
       font-weight: 800;
+    }
+
+    .nav-actions .nav-account {
+      padding-inline: 8px;
+      border-color: transparent;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 600;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-actions .nav-account[data-state="signed-in"] {
+      color: var(--text);
+    }
+
+    .nav-actions .nav-account:hover {
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .hero {
@@ -969,6 +1011,18 @@
         justify-content: flex-start;
       }
 
+      .nav-cluster,
+      .nav-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+
+      .nav-cluster {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
       .offer-grid,
       .field-grid {
         grid-template-columns: 1fr;
@@ -1106,12 +1160,17 @@
         </div>
       </a>
 
-      <nav class="nav-links" aria-label="Primary">
-        <a href="#offerings">Offerings</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#process">Process</a>
-        <a href="#quote" class="nav-cta">Request a Quote</a>
-      </nav>
+      <div class="nav-cluster">
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#offerings">Offerings</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#process">Process</a>
+        </nav>
+        <div class="nav-actions">
+          <a href="/auth/" class="nav-account" id="portalNavLink" data-state="signed-out">Portal</a>
+          <a href="#quote" class="nav-cta">Request a Quote</a>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -1640,6 +1699,7 @@
 
   <script src="/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+  <script src="/gun-init.js"></script>
   <script>
     const runtimeConfig = window.THIRD_EYE_CONFIG || {};
     const form = document.getElementById("quoteForm");
@@ -1653,16 +1713,16 @@
     const colorsField = document.getElementById("colors");
     const budgetField = document.getElementById("budget");
     const fulfillmentField = document.getElementById("fulfillment");
+    const portalNavLink = document.getElementById("portalNavLink");
     const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
-    const quoteEmailTo = "gamboaesai@gmail.com";
+    const quoteEmailTo = String(runtimeConfig.quoteEmailTo || "gamboaesai@gmail.com").trim();
 
-    const configuredRelayUrls = Array.isArray(runtimeConfig.gunRelayUrls)
-      ? runtimeConfig.gunRelayUrls.map((value) => String(value || "").trim()).filter(Boolean)
-      : [];
-    const legacyRelayUrl = String(runtimeConfig.gunRelayUrl || "").trim();
-    const gunRelayUrls = configuredRelayUrls.length ? configuredRelayUrls : (legacyRelayUrl ? [legacyRelayUrl] : []);
-    const gun = window.Gun && gunRelayUrls.length ? window.Gun(gunRelayUrls) : null;
-    const gunLeads = gun ? gun.get("third-eye-print-co").get("leads") : null;
+    const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
+      ? window.ThirdEyeGun.createContext()
+      : { gun: null, root: null, peers: [] };
+    const gunLeads = gunContext.root && typeof gunContext.root.get === "function"
+      ? gunContext.root.get("leads")
+      : null;
 
     const depositCents = Number(runtimeConfig.stripeDepositCents || 0);
     const depositCurrency = String(runtimeConfig.stripeCurrency || "usd").toUpperCase();
@@ -1686,6 +1746,7 @@
     ];
     let autoNotesValue = "";
     let manualNotesValue = notesField ? String(notesField.value || "").trim() : "";
+    let activeQuoteId = "";
 
     [
       ["Screen printing", "Need a screen printing quote."],
@@ -1702,10 +1763,49 @@
       servicePrefillNotes.set(service, note);
     });
     const phoneCopyTimeouts = new WeakMap();
+    const portalAliasStorageKey = "thirdEyeAdminAlias";
+
+    function syncPortalNavLink() {
+      if (!portalNavLink) {
+        return;
+      }
+
+      let alias = "";
+
+      try {
+        alias = String(window.localStorage.getItem(portalAliasStorageKey) || "").trim();
+      } catch (_error) {
+        alias = "";
+      }
+
+      if (alias) {
+        const username = alias.includes("@") ? alias.split("@")[0] : alias;
+        portalNavLink.textContent = username || "Portal";
+        portalNavLink.href = "/portal/";
+        portalNavLink.dataset.state = "signed-in";
+        portalNavLink.setAttribute("aria-label", `Open portal for ${username || alias}`);
+        portalNavLink.title = alias;
+        return;
+      }
+
+      portalNavLink.textContent = "Portal";
+      portalNavLink.href = "/auth/";
+      portalNavLink.dataset.state = "signed-out";
+      portalNavLink.setAttribute("aria-label", "Open portal sign in");
+      portalNavLink.removeAttribute("title");
+    }
 
     function trimFieldValue(field) {
       return field ? String(field.value || "").trim() : "";
     }
+
+    syncPortalNavLink();
+
+    window.addEventListener("storage", (event) => {
+      if (!event || event.key === portalAliasStorageKey) {
+        syncPortalNavLink();
+      }
+    });
 
     function showPhoneCopyNote(link, message) {
       const wrapper = link.closest(".phone-action");
@@ -1908,6 +2008,37 @@
       return Boolean(lead.name) && Boolean(lead.contact);
     }
 
+    function wait(ms) {
+      return new Promise((resolve) => window.setTimeout(resolve, ms));
+    }
+
+    function randomId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return window.crypto.randomUUID();
+      }
+
+      return `third-eye-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    }
+
+    function ensureQuoteId() {
+      if (!activeQuoteId) {
+        activeQuoteId = randomId();
+      }
+
+      return activeQuoteId;
+    }
+
+    function buildLeadRecord(source, lead, extra = {}) {
+      return {
+        id: randomId(),
+        quoteId: ensureQuoteId(),
+        source,
+        createdAt: new Date().toISOString(),
+        ...lead,
+        ...extra
+      };
+    }
+
     function buildMailtoUrl(lead) {
       const serviceLabel = lead.serviceType || "Custom print quote";
       const requesterLabel = lead.name || lead.company || lead.contact || "";
@@ -1937,33 +2068,34 @@
       return `mailto:${quoteEmailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
     }
 
-    async function saveLeadToApi(source, lead) {
-      const response = await fetch("/api/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source, lead })
-      });
-
-      if (!response.ok) {
-        throw new Error("Lead API request failed");
+    function syncLeadRecord(record) {
+      if (!gunLeads) {
+        return Promise.resolve({ ok: false, offline: true });
       }
+
+      return new Promise((resolve, reject) => {
+        gunLeads.get(record.id).put(record, (ack) => {
+          if (ack && ack.err) {
+            reject(new Error(String(ack.err)));
+            return;
+          }
+
+          resolve(ack || {});
+        });
+      });
     }
 
-    function syncLeadToGun(source, lead) {
-      if (!gunLeads) {
-        return Promise.resolve();
+    async function persistLeadEvent(source, lead, extra = {}, timeoutMs = 0) {
+      const record = buildLeadRecord(source, lead, extra);
+      const syncPromise = syncLeadRecord(record);
+
+      if (timeoutMs > 0) {
+        await Promise.race([syncPromise, wait(timeoutMs)]);
+      } else {
+        await syncPromise;
       }
 
-      return new Promise((resolve) => {
-        gunLeads.set(
-          {
-            source,
-            createdAt: new Date().toISOString(),
-            ...lead
-          },
-          () => resolve()
-        );
-      });
+      return record;
     }
 
     async function createCheckoutSession(lead) {
@@ -1978,18 +2110,30 @@
         throw new Error(body.error || "Stripe checkout failed");
       }
 
-      return body.url;
+      return body;
     }
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const lead = formDataToLead();
 
-      msg.textContent = "Opening your email app with a prefilled quote request...";
+      setBusy(true);
+      msg.textContent = gunLeads
+        ? "Saving quote details and opening your email app..."
+        : "Opening your email app with a prefilled quote request...";
+
+      try {
+        await persistLeadEvent("quote", lead, {}, 900);
+      } catch (_error) {
+        console.warn("Lead sync failed; continuing with mailto flow.");
+      }
+
       window.location.href = buildMailtoUrl(lead);
 
       window.setTimeout(() => {
         msg.textContent = "If no email app opened, call or text +1 (619) 257-8389.";
+        setBusy(false);
+        activeQuoteId = "";
       }, 1200);
     });
 
@@ -2006,13 +2150,25 @@
           setBusy(true);
           msg.textContent = "Preparing secure Stripe checkout...";
 
-          await Promise.all([
-            saveLeadToApi("quote_deposit_intent", lead),
-            syncLeadToGun("quote_deposit_intent", lead)
-          ]);
+          let quoteRecord = null;
+          try {
+            quoteRecord = await persistLeadEvent("quote_deposit_intent", lead);
+          } catch (_error) {
+            console.warn("Lead sync failed before checkout; continuing.");
+          }
 
-          const checkoutUrl = await createCheckoutSession(lead);
-          window.location.assign(checkoutUrl);
+          const checkout = await createCheckoutSession(lead);
+
+          try {
+            await persistLeadEvent("deposit_checkout", lead, {
+              quoteId: quoteRecord && quoteRecord.quoteId ? quoteRecord.quoteId : ensureQuoteId(),
+              checkoutSessionId: checkout.id || ""
+            });
+          } catch (_error) {
+            console.warn("Checkout event sync failed; continuing to Stripe.");
+          }
+
+          window.location.assign(checkout.url);
         } catch (_error) {
           msg.textContent = "Checkout is unavailable right now. Send the quote and we will follow up.";
           setBusy(false);
