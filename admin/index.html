@@ -410,10 +410,9 @@
       <div class="hero-top">
         <div>
           <div class="eyebrow">Third Eye Admin</div>
-          <h1>Reactive lead feed, no long-lived app server.</h1>
+          <h1>Quotes and orders, in one place.</h1>
           <p>
-            Gun stores the quote pipeline and SEA authenticates the admin. Vercel only handles the checkout secret
-            path and public runtime config.
+            Review incoming requests, track activity, and keep customer follow-up moving from one dashboard.
           </p>
         </div>
 
@@ -425,8 +424,8 @@
       </div>
 
       <div class="hero-meta">
-        <span id="sessionUser">Checking Gun session...</span>
-        <span id="relayMeta">Checking relay configuration...</span>
+        <span id="sessionUser">Checking sign-in...</span>
+        <span id="relayMeta">Connecting live updates...</span>
         <span id="lastLoaded">Waiting for lead records...</span>
       </div>
 
@@ -437,7 +436,7 @@
       <div class="card-head">
         <div>
           <h2 id="noticeTitle">Admin access unavailable</h2>
-          <p id="noticeCopy">The dashboard needs a valid Gun admin session before it can read the lead graph.</p>
+          <p id="noticeCopy">Sign in with an approved admin account to open the dashboard.</p>
         </div>
       </div>
       <div id="noticeBody" class="empty"></div>
@@ -451,7 +450,7 @@
           <div class="card-head">
             <div>
               <h2>Lead sources</h2>
-              <p>Which site actions are writing into the Gun lead graph.</p>
+              <p>See which parts of the site are driving requests.</p>
             </div>
           </div>
           <div id="sourceBreakdown" class="breakdown"></div>
@@ -472,7 +471,7 @@
         <div class="card-head">
           <div>
             <h2>Lead feed</h2>
-            <p>Live records from <code>third-eye-print-co/leads</code> in Gun. Newest entries render first.</p>
+            <p>Latest quote and order activity. Newest entries appear first.</p>
           </div>
           <div id="resultsMeta" class="hero-meta"></div>
         </div>
@@ -881,7 +880,7 @@
     function renderResultsMeta(filteredCount, totalCount) {
       const parts = [
         `${formatNumber(filteredCount)} showing`,
-        `${formatNumber(totalCount)} total Gun records`
+        `${formatNumber(totalCount)} total records`
       ];
 
       if (authorizedUser && authorizedUser.pub) {
@@ -919,7 +918,7 @@
       latestRenderAt = Date.now();
       lastLoadedEl.textContent = entries.length
         ? `Latest event ${formatDate(entries[0].createdAt)}`
-        : "Connected, but no Gun lead records have arrived yet.";
+        : "Connected, but no requests have arrived yet.";
 
       dashboardShell.hidden = false;
       hideNotice();
@@ -932,9 +931,9 @@
     function subscribeToLeads() {
       if (!leadsNode || typeof leadsNode.map !== "function") {
         showNotice(
-          "Gun lead graph unavailable",
-          "The dashboard could not attach to the configured Gun namespace.",
-          "Check <code>GUN_RELAY_URLS</code> and reload the page."
+          "Live updates unavailable",
+          "The dashboard could not connect to the request feed.",
+          "Reload the page and try again."
         );
         return;
       }
@@ -953,14 +952,14 @@
     async function boot() {
       const peers = Array.isArray(gunContext.peers) ? gunContext.peers : [];
       relayMetaEl.textContent = peers.length
-        ? `${peers.length} Gun relay peer${peers.length === 1 ? "" : "s"} configured`
-        : "No Gun relay peers configured";
+        ? "Live updates connected"
+        : "Live updates unavailable";
 
       if (!gunContext.gun || !gunContext.user) {
         showNotice(
-          "Gun is unavailable",
-          "The admin dashboard needs Gun + SEA to authenticate and read lead data.",
-          "Reload the page after confirming the Gun scripts can load."
+          "Dashboard unavailable",
+          "The page could not load the services it needs right now.",
+          "Reload the page and try again."
         );
         return;
       }
@@ -971,7 +970,7 @@
         return;
       }
 
-      setStatus("Verifying admin Gun session...");
+      setStatus("Verifying sign-in...");
       const authResult = await portalAuth.authenticateUser(gunContext.user, stored.alias, stored.password);
       if (!authResult.ok) {
         portalAuth.clearStoredCredentials();
@@ -990,8 +989,8 @@
         portalAuth.clearStoredCredentials();
         portalAuth.leaveUser(gunContext.user);
         showNotice(
-          "Authenticated pub is not allowlisted",
-          "The provided Gun identity is valid but does not have admin access for this site yet.",
+          "Admin access not enabled",
+          "This account signed in successfully but does not have access to the dashboard yet.",
           `Authenticated alias: <code>${escapeHtml(authResult.alias || "unknown")}</code><br />Authenticated pub: <code>${escapeHtml(access.pub || "unknown")}</code>`
         );
         return;
@@ -1004,7 +1003,7 @@
       };
 
       sessionUserEl.textContent = `Signed in as ${authResult.alias}`;
-      setStatus(`Admin access confirmed via ${access.mode.replace("_", " ")}. Listening for Gun lead updates.`, "success");
+      setStatus("Admin access confirmed. Loading latest activity.", "success");
       subscribeToLeads();
     }
 
@@ -1014,7 +1013,7 @@
     refreshButton.addEventListener("click", () => {
       if (!dashboardShell.hidden) {
         renderDashboard();
-        setStatus("Snapshot refreshed from the local Gun state.", "success");
+        setStatus("Dashboard refreshed.", "success");
       }
     });
     clearFiltersButton.addEventListener("click", () => {

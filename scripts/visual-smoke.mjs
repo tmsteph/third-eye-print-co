@@ -117,7 +117,7 @@ try {
     "Create portal login"
   ]);
   await assertHtmlContains(`${BASE_URL}/admin/`, [
-    "Reactive lead feed, no long-lived app server.",
+    "Quotes and orders, in one place.",
     "Lead feed"
   ]);
 
