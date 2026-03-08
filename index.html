@@ -204,16 +204,25 @@
       font-weight: 800;
     }
 
-    .nav-actions .nav-portal {
-      border-color: rgba(228, 208, 139, 0.28);
-      color: var(--text);
-      background: rgba(228, 208, 139, 0.08);
-      font-weight: 700;
+    .nav-actions .nav-account {
+      padding-inline: 8px;
+      border-color: transparent;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 600;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .nav-actions .nav-portal:hover {
-      border-color: rgba(228, 208, 139, 0.45);
-      background: rgba(228, 208, 139, 0.14);
+    .nav-actions .nav-account[data-state="signed-in"] {
+      color: var(--text);
+    }
+
+    .nav-actions .nav-account:hover {
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .hero {
@@ -1158,8 +1167,8 @@
           <a href="#process">Process</a>
         </nav>
         <div class="nav-actions">
+          <a href="/auth/" class="nav-account" id="portalNavLink" data-state="signed-out">Portal</a>
           <a href="#quote" class="nav-cta">Request a Quote</a>
-          <a href="/auth/" class="nav-portal">Portal Login</a>
         </div>
       </div>
     </div>
@@ -1704,6 +1713,7 @@
     const colorsField = document.getElementById("colors");
     const budgetField = document.getElementById("budget");
     const fulfillmentField = document.getElementById("fulfillment");
+    const portalNavLink = document.getElementById("portalNavLink");
     const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
     const quoteEmailTo = String(runtimeConfig.quoteEmailTo || "gamboaesai@gmail.com").trim();
 
@@ -1753,10 +1763,49 @@
       servicePrefillNotes.set(service, note);
     });
     const phoneCopyTimeouts = new WeakMap();
+    const portalAliasStorageKey = "thirdEyeAdminAlias";
+
+    function syncPortalNavLink() {
+      if (!portalNavLink) {
+        return;
+      }
+
+      let alias = "";
+
+      try {
+        alias = String(window.localStorage.getItem(portalAliasStorageKey) || "").trim();
+      } catch (_error) {
+        alias = "";
+      }
+
+      if (alias) {
+        const username = alias.includes("@") ? alias.split("@")[0] : alias;
+        portalNavLink.textContent = username || "Portal";
+        portalNavLink.href = "/portal/";
+        portalNavLink.dataset.state = "signed-in";
+        portalNavLink.setAttribute("aria-label", `Open portal for ${username || alias}`);
+        portalNavLink.title = alias;
+        return;
+      }
+
+      portalNavLink.textContent = "Portal";
+      portalNavLink.href = "/auth/";
+      portalNavLink.dataset.state = "signed-out";
+      portalNavLink.setAttribute("aria-label", "Open portal sign in");
+      portalNavLink.removeAttribute("title");
+    }
 
     function trimFieldValue(field) {
       return field ? String(field.value || "").trim() : "";
     }
+
+    syncPortalNavLink();
+
+    window.addEventListener("storage", (event) => {
+      if (!event || event.key === portalAliasStorageKey) {
+        syncPortalNavLink();
+      }
+    });
 
     function showPhoneCopyNote(link, message) {
       const wrapper = link.closest(".phone-action");
