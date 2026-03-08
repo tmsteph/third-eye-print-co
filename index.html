@@ -115,6 +115,15 @@
       padding: 14px 0;
     }
 
+    .nav-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
     .brand {
       display: flex;
       align-items: center;
@@ -158,9 +167,20 @@
       gap: 10px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      min-width: 0;
     }
 
-    .nav-links a {
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex: 0 0 auto;
+    }
+
+    .nav-links a,
+    .nav-actions a {
       padding: 10px 12px;
       border-radius: 999px;
       border: 1px solid var(--line);
@@ -170,27 +190,28 @@
       transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover,
+    .nav-actions a:hover {
       color: var(--text);
       border-color: rgba(228, 208, 139, 0.3);
       background: rgba(255, 255, 255, 0.05);
     }
 
-    .nav-links .nav-cta {
+    .nav-actions .nav-cta {
       border-color: transparent;
       color: #0b0b0f;
       background: linear-gradient(135deg, #f0db97, #d8bc64);
       font-weight: 800;
     }
 
-    .nav-links .nav-portal {
+    .nav-actions .nav-portal {
       border-color: rgba(228, 208, 139, 0.28);
       color: var(--text);
       background: rgba(228, 208, 139, 0.08);
       font-weight: 700;
     }
 
-    .nav-links .nav-portal:hover {
+    .nav-actions .nav-portal:hover {
       border-color: rgba(228, 208, 139, 0.45);
       background: rgba(228, 208, 139, 0.14);
     }
@@ -981,6 +1002,18 @@
         justify-content: flex-start;
       }
 
+      .nav-cluster,
+      .nav-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+
+      .nav-cluster {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
       .offer-grid,
       .field-grid {
         grid-template-columns: 1fr;
@@ -1118,13 +1151,17 @@
         </div>
       </a>
 
-      <nav class="nav-links" aria-label="Primary">
-        <a href="#offerings">Offerings</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#process">Process</a>
-        <a href="/auth/" class="nav-portal">Portal Login</a>
-        <a href="#quote" class="nav-cta">Request a Quote</a>
-      </nav>
+      <div class="nav-cluster">
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#offerings">Offerings</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#process">Process</a>
+        </nav>
+        <div class="nav-actions">
+          <a href="#quote" class="nav-cta">Request a Quote</a>
+          <a href="/auth/" class="nav-portal">Portal Login</a>
+        </div>
+      </div>
     </div>
   </header>
 
