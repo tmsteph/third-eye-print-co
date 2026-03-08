@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Third Eye Portal</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09090c;
+      --panel: rgba(18, 18, 24, 0.88);
+      --panel-strong: rgba(13, 13, 18, 0.96);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --line: rgba(255, 255, 255, 0.1);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #f8f5ed;
+      --muted: #c1c0ba;
+      --accent: #e2ba67;
+      --accent-strong: #f1cf8a;
+      --cool: #84d7e4;
+      --danger: #ff9682;
+      --success: #8fdca7;
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(520px 300px at 0% 0%, rgba(132, 215, 228, 0.15), transparent 60%),
+        radial-gradient(540px 320px at 100% 0%, rgba(226, 186, 103, 0.14), transparent 58%),
+        linear-gradient(180deg, #09090c 0%, #0f0f14 100%);
+      padding: 24px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+    }
+
+    .hero {
+      padding: 30px;
+      display: grid;
+      gap: 18px;
+      background:
+        radial-gradient(280px 160px at 100% 0%, rgba(226, 186, 103, 0.12), transparent 60%),
+        linear-gradient(180deg, rgba(17, 18, 25, 0.96), rgba(10, 10, 14, 0.96));
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(226, 186, 103, 0.45);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 12px;
+      font-family: "Fraunces", serif;
+      font-size: clamp(2.1rem, 5vw, 3.3rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+      max-width: 10ch;
+    }
+
+    .hero p,
+    .card p,
+    .card li {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      border-radius: 16px;
+      padding: 12px 16px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      border-color: transparent;
+      color: #17130c;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    }
+
+    .btn-danger {
+      color: var(--danger);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      color: var(--muted);
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .status {
+      display: none;
+      border-radius: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(132, 215, 228, 0.2);
+      background: rgba(132, 215, 228, 0.08);
+      color: var(--text);
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status[data-tone="error"] {
+      border-color: rgba(255, 147, 130, 0.28);
+      background: rgba(255, 147, 130, 0.1);
+      color: var(--danger);
+    }
+
+    .status[data-tone="success"] {
+      border-color: rgba(151, 216, 161, 0.24);
+      background: rgba(151, 216, 161, 0.1);
+      color: var(--success);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .detail-row {
+      display: grid;
+      gap: 6px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel-soft);
+    }
+
+    .detail-row span {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .detail-row strong {
+      word-break: break-word;
+    }
+
+    .list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .list li {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">Third Eye Portal</div>
+          <h1 id="heroTitle">Checking your portal account...</h1>
+          <p id="heroCopy">
+            We are restoring your sign-in and loading the current status of this account.
+          </p>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn" href="/">Return to site</a>
+          <a id="adminButton" class="btn btn-primary" href="/admin/" hidden>Open admin dashboard</a>
+          <button id="logoutButton" class="btn btn-danger" type="button">Log out</button>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span id="sessionMeta">Checking session...</span>
+        <span id="accountMeta">Loading account details...</span>
+        <span id="relayMeta">Connecting live updates...</span>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Account</h2>
+        <div class="detail-list">
+          <div class="detail-row">
+            <span>Alias</span>
+            <strong id="aliasValue">Waiting for sign-in...</strong>
+          </div>
+          <div class="detail-row">
+            <span>Role</span>
+            <strong id="roleValue">Member</strong>
+          </div>
+          <div class="detail-row">
+            <span>Public key</span>
+            <strong id="pubValue">Waiting for sign-in...</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>What this page is for</h2>
+        <ul class="list">
+          <li>Your portal account is active and ready to reuse as customer tools come online.</li>
+          <li>If this account is approved for admin access later, the same login can open the dashboard.</li>
+          <li>If access is ever lost, an admin can issue replacement credentials from the admin dashboard.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>What is coming next</h2>
+      <ul class="list">
+        <li>Order history and quote status can live here once those views are ready.</li>
+        <li>Customer approvals and billing preferences can use this same account.</li>
+        <li>Admin-approved accounts will see the dashboard shortcut appear automatically.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
+  <script src="/gun-init.js"></script>
+  <script src="/portal-auth.js"></script>
+  <script>
+    const portalAuth = window.ThirdEyePortalAuth || {};
+    const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
+      ? window.ThirdEyeGun.createContext()
+      : { gun: null, user: null, peers: [] };
+    const namespace = window.ThirdEyeGun && typeof window.ThirdEyeGun.getNamespace === "function"
+      ? window.ThirdEyeGun.getNamespace()
+      : "third-eye-print-co";
+    const adminPubs = window.ThirdEyeGun && typeof window.ThirdEyeGun.getAdminPubs === "function"
+      ? window.ThirdEyeGun.getAdminPubs()
+      : [];
+
+    const heroTitleEl = document.getElementById("heroTitle");
+    const heroCopyEl = document.getElementById("heroCopy");
+    const sessionMetaEl = document.getElementById("sessionMeta");
+    const accountMetaEl = document.getElementById("accountMeta");
+    const relayMetaEl = document.getElementById("relayMeta");
+    const aliasValueEl = document.getElementById("aliasValue");
+    const roleValueEl = document.getElementById("roleValue");
+    const pubValueEl = document.getElementById("pubValue");
+    const adminButton = document.getElementById("adminButton");
+    const logoutButton = document.getElementById("logoutButton");
+    const statusEl = document.getElementById("status");
+    const pageState = new URLSearchParams(window.location.search).get("state");
+
+    function redirectToAuth() {
+      window.location.replace(`/auth/?next=${encodeURIComponent("/portal/")}`);
+    }
+
+    function setStatus(message, tone) {
+      if (!message) {
+        statusEl.classList.remove("show");
+        statusEl.textContent = "";
+        delete statusEl.dataset.tone;
+        return;
+      }
+
+      statusEl.classList.add("show");
+      statusEl.textContent = message;
+      if (tone) {
+        statusEl.dataset.tone = tone;
+        return;
+      }
+
+      delete statusEl.dataset.tone;
+    }
+
+    function setHeroCopy(record, isAdmin) {
+      if (pageState === "created") {
+        heroTitleEl.textContent = "Your portal account is ready.";
+        heroCopyEl.textContent = isAdmin
+          ? "This account also has admin access, so you can go straight to the dashboard."
+          : "You can reuse this sign-in as customer tools arrive, and an admin can promote this account later if needed.";
+        return;
+      }
+
+      heroTitleEl.textContent = isAdmin ? "You are signed in with admin access." : "You are signed in.";
+      heroCopyEl.textContent = isAdmin
+        ? "This account can use the admin dashboard now, and the general customer portal can grow around the same login."
+        : "This portal account is active and ready for future customer views like order history, approvals, and billing.";
+    }
+
+    async function boot() {
+      const peers = Array.isArray(gunContext.peers) ? gunContext.peers : [];
+      relayMetaEl.textContent = peers.length ? "Live updates connected" : "Live updates unavailable";
+
+      if (!gunContext.gun || !gunContext.user) {
+        setStatus("The portal is unavailable right now. Reload and try again.", "error");
+        return;
+      }
+
+      const stored = portalAuth.readStoredCredentials();
+      if (!stored.alias || !stored.password) {
+        redirectToAuth();
+        return;
+      }
+
+      sessionMetaEl.textContent = "Restoring session...";
+      const authResult = await portalAuth.authenticateUser(gunContext.user, stored.alias, stored.password);
+      if (!authResult.ok) {
+        portalAuth.clearStoredCredentials();
+        redirectToAuth();
+        return;
+      }
+
+      const syncResult = typeof portalAuth.syncPortalAccount === "function"
+        ? await portalAuth.syncPortalAccount({
+          gun: gunContext.gun,
+          namespace,
+          alias: authResult.alias,
+          pub: authResult.pub,
+          source: "portal_signin",
+          lastLoginAt: new Date().toISOString()
+        })
+        : { ok: true, record: { alias: authResult.alias, pub: authResult.pub, role: "member" } };
+      if (!syncResult.ok) {
+        setStatus(syncResult.error || "Could not load this portal account.", "error");
+        return;
+      }
+
+      const access = await portalAuth.resolveAdminAccess({
+        gun: gunContext.gun,
+        user: gunContext.user,
+        alias: authResult.alias,
+        adminPubs,
+        namespace
+      });
+
+      if (access.ok && access.mode === "bootstrap_identity" && typeof portalAuth.ensureBootstrapAdminAccess === "function") {
+        await portalAuth.ensureBootstrapAdminAccess({
+          gun: gunContext.gun,
+          alias: authResult.alias,
+          pub: access.pub,
+          namespace
+        });
+      }
+
+      const accountLookup = typeof portalAuth.readPortalAccount === "function"
+        ? await portalAuth.readPortalAccount({ gun: gunContext.gun, namespace, identity: authResult.alias })
+        : null;
+      const record = accountLookup && accountLookup.record ? accountLookup.record : syncResult.record || {};
+      const isAdmin = Boolean(access.ok);
+
+      portalAuth.writeStoredCredentials(authResult.alias, stored.password, authResult.pub);
+
+      aliasValueEl.textContent = authResult.alias;
+      roleValueEl.textContent = isAdmin ? "Admin" : (record.role || "Member");
+      pubValueEl.textContent = authResult.pub || "Unknown";
+      sessionMetaEl.textContent = `Signed in as ${authResult.alias}`;
+      accountMetaEl.textContent = record.createdAt
+        ? `Account created ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(Date.parse(record.createdAt))}`
+        : "Portal account active";
+      setHeroCopy(record, isAdmin);
+
+      if (isAdmin) {
+        adminButton.hidden = false;
+        setStatus("Admin access is available for this account.", "success");
+      } else {
+        setStatus("Portal account active. Customer workspace tools can land here next.", "success");
+      }
+    }
+
+    logoutButton.addEventListener("click", () => {
+      portalAuth.clearStoredCredentials();
+      portalAuth.leaveUser(gunContext.user);
+      redirectToAuth();
+    });
+
+    boot();
+  </script>
+</body>
+</html>

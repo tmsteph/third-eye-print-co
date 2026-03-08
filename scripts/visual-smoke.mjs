@@ -116,6 +116,10 @@ try {
     "Open portal",
     "Create account"
   ]);
+  await assertHtmlContains(`${BASE_URL}/portal/`, [
+    "What this page is for",
+    "What is coming next"
+  ]);
   await assertHtmlContains(`${BASE_URL}/admin/`, [
     "Quotes and orders, in one place.",
     "Lead feed"

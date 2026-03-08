@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Third Eye Admin Sign In</title>
+  <title>Third Eye Portal Sign In</title>
   <meta name="robots" content="noindex,nofollow" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -392,6 +392,7 @@
     const statusEl = document.getElementById("status");
     const relayMetaEl = document.getElementById("relayMeta");
     const nextUrl = sanitizeNext(new URLSearchParams(window.location.search).get("next"));
+    const portalUrl = "/portal/";
 
     function sanitizeNext(value) {
       if (!value || typeof value !== "string") {
@@ -429,22 +430,24 @@
       createButton.textContent = pending && mode === "create" ? "Creating account..." : "Create account";
     }
 
-    function accountMessage(alias, pub, source) {
-      const subject = source === "create" ? "Portal account created." : "Sign-in confirmed.";
-      return `${subject} Alias: ${alias}. Pub: ${pub || "unknown"}. Customer workspace is coming next, and an admin can promote this account or issue replacement credentials later.`;
+    function portalRedirectUrl(source) {
+      const params = new URLSearchParams();
+      params.set("state", source === "create" ? "created" : "signed-in");
+      return `${portalUrl}?${params.toString()}`;
     }
 
     async function completeAuth(alias, password, source) {
+      const currentPub = gunContext.user && gunContext.user.is ? gunContext.user.is.pub || "" : "";
       const accountResult = typeof portalAuth.syncPortalAccount === "function"
         ? await portalAuth.syncPortalAccount({
           gun: gunContext.gun,
           namespace,
           alias,
-          pub: gunContext.user && gunContext.user.is ? gunContext.user.is.pub || "" : "",
+          pub: currentPub,
           source: source === "create" ? "portal_signup" : "portal_signin",
           lastLoginAt: new Date().toISOString()
         })
-        : { ok: true, record: { alias, pub: gunContext.user && gunContext.user.is ? gunContext.user.is.pub || "" : "" } };
+        : { ok: true, record: { alias, pub: currentPub } };
 
       if (!accountResult.ok) {
         setStatus(accountResult.error || "Could not save the portal account metadata.", "error");
@@ -459,9 +462,13 @@
         namespace
       });
       if (!access.ok) {
-        portalAuth.clearStoredCredentials();
-        portalAuth.leaveUser(gunContext.user);
-        setStatus(accountMessage(alias, accountResult.record && accountResult.record.pub ? accountResult.record.pub : access.pub, source), "success");
+        portalAuth.writeStoredCredentials(
+          alias,
+          password,
+          accountResult.record && accountResult.record.pub ? accountResult.record.pub : currentPub
+        );
+        setStatus("Portal account ready. Redirecting...", "success");
+        window.location.assign(portalRedirectUrl(source));
         return;
       }
 
