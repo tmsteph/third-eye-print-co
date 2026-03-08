@@ -285,8 +285,8 @@
       <div>
         <h1 id="authTitle">Portal sign in</h1>
         <p class="intro">
-          Sign in if you already have a portal account, or create one here. Admins can review quotes and orders now,
-          and customer history and billing tools will land on the same account later.
+          Sign in if you already have a portal account, or create one here. Approved admins can review quotes and
+          orders now, and customer order history and billing tools can use this same login later.
         </p>
       </div>
 
@@ -310,8 +310,8 @@
 
         <p id="status" class="status" aria-live="polite"></p>
         <p class="status">
-          Anyone can create a portal account today. Admin access is granted through <code>ADMIN_PUBS</code>, the local
-          <code>third-eye-print-co/admins</code> graph, and a bootstrap for <code>tmsteph@3dvr</code>.
+          Anyone can create a portal account today. If someone needs admin access later, an existing admin can promote
+          that account without making them sign up again.
         </p>
 
         <div class="actions">
@@ -323,11 +323,11 @@
       <div class="feature-list" aria-label="Portal account help">
         <div class="feature">
           <strong>Create an account</strong>
-          <span>Use a new username and password, then click <code>Create account</code>. Admin access can be added later without making them recreate the account.</span>
+          <span>Use a new username and password, then click <code>Create account</code>. The same account can be promoted to admin later if needed.</span>
         </div>
         <div class="feature">
           <strong>Password reset</strong>
-          <span>If someone loses access, an admin can issue fresh credentials from the dashboard today. Self-service recovery can layer on later if we want it.</span>
+          <span>If someone loses access, an admin can issue fresh credentials from the dashboard today.</span>
         </div>
       </div>
 
@@ -339,32 +339,30 @@
 
     <aside class="aside" aria-label="Portal roadmap preview">
       <div>
-        <h2>One portal for admins now, customers next.</h2>
+        <h2>One account system, expanding over time.</h2>
         <p>
-          The auth surface is shared on purpose. Admin review tools are first, and the same portal can expand into
-          customer order history, approvals, and payment preferences without moving off the Gun/Vercel setup.
+          This login is shared on purpose. Start with internal quote and order access now, then expand into customer
+          order history, approvals, and billing tools without moving people to a separate account system.
         </p>
       </div>
 
       <ul class="feature-list">
         <li class="feature">
-          <strong>Shared account system first</strong>
-          <span>Anyone can create a portal account now, and admins can promote approved accounts later without changing the login surface.</span>
+          <strong>Create once, reuse later</strong>
+          <span>Anyone can create a portal account now, and approved users can be promoted to admin later without changing how they sign in.</span>
         </li>
         <li class="feature">
-          <strong>Customer workspace next</strong>
-          <span>Past orders, approvals, and saved billing details can be layered onto the same portal once the order graph is defined.</span>
+          <strong>Admin recovery is built in</strong>
+          <span>Admins can issue replacement credentials from the dashboard when someone loses access.</span>
         </li>
         <li class="feature">
-          <strong>Small serverless surface</strong>
-          <span>Vercel only handles public runtime config and Stripe checkout session creation.</span>
+          <strong>Customer tools can layer in next</strong>
+          <span>Order history, approvals, and saved billing details can be added to this same portal as the customer workspace takes shape.</span>
         </li>
       </ul>
 
       <p class="footnote">
-        Right now only the existing <code>tmsteph@3dvr</code> admin identity bootstraps with its matching SEA public
-        key. Additional admins should be promoted locally through <code>third-eye-print-co/admins</code>,
-        <code>ADMIN_PUBS</code>, or the admin dashboard account tools.
+        If you need admin access, create an account first and an existing admin can promote it from the dashboard.
       </p>
     </aside>
   </main>
