@@ -67,6 +67,7 @@ test("create-checkout-session creates a business card checkout", async () => {
         lead: {
           name: "Jane Doe",
           contact: "jane@example.com",
+          quoteId: "quote-123",
           serviceType: "Business cards",
           checkoutOptionId: "cards-100",
           quantity: "100 cards",
@@ -81,6 +82,7 @@ test("create-checkout-session creates a business card checkout", async () => {
   assert.equal(calls.payload.line_items[0].price_data.unit_amount, 5500);
   assert.equal(calls.payload.line_items[0].price_data.product_data.name, "Third Eye Print Co. Business Cards - 100 cards");
   assert.equal(calls.payload.metadata.checkoutService, "businessCards");
+  assert.equal(calls.payload.metadata.quoteId, "quote-123");
   assert.equal(calls.payload.metadata.checkoutOptionId, "cards-100");
   assert.equal(calls.payload.metadata.checkoutOptionLabel, "100 cards");
   assert.equal(calls.payload.success_url, "https://third-eye.example/?payment=success&session_id={CHECKOUT_SESSION_ID}");

@@ -9,6 +9,7 @@
     "test:visual": "node scripts/visual-smoke.mjs"
   },
   "dependencies": {
+    "gun": "^0.2020.1241",
     "stripe": "^14.0.0"
   }
 }

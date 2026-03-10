@@ -122,6 +122,7 @@ function createCheckoutSessionHandler(options = {}) {
         metadata: {
           name: lead.name || "",
           contact: lead.contact || "",
+          quoteId: lead.quoteId || "",
           serviceType: lead.serviceType || checkoutSelection.label,
           checkoutService: checkoutSelection.key,
           checkoutOptionId: checkoutSelection.option.id,

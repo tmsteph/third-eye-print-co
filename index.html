@@ -2508,11 +2508,15 @@
             console.warn("Lead sync failed before checkout; continuing.");
           }
 
+          lead.quoteId = quoteRecord && quoteRecord.quoteId
+            ? quoteRecord.quoteId
+            : ensureQuoteId();
+
           const checkout = await createCheckoutSession(lead);
 
           try {
             await persistLeadEvent("deposit_checkout", lead, {
-              quoteId: quoteRecord && quoteRecord.quoteId ? quoteRecord.quoteId : ensureQuoteId(),
+              quoteId: lead.quoteId,
               checkoutSessionId: checkout.id || ""
             });
           } catch (_error) {
