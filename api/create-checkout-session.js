@@ -1,5 +1,5 @@
 const { normalizeLead, minimalLeadValidation } = require("../lib/lead");
-const { parseDepositCents } = require("../lib/runtime-config");
+const { resolveCheckoutSelection } = require("../lib/runtime-config");
 
 function readJsonBody(req) {
   if (typeof req.body === "string") {
@@ -62,67 +62,88 @@ function sendJson(res, statusCode, body) {
   res.end(JSON.stringify(body));
 }
 
-module.exports = async function createCheckoutSessionHandler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    sendJson(res, 405, { error: "Method not allowed." });
-    return;
-  }
+function createCheckoutSessionHandler(options = {}) {
+  const {
+    env = process.env,
+    stripeFactory = require("stripe"),
+  } = options;
 
-  const secretKey = String(process.env.STRIPE_SECRET_KEY || "").trim();
-  if (!secretKey) {
-    sendJson(res, 500, {
-      error: "Stripe is not configured. Set STRIPE_SECRET_KEY in your project environment.",
-    });
-    return;
-  }
-
-  try {
-    const body = await readJsonBody(req);
-    const lead = normalizeLead(body && body.lead ? body.lead : body || {});
-    if (!minimalLeadValidation(lead)) {
-      sendJson(res, 400, { error: "Name and contact are required before payment." });
+  return async function createCheckoutSessionHandler(req, res) {
+    if (req.method !== "POST") {
+      res.setHeader("Allow", "POST");
+      sendJson(res, 405, { error: "Method not allowed." });
       return;
     }
 
-    const stripe = require("stripe")(secretKey);
-    const currency = String(process.env.STRIPE_CURRENCY || "usd").toLowerCase();
-    const depositCents = parseDepositCents(process.env);
-    const siteUrl = resolveSiteUrl(req, process.env);
+    const secretKey = String(env.STRIPE_SECRET_KEY || "").trim();
+    if (!secretKey) {
+      sendJson(res, 500, {
+        error: "Stripe is not configured. Set STRIPE_SECRET_KEY in your project environment.",
+      });
+      return;
+    }
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency,
-            unit_amount: depositCents,
-            product_data: {
-              name: "Third Eye Print Co. Order Deposit",
-              description: "Deposit collected before final production invoice.",
+    try {
+      const body = await readJsonBody(req);
+      const lead = normalizeLead(body && body.lead ? body.lead : body || {});
+      if (!minimalLeadValidation(lead)) {
+        sendJson(res, 400, { error: "Name and contact are required before payment." });
+        return;
+      }
+
+      const checkoutSelection = resolveCheckoutSelection(lead, env);
+      if (!checkoutSelection) {
+        sendJson(res, 400, {
+          error: "Choose a valid business card pack, tent package, or bundle deal before checkout.",
+        });
+        return;
+      }
+
+      const stripe = stripeFactory(secretKey);
+      const siteUrl = resolveSiteUrl(req, env);
+
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        line_items: [
+          {
+            quantity: 1,
+            price_data: {
+              currency: checkoutSelection.currency,
+              unit_amount: checkoutSelection.amountCents,
+              product_data: {
+                name: checkoutSelection.productName,
+                description: checkoutSelection.description,
+              },
             },
           },
+        ],
+        success_url: `${siteUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${siteUrl}/?payment=cancelled`,
+        metadata: {
+          name: lead.name || "",
+          contact: lead.contact || "",
+          quoteId: lead.quoteId || "",
+          serviceType: lead.serviceType || checkoutSelection.label,
+          checkoutService: checkoutSelection.key,
+          checkoutOptionId: checkoutSelection.option.id,
+          checkoutOptionLabel: checkoutSelection.option.label,
+          checkoutAmountCents: String(checkoutSelection.amountCents),
+          quantity: lead.quantity || checkoutSelection.option.quantityLabel || "",
+          garment: lead.garment || "",
+          needBy: lead.needBy || "",
         },
-      ],
-      success_url: `${siteUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/?payment=cancelled`,
-      metadata: {
-        name: lead.name || "",
-        contact: lead.contact || "",
-        serviceType: lead.serviceType || "",
-        quantity: lead.quantity || "",
-        garment: lead.garment || "",
-        needBy: lead.needBy || "",
-      },
-    });
+      });
 
-    sendJson(res, 200, {
-      id: session.id,
-      url: session.url,
-    });
-  } catch (error) {
-    console.error("Checkout session failed", error);
-    sendJson(res, 500, { error: "Could not create Stripe checkout session" });
-  }
-};
+      sendJson(res, 200, {
+        id: session.id,
+        url: session.url,
+      });
+    } catch (error) {
+      console.error("Checkout session failed", error);
+      sendJson(res, 500, { error: "Could not create Stripe checkout session" });
+    }
+  };
+}
+
+module.exports = createCheckoutSessionHandler();
+module.exports.createCheckoutSessionHandler = createCheckoutSessionHandler;

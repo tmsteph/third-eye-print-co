@@ -759,6 +759,24 @@
       return new Intl.NumberFormat().format(Number(value || 0));
     }
 
+    function formatCurrencyValue(cents, currencyCode) {
+      const normalizedCents = Number(cents);
+      const normalizedCurrency = String(currencyCode || "usd").toUpperCase();
+
+      if (!Number.isFinite(normalizedCents) || normalizedCents <= 0) {
+        return "";
+      }
+
+      try {
+        return (normalizedCents / 100).toLocaleString(undefined, {
+          style: "currency",
+          currency: normalizedCurrency
+        });
+      } catch (_error) {
+        return `${(normalizedCents / 100).toFixed(2)} ${normalizedCurrency}`;
+      }
+    }
+
     function timeValue(value) {
       const parsed = Date.parse(String(value || ""));
       return Number.isFinite(parsed) ? parsed : 0;
@@ -818,6 +836,10 @@
         company: String(data.company || "").trim(),
         contact: String(data.contact || "").trim(),
         serviceType: String(data.serviceType || "").trim(),
+        checkoutOptionLabel: String(data.checkoutOptionLabel || "").trim(),
+        checkoutAmountCents: String(data.checkoutAmountCents || "").trim(),
+        checkoutCurrency: String(data.checkoutCurrency || "").trim(),
+        paymentStatus: String(data.paymentStatus || "").trim(),
         quantity: String(data.quantity || "").trim(),
         colors: String(data.colors || "").trim(),
         garment: String(data.garment || "").trim(),
@@ -827,7 +849,9 @@
         budget: String(data.budget || "").trim(),
         fulfillment: String(data.fulfillment || "").trim(),
         notes: String(data.notes || "").trim(),
-        checkoutSessionId: String(data.checkoutSessionId || "").trim()
+        checkoutSessionId: String(data.checkoutSessionId || "").trim(),
+        stripeEventId: String(data.stripeEventId || "").trim(),
+        paymentIntentId: String(data.paymentIntentId || "").trim()
       };
     }
 
@@ -894,6 +918,7 @@
       let recent7Days = 0;
       let depositIntentCount = 0;
       let depositCheckoutCount = 0;
+      let paymentSucceededCount = 0;
 
       entries.forEach((entry) => {
         const source = entry.source || "unknown";
@@ -914,6 +939,10 @@
         if (source === "deposit_checkout") {
           depositCheckoutCount += 1;
         }
+
+        if (source === "payment_succeeded") {
+          paymentSucceededCount += 1;
+        }
       });
 
       return {
@@ -921,6 +950,7 @@
         recent7Days,
         depositIntentCount,
         depositCheckoutCount,
+        paymentSucceededCount,
         sourceBreakdown,
         serviceBreakdown
       };
@@ -931,7 +961,8 @@
         { label: "Total events", value: formatNumber(summary.totalLeads) },
         { label: "Saved in last 7 days", value: formatNumber(summary.recent7Days) },
         { label: "Deposit intent clicks", value: formatNumber(summary.depositIntentCount) },
-        { label: "Checkout sessions created", value: formatNumber(summary.depositCheckoutCount) }
+        { label: "Checkout sessions created", value: formatNumber(summary.depositCheckoutCount) },
+        { label: "Confirmed payments", value: formatNumber(summary.paymentSucceededCount) }
       ];
 
       metricsEl.innerHTML = cards.map((card) => `
@@ -982,13 +1013,18 @@
           entry.contact,
           entry.company,
           entry.serviceType,
+          entry.checkoutOptionLabel,
+          entry.checkoutAmountCents,
+          entry.paymentStatus,
           entry.quantity,
           entry.garment,
           entry.locations,
           entry.notes,
           entry.needBy,
           entry.budget,
-          entry.checkoutSessionId
+          entry.checkoutSessionId,
+          entry.stripeEventId,
+          entry.paymentIntentId
         ].join(" ").toLowerCase();
 
         if (selectedSource && entry.source !== selectedSource) {
@@ -1021,6 +1057,7 @@
 
       leadTableBody.innerHTML = entries.map((entry) => {
         const orderDetails = summarizeText([
+          entry.checkoutOptionLabel || "",
           entry.quantity ? `Qty ${entry.quantity}` : "",
           entry.garment || "",
           entry.colors ? `${entry.colors} colors` : "",
@@ -1030,11 +1067,15 @@
         const timingBudget = summarizeText([
           entry.needBy ? `Need by ${entry.needBy}` : "",
           entry.budget ? `Budget ${entry.budget}` : "",
-          entry.fulfillment || ""
+          entry.fulfillment || "",
+          entry.checkoutAmountCents ? `Paid ${formatCurrencyValue(entry.checkoutAmountCents, entry.checkoutCurrency)}` : "",
+          entry.paymentStatus ? `Status ${entry.paymentStatus}` : ""
         ]);
         const tracking = summarizeText([
           entry.quoteId ? `Quote ${entry.quoteId}` : "",
-          entry.checkoutSessionId ? `Stripe ${entry.checkoutSessionId}` : ""
+          entry.checkoutSessionId ? `Stripe ${entry.checkoutSessionId}` : "",
+          entry.paymentIntentId ? `Intent ${entry.paymentIntentId}` : "",
+          entry.stripeEventId ? `Event ${entry.stripeEventId}` : ""
         ]);
 
         return `
