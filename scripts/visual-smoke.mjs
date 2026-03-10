@@ -211,6 +211,59 @@ async function assertQuoteValidationMessages(browser) {
   await page.close();
 }
 
+async function assertCustomQuoteUi(browser) {
+  const page = await browser.newPage({
+    colorScheme: "dark",
+    viewport: {
+      width: 1440,
+      height: 2200
+    }
+  });
+
+  await page.goto(BASE_URL, { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator("#quoteForm").scrollIntoViewIfNeeded();
+  await page.locator('[data-service-choice="Custom quote"]').click();
+
+  const customQuoteState = await page.evaluate(() => {
+    const checkoutSection = document.getElementById("checkoutOptionSection");
+    const payButton = document.getElementById("payDepositBtn");
+    const depositNote = document.getElementById("depositNote");
+    const choiceNote = document.getElementById("serviceChoiceNote");
+
+    return {
+      checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null,
+      payButtonHidden: payButton ? payButton.hidden : null,
+      depositNoteHidden: depositNote ? depositNote.hidden : null,
+      choiceNoteHidden: choiceNote ? choiceNote.hidden : null,
+      choiceNoteText: choiceNote ? choiceNote.textContent.trim() : null,
+      sendQuoteLabel: document.getElementById("sendQuoteBtn")?.textContent.trim() || ""
+    };
+  });
+
+  if (customQuoteState.checkoutSectionHidden !== true) {
+    throw new Error("Custom quote mode still shows the checkout package controls.");
+  }
+
+  if (customQuoteState.payButtonHidden !== true) {
+    throw new Error("Custom quote mode still shows the checkout button.");
+  }
+
+  if (customQuoteState.depositNoteHidden !== true) {
+    throw new Error("Custom quote mode still shows the deposit note.");
+  }
+
+  if (customQuoteState.choiceNoteHidden !== true || customQuoteState.choiceNoteText !== "") {
+    throw new Error("Custom quote mode still shows helper copy that should be hidden.");
+  }
+
+  if (customQuoteState.sendQuoteLabel !== "Send custom quote request") {
+    throw new Error("Custom quote mode did not keep the expected quote submit button label.");
+  }
+
+  await page.close();
+}
+
 async function assertCheckoutAllowsMissingIdentity(browser) {
   const page = await browser.newPage({
     colorScheme: "dark",
@@ -324,6 +377,7 @@ try {
       report.push(await captureHomepage(browser, scenario));
     }
 
+    await assertCustomQuoteUi(browser);
     await assertQuoteValidationMessages(browser);
     await assertCheckoutAllowsMissingIdentity(browser);
 

@@ -2064,7 +2064,7 @@
         } else if (offer) {
           checkoutOptionNote.textContent = `${offer.option.label} selected at ${formatCurrency(offer.amountCents, offer.currency || depositCurrency)}.`;
         } else if (isCustomQuote) {
-          checkoutOptionNote.textContent = "Custom quote selected. Add quantity or specs in the notes.";
+          checkoutOptionNote.textContent = "";
         } else {
           checkoutOptionNote.textContent = "Choose a path to load packages.";
         }
@@ -2073,15 +2073,17 @@
       if (serviceChoiceNote) {
         if (!stripeEnabled) {
           serviceChoiceNote.textContent = isCustomQuote
-            ? "Custom quote selected. Add the details and send the request."
+            ? ""
             : "Online checkout is unavailable right now. Send a quote request instead.";
         } else if (offer) {
           serviceChoiceNote.textContent = `${offer.label} selected. Continue to checkout when you are ready.`;
         } else if (isCustomQuote) {
-          serviceChoiceNote.textContent = "Custom quote selected. Add your email, phone, and project details, then send the request.";
+          serviceChoiceNote.textContent = "";
         } else {
           serviceChoiceNote.textContent = "Choose cards, tents, bundles, or custom quote.";
         }
+
+        serviceChoiceNote.hidden = !serviceChoiceNote.textContent;
       }
 
       if (!stripeEnabled) {
@@ -2089,14 +2091,14 @@
         if (depositNote) {
           depositNote.hidden = true;
         }
-        sendQuoteBtn.textContent = isCustomQuote ? "Request custom quote" : "Request quote instead";
+        sendQuoteBtn.textContent = isCustomQuote ? "Send custom quote request" : "Request quote instead";
         sendQuoteBtn.classList.add("btn-primary");
         sendQuoteBtn.classList.remove("btn-secondary");
         return;
       }
 
       if (depositNote) {
-        depositNote.hidden = false;
+        depositNote.hidden = isCustomQuote;
       }
 
       if (offer) {
@@ -2113,8 +2115,6 @@
 
       if (isCustomQuote) {
         payDepositBtn.hidden = true;
-        depositLabel.textContent = "Custom quote";
-        depositAmount.textContent = "We will review details before any payment step";
         sendQuoteBtn.textContent = "Send custom quote request";
         sendQuoteBtn.classList.add("btn-primary");
         sendQuoteBtn.classList.remove("btn-secondary");
