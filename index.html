@@ -2098,7 +2098,7 @@
       }
 
       if (depositNote) {
-        depositNote.hidden = isCustomQuote;
+        depositNote.hidden = isCustomQuote || !offer;
       }
 
       if (offer) {
@@ -2124,8 +2124,6 @@
       payDepositBtn.hidden = false;
       payDepositBtn.disabled = false;
       payDepositBtn.textContent = "Choose a package";
-      depositLabel.textContent = "Checkout total";
-      depositAmount.textContent = "Select cards, tents, or a bundle";
       sendQuoteBtn.textContent = "Need changes? Request a custom quote";
       sendQuoteBtn.classList.remove("btn-primary");
       sendQuoteBtn.classList.add("btn-secondary");

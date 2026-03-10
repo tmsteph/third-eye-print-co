@@ -196,14 +196,21 @@ async function assertChoosePackageButtonNavigatesToShop(browser) {
 
   const buttonState = await page.evaluate(() => {
     const button = document.getElementById("payDepositBtn");
+    const depositNote = document.getElementById("depositNote");
     return {
       hidden: button ? button.hidden : null,
       disabled: button ? button.disabled : null,
-      label: button ? button.textContent.trim() : ""
+      label: button ? button.textContent.trim() : "",
+      depositNoteHidden: depositNote ? depositNote.hidden : null
     };
   });
 
-  if (buttonState.hidden !== false || buttonState.disabled !== false || buttonState.label !== "Choose a package") {
+  if (
+    buttonState.hidden !== false
+    || buttonState.disabled !== false
+    || buttonState.label !== "Choose a package"
+    || buttonState.depositNoteHidden !== true
+  ) {
     throw new Error("Default checkout state did not expose an active 'Choose a package' button.");
   }
 
