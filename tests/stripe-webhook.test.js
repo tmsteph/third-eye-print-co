@@ -77,6 +77,36 @@ test("buildStripeLeadRecord maps paid checkout events into Gun lead records", ()
   assert.equal(record.paymentIntentId, "pi_123");
 });
 
+test("buildStripeLeadRecord falls back to Stripe customer details when lead metadata is blank", () => {
+  const record = buildStripeLeadRecord({
+    id: "evt_456",
+    type: "checkout.session.completed",
+    created: 1773176400,
+    data: {
+      object: {
+        object: "checkout.session",
+        id: "cs_live_456",
+        payment_status: "paid",
+        amount_total: 3500,
+        currency: "usd",
+        metadata: {
+          serviceType: "Business cards",
+          checkoutOptionLabel: "50 cards",
+        },
+        customer_details: {
+          name: "Stripe Buyer",
+          email: "buyer@example.com",
+          phone: "+16195550000",
+        },
+      },
+    },
+  });
+
+  assert.equal(record.name, "Stripe Buyer");
+  assert.equal(record.contact, "buyer@example.com");
+  assert.equal(record.customerPhone, "+16195550000");
+});
+
 test("stripe webhook persists paid checkout sessions", async () => {
   const stripeCalls = {
     event: {

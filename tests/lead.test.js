@@ -3,7 +3,6 @@ const assert = require("node:assert/strict");
 
 const {
   cleanText,
-  minimalLeadValidation,
   normalizeLead,
 } = require("../lib/lead");
 
@@ -51,10 +50,4 @@ test("normalizeLead sanitizes all expected fields", () => {
     fulfillment: "Pickup",
     notes: "Need this before launch week.",
   });
-});
-
-test("minimalLeadValidation requires name and contact", () => {
-  assert.equal(minimalLeadValidation({ name: "Jane", contact: "jane@example.com" }), true);
-  assert.equal(minimalLeadValidation({ name: "Jane", contact: "" }), false);
-  assert.equal(minimalLeadValidation({ name: "", contact: "jane@example.com" }), false);
 });

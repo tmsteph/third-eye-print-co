@@ -85,6 +85,7 @@ test("create-checkout-session creates a business card checkout", async () => {
   assert.equal(calls.payload.metadata.quoteId, "quote-123");
   assert.equal(calls.payload.metadata.checkoutOptionId, "cards-100");
   assert.equal(calls.payload.metadata.checkoutOptionLabel, "100 cards");
+  assert.deepEqual(calls.payload.phone_number_collection, { enabled: true });
   assert.equal(calls.payload.success_url, "https://third-eye.example/?payment=success&session_id={CHECKOUT_SESSION_ID}");
   assert.deepEqual(res.body, {
     id: "cs_test_123",
@@ -167,6 +168,38 @@ test("create-checkout-session creates a tent and card bundle checkout", async ()
   assert.equal(calls.payload.line_items[0].price_data.unit_amount, 430000);
   assert.equal(calls.payload.metadata.checkoutService, "bundleDeal");
   assert.equal(calls.payload.metadata.checkoutOptionLabel, "5 tents + 500 cards");
+});
+
+test("create-checkout-session allows checkout without name or contact", async () => {
+  const calls = {};
+  const handler = createCheckoutSessionHandler({
+    env: {
+      STRIPE_SECRET_KEY: "sk_test_secret",
+      SITE_URL: "https://third-eye.example",
+      STRIPE_CURRENCY: "usd",
+    },
+    stripeFactory: createStripeFactory(calls),
+  });
+  const res = createMockRes();
+
+  await handler(
+    {
+      method: "POST",
+      headers: {},
+      body: {
+        lead: {
+          serviceType: "Business cards",
+          checkoutOptionId: "cards-50",
+        },
+      },
+    },
+    res
+  );
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(calls.payload.metadata.name, "");
+  assert.equal(calls.payload.metadata.contact, "");
+  assert.equal(calls.payload.metadata.checkoutOptionLabel, "50 cards");
 });
 
 test("create-checkout-session rejects unsupported services or missing package selection", async () => {

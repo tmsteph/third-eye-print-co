@@ -162,6 +162,90 @@ async function captureHomepage(browser, scenario) {
   };
 }
 
+async function waitForStatusMessage(page, expectedMessage) {
+  await page.waitForFunction((message) => {
+    const node = document.getElementById("formMsg");
+    return node && node.textContent === message;
+  }, expectedMessage);
+}
+
+async function assertQuoteValidationMessages(browser) {
+  const page = await browser.newPage({
+    colorScheme: "dark",
+    viewport: {
+      width: 1440,
+      height: 2200
+    }
+  });
+
+  await page.goto(BASE_URL, { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator("#quoteForm").scrollIntoViewIfNeeded();
+
+  await page.locator("#sendQuoteBtn").click();
+  await waitForStatusMessage(page, "Add a phone number or email so we can reply to your quote request.");
+
+  const contactInvalid = await page.locator("#contact").getAttribute("aria-invalid");
+  if (contactInvalid !== "true") {
+    throw new Error("Quote validation did not flag the contact field when reply info was missing.");
+  }
+
+  await page.locator("#contact").fill("buyer@example.com");
+  await page.locator("#sendQuoteBtn").click();
+  await waitForStatusMessage(page, "Add a few project details so we know what to quote.");
+
+  const notesInvalid = await page.locator("#notes").getAttribute("aria-invalid");
+  if (notesInvalid !== "true") {
+    throw new Error("Quote validation did not flag the notes field when custom quote details were missing.");
+  }
+
+  await page.close();
+}
+
+async function assertCheckoutAllowsMissingIdentity(browser) {
+  const page = await browser.newPage({
+    colorScheme: "dark",
+    viewport: {
+      width: 1440,
+      height: 2200
+    }
+  });
+  let checkoutRequest = null;
+
+  await page.route("**/api/create-checkout-session", async (route) => {
+    checkoutRequest = route.request().postDataJSON();
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        id: "cs_test_stub",
+        url: `${BASE_URL}/?checkout=stub`
+      })
+    });
+  });
+
+  await page.goto(BASE_URL, { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator("#quoteForm").scrollIntoViewIfNeeded();
+  await page.locator('[data-service-choice="Business cards"]').click();
+  await page.waitForFunction(() => {
+    const field = document.getElementById("checkoutOptionId");
+    return field && !field.disabled && Boolean(field.value);
+  });
+  await page.locator("#payDepositBtn").click();
+  await page.waitForURL((url) => url.searchParams.get("checkout") === "stub");
+
+  if (!checkoutRequest || !checkoutRequest.lead) {
+    throw new Error("Checkout request was not captured during the Playwright smoke test.");
+  }
+
+  if (checkoutRequest.lead.name !== "" || checkoutRequest.lead.contact !== "") {
+    throw new Error("Checkout request unexpectedly required name or contact before payment.");
+  }
+
+  await page.close();
+}
+
 const scenarios = [
   {
     name: "homepage-desktop-playwright",
@@ -225,6 +309,9 @@ try {
     for (const scenario of scenarios) {
       report.push(await captureHomepage(browser, scenario));
     }
+
+    await assertQuoteValidationMessages(browser);
+    await assertCheckoutAllowsMissingIdentity(browser);
 
     fs.writeFileSync(
       path.join(SCREENSHOT_DIR, "report.json"),

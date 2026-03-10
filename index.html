@@ -916,6 +916,13 @@
       outline: none;
     }
 
+    input[aria-invalid="true"],
+    textarea[aria-invalid="true"],
+    select[aria-invalid="true"] {
+      border-color: rgba(255, 142, 120, 0.72);
+      background: rgba(67, 22, 18, 0.4);
+    }
+
     textarea {
       min-height: 132px;
       resize: vertical;
@@ -1038,6 +1045,10 @@
     .deposit-note {
       color: var(--muted);
       font-size: 13px;
+    }
+
+    .form-status[data-state="error"] {
+      color: #ffbaad;
     }
 
     .footer {
@@ -1475,7 +1486,7 @@
 
           <div class="surface form-card">
             <h4>Checkout or custom quote</h4>
-            <p>Select a package, add your details, and continue to secure checkout. Need anything custom? Send a quote request.</p>
+            <p>Select a package and continue to secure checkout. For quote requests, leave a phone or email so we can reply.</p>
 
             <form id="quoteForm" action="" method="POST" novalidate>
               <input id="serviceType" name="serviceType" type="hidden" />
@@ -1537,6 +1548,7 @@
                 <label for="contact">
                   Phone or email
                   <input id="contact" name="contact" autocomplete="email" placeholder="Best phone or email" />
+                  <span class="field-help">Needed for quote follow-up. Checkout can continue without it.</span>
                 </label>
               </div>
 
@@ -1663,7 +1675,11 @@
     const checkoutOptionFieldLabel = document.getElementById("checkoutOptionFieldLabel");
     const checkoutOptionNote = document.getElementById("checkoutOptionNote");
     const serviceChoiceNote = document.getElementById("serviceChoiceNote");
+    const nameField = document.getElementById("name");
+    const contactField = document.getElementById("contact");
+    const needByField = document.getElementById("needBy");
     const notesField = document.getElementById("notes");
+    const garmentField = document.getElementById("garment");
     const portalNavLink = document.getElementById("portalNavLink");
     const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
     const quoteEmailTo = String(runtimeConfig.quoteEmailTo || "gamboaesai@gmail.com").trim();
@@ -2058,9 +2074,9 @@
             ? "Custom quote selected. Add the details and send the request."
             : "Online checkout is unavailable right now. Send a quote request instead.";
         } else if (offer) {
-          serviceChoiceNote.textContent = `${offer.label} selected. Add name and contact, then continue to checkout.`;
+          serviceChoiceNote.textContent = `${offer.label} selected. Continue to checkout when you are ready.`;
         } else if (isCustomQuote) {
-          serviceChoiceNote.textContent = "Custom quote selected. Add the details and send the request.";
+          serviceChoiceNote.textContent = "Custom quote selected. Add contact info and project details, then send the request.";
         } else {
           serviceChoiceNote.textContent = "Choose cards, tents, bundles, or custom quote.";
         }
@@ -2111,6 +2127,93 @@
       sendQuoteBtn.textContent = "Need changes? Request a custom quote";
       sendQuoteBtn.classList.remove("btn-primary");
       sendQuoteBtn.classList.add("btn-secondary");
+    }
+
+    const validationFields = [
+      nameField,
+      contactField,
+      checkoutOptionField,
+      needByField,
+      notesField,
+      garmentField
+    ].filter(Boolean);
+
+    function clearFormFeedback() {
+      validationFields.forEach((field) => {
+        field.removeAttribute("aria-invalid");
+      });
+
+      if (msg) {
+        delete msg.dataset.state;
+      }
+    }
+
+    function setFormMessage(message, state = "") {
+      clearFormFeedback();
+      if (!msg) {
+        return;
+      }
+
+      msg.textContent = message;
+      if (state) {
+        msg.dataset.state = state;
+      }
+    }
+
+    function showFormError(message, field) {
+      setFormMessage(message, "error");
+
+      if (!field) {
+        return;
+      }
+
+      field.setAttribute("aria-invalid", "true");
+      field.focus();
+    }
+
+    function hasQuoteProjectDetails(lead) {
+      return Boolean(
+        trimFieldValue(notesField)
+        || trimFieldValue(garmentField)
+        || trimFieldValue(needByField)
+        || String(lead.quantity || "").trim()
+        || String(lead.checkoutOptionLabel || "").trim()
+        || String(lead.checkoutOptionId || "").trim()
+      );
+    }
+
+    function getQuoteValidationError(lead) {
+      if (!String(lead.contact || "").trim()) {
+        return {
+          message: "Add a phone number or email so we can reply to your quote request.",
+          field: contactField
+        };
+      }
+
+      if (isCustomQuoteService(lead.serviceType) && !hasQuoteProjectDetails(lead)) {
+        return {
+          message: "Add a few project details so we know what to quote.",
+          field: notesField
+        };
+      }
+
+      return null;
+    }
+
+    function getCheckoutValidationError(lead) {
+      const selection = resolveCheckoutSelection(
+        lead.serviceType,
+        lead.checkoutOptionId || lead.checkoutOptionLabel || lead.quantity
+      );
+
+      if (!selection) {
+        return {
+          message: "Choose a package before checkout.",
+          field: checkoutOptionField
+        };
+      }
+
+      return null;
     }
 
     syncPortalNavLink();
@@ -2260,11 +2363,11 @@
             target.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         }
-        msg.textContent = presetMessage || (
+        setFormMessage(presetMessage || (
           preset
             ? `Selected ${preset}. Add any missing detail and continue.`
             : ""
-        );
+        ));
       });
     });
 
@@ -2287,9 +2390,9 @@
 
     const paymentStatus = new URLSearchParams(window.location.search).get("payment");
     if (paymentStatus === "success") {
-      msg.textContent = "Payment received. We will follow up with next production steps.";
+      setFormMessage("Payment received. We will follow up with next production steps.");
     } else if (paymentStatus === "cancelled") {
-      msg.textContent = "Checkout canceled. You can still send the quote and we will follow up manually.";
+      setFormMessage("Checkout canceled. You can still send the quote and we will follow up manually.");
     }
 
     function formDataToLead() {
@@ -2315,12 +2418,6 @@
       form.querySelectorAll("button").forEach((button) => {
         button.disabled = isBusy;
       });
-    }
-
-    function canStartDeposit(lead) {
-      return Boolean(lead.name)
-        && Boolean(lead.contact)
-        && Boolean(resolveCheckoutSelection(lead.serviceType, lead.checkoutOptionId || lead.checkoutOptionLabel || lead.quantity));
     }
 
     function wait(ms) {
@@ -2428,11 +2525,17 @@
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const lead = formDataToLead();
+      const validationError = getQuoteValidationError(lead);
+
+      if (validationError) {
+        showFormError(validationError.message, validationError.field);
+        return;
+      }
 
       setBusy(true);
-      msg.textContent = gunLeads
+      setFormMessage(gunLeads
         ? "Saving quote details and opening your email app..."
-        : "Opening your email app with a prefilled quote request...";
+        : "Opening your email app with a prefilled quote request...");
 
       try {
         await persistLeadEvent("quote", lead, {}, 900);
@@ -2443,7 +2546,7 @@
       window.location.href = buildMailtoUrl(lead);
 
       window.setTimeout(() => {
-        msg.textContent = "If no email app opened, call or text +1 (619) 257-8389.";
+        setFormMessage("If no email app opened, call or text +1 (619) 257-8389.");
         setBusy(false);
         activeQuoteId = "";
       }, 1200);
@@ -2452,15 +2555,16 @@
     if (payDepositBtn) {
       payDepositBtn.addEventListener("click", async () => {
         const lead = formDataToLead();
+        const validationError = getCheckoutValidationError(lead);
 
-        if (!canStartDeposit(lead)) {
-          msg.textContent = "Choose a package and enter name and contact before checkout.";
+        if (validationError) {
+          showFormError(validationError.message, validationError.field);
           return;
         }
 
         try {
           setBusy(true);
-          msg.textContent = "Preparing secure Stripe checkout...";
+          setFormMessage("Preparing secure Stripe checkout...");
 
           let quoteRecord = null;
           try {
@@ -2486,9 +2590,9 @@
 
           window.location.assign(checkout.url);
         } catch (_error) {
-          msg.textContent = _error && _error.message
+          setFormMessage(_error && _error.message
             ? _error.message
-            : "Checkout is unavailable right now. Send the quote and we will follow up.";
+            : "Checkout is unavailable right now. Send the quote and we will follow up.", "error");
           setBusy(false);
         }
       });
