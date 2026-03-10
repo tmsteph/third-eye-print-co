@@ -2122,7 +2122,7 @@
       }
 
       payDepositBtn.hidden = false;
-      payDepositBtn.disabled = true;
+      payDepositBtn.disabled = false;
       payDepositBtn.textContent = "Choose a package";
       depositLabel.textContent = "Checkout total";
       depositAmount.textContent = "Select cards, tents, or a bundle";
@@ -2231,6 +2231,15 @@
       }
 
       return null;
+    }
+
+    function scrollToPackages() {
+      const section = document.getElementById("shop");
+      if (!section) {
+        return;
+      }
+
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     syncPortalNavLink();
@@ -2578,7 +2587,8 @@
         const validationError = getCheckoutValidationError(lead);
 
         if (validationError) {
-          showFormError(validationError.message, validationError.field);
+          scrollToPackages();
+          setFormMessage("Choose a package above to continue to checkout.");
           return;
         }
 

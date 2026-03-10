@@ -169,6 +169,51 @@ async function waitForStatusMessage(page, expectedMessage) {
   }, expectedMessage);
 }
 
+async function mockRuntimeConfig(page, config) {
+  await page.route("**/config.js", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/javascript",
+      body: `window.THIRD_EYE_CONFIG = ${JSON.stringify(config)};`
+    });
+  });
+}
+
+async function assertChoosePackageButtonNavigatesToShop(browser) {
+  const page = await browser.newPage({
+    colorScheme: "dark",
+    viewport: {
+      width: 1440,
+      height: 900
+    }
+  });
+
+  await mockRuntimeConfig(page, { stripeEnabled: true });
+  await page.goto(BASE_URL, { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator("#quoteForm").scrollIntoViewIfNeeded();
+  const beforeScrollY = await page.evaluate(() => window.scrollY);
+
+  const buttonState = await page.evaluate(() => {
+    const button = document.getElementById("payDepositBtn");
+    return {
+      hidden: button ? button.hidden : null,
+      disabled: button ? button.disabled : null,
+      label: button ? button.textContent.trim() : ""
+    };
+  });
+
+  if (buttonState.hidden !== false || buttonState.disabled !== false || buttonState.label !== "Choose a package") {
+    throw new Error("Default checkout state did not expose an active 'Choose a package' button.");
+  }
+
+  await page.locator("#payDepositBtn").click();
+  await waitForStatusMessage(page, "Choose a package above to continue to checkout.");
+  await page.waitForFunction((previousY) => window.scrollY < previousY - 150, beforeScrollY);
+
+  await page.close();
+}
+
 async function assertQuoteValidationMessages(browser) {
   const page = await browser.newPage({
     colorScheme: "dark",
@@ -178,6 +223,7 @@ async function assertQuoteValidationMessages(browser) {
     }
   });
 
+  await mockRuntimeConfig(page, { stripeEnabled: true });
   await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
   await page.locator("#quoteForm").scrollIntoViewIfNeeded();
@@ -220,6 +266,7 @@ async function assertCustomQuoteUi(browser) {
     }
   });
 
+  await mockRuntimeConfig(page, { stripeEnabled: true });
   await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
   await page.locator("#quoteForm").scrollIntoViewIfNeeded();
@@ -274,6 +321,7 @@ async function assertCheckoutAllowsMissingIdentity(browser) {
   });
   let checkoutRequest = null;
 
+  await mockRuntimeConfig(page, { stripeEnabled: true });
   await page.route("**/api/create-checkout-session", async (route) => {
     checkoutRequest = route.request().postDataJSON();
     await route.fulfill({
@@ -377,6 +425,7 @@ try {
       report.push(await captureHomepage(browser, scenario));
     }
 
+    await assertChoosePackageButtonNavigatesToShop(browser);
     await assertCustomQuoteUi(browser);
     await assertQuoteValidationMessages(browser);
     await assertCheckoutAllowsMissingIdentity(browser);
