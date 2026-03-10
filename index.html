@@ -617,6 +617,44 @@
       width: 100%;
     }
 
+    .shop-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .shop-card {
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+    }
+
+    .shop-card h4 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .shop-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .shop-price {
+      font-family: "Fraunces", serif;
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+
+    .shop-price--muted {
+      font-size: 20px;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
     .pricing-layout {
       display: grid;
       grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
@@ -884,6 +922,52 @@
       background: rgba(255, 255, 255, 0.05);
     }
 
+    .service-choice-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .service-choice {
+      display: grid;
+      gap: 6px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      text-align: left;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    .service-choice strong {
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .service-choice span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .service-choice:hover {
+      transform: translateY(-1px);
+      border-color: rgba(228, 208, 139, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .service-choice.is-active {
+      border-color: rgba(228, 208, 139, 0.42);
+      background: rgba(228, 208, 139, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(228, 208, 139, 0.18);
+    }
+
+    .choice-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .details-more {
       border: 1px solid var(--line);
       border-radius: 18px;
@@ -982,6 +1066,7 @@
       }
 
       .package-grid,
+      .shop-grid,
       .step-grid,
       .faq-grid,
       .quote-grid,
@@ -1024,7 +1109,8 @@
       }
 
       .offer-grid,
-      .field-grid {
+      .field-grid,
+      .service-choice-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1162,13 +1248,12 @@
 
       <div class="nav-cluster">
         <nav class="nav-links" aria-label="Primary">
-          <a href="#offerings">Products</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#process">Process</a>
+          <a href="#shop">Checkout</a>
+          <a href="#quote">Custom quote</a>
         </nav>
         <div class="nav-actions">
           <a href="/auth/" class="nav-account" id="portalNavLink" data-state="signed-out">Portal</a>
-          <a href="#quote" class="nav-cta">Request a Quote</a>
+          <a href="#shop" class="nav-cta">Start order</a>
         </div>
       </div>
     </div>
@@ -1178,30 +1263,27 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <h2>Business cards and event tents without a catalog maze.</h2>
+          <h2>Checkout business cards or event tents. Quote anything custom.</h2>
           <p>
-            Third Eye Print Co. is focused on two fast-moving products right now: business cards and branded event tents.<br />
-            <span class="hero-copy-followup">Send a quote, confirm the details, and use secure checkout when the product fits.</span>
+            Third Eye Print Co. is keeping the storefront narrow on purpose: two fixed-price products with a faster path to payment, plus a custom quote option when the job needs a different setup.<br />
+            <span class="hero-copy-followup">If it fits the standard product, move toward checkout. If it does not, send the quote instead.</span>
           </p>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#quote">Request a Quote</a>
+            <a class="btn btn-primary" href="#shop">Start checkout</a>
+            <a class="btn btn-secondary" href="#quote">Need a custom quote?</a>
             <div class="phone-action">
               <a class="btn" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
                 <span>Call or Text</span>
               </a>
               <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
             </div>
-            <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
-              View Instagram
-            </a>
           </div>
 
           <ul class="hero-points">
-            <li>Best fit for pop-ups, vendor tables, street teams, church events, and local brand launches.</li>
-            <li>Business card and event tent checkout paths are live now.</li>
-            <li>Most quote requests get a reply within 1-3 business days.</li>
-            <li>Local pickup is available in San Diego. Shipping and sourced fulfillment can be quoted per project.</li>
+            <li>Use checkout for standard business cards and event tents.</li>
+            <li>Use the quote path for custom specs, artwork help, or anything outside those two products.</li>
+            <li>Local pickup is available in San Diego. Shipping and other fulfillment can still be quoted per project.</li>
           </ul>
         </div>
 
@@ -1212,192 +1294,93 @@
 
           <div class="panel-stack">
             <div class="mini-card">
-              <span class="mini-label">Best fit</span>
-              <strong>Business cards for quick handoffs and event tents for stronger booth presence.</strong>
+              <span class="mini-label">Fastest path</span>
+              <strong>Pick the product, add contact details, then move into checkout or a custom quote.</strong>
             </div>
 
-            <div class="review-note">Two clear products. Faster decisions. Less back-and-forth.</div>
+            <div class="review-note">Two products are live for checkout. Custom work still has a clear quote path.</div>
           </div>
         </aside>
       </div>
     </section>
 
-    <section id="offerings">
+    <section id="shop">
       <div class="wrap">
         <div class="section-head">
-          <h3>Featured products</h3>
+          <h3>Pick your path</h3>
+          <p>Checkout is the fast path for the two fixed-price products. If the job needs different specs, extra help, or something else entirely, use the custom quote path instead.</p>
         </div>
 
-        <div class="offer-grid">
-          <article class="surface card-block">
+        <div class="shop-grid">
+          <article class="surface shop-card">
+            <span class="mini-label">Checkout</span>
             <h4>Business cards</h4>
-            <p>Quick-turn cards for counters, meetings, handouts, launches, and leave-behinds that need to look clean.</p>
-            <div class="tag-row">
-              <span class="tag">Cards</span>
-              <span class="tag">Networking</span>
-              <span class="tag">Handouts</span>
-            </div>
-          </article>
-
-          <article class="surface card-block">
-            <h4>Event tents</h4>
-            <p>Large branded tents for pop-ups, community events, church gatherings, vendor booths, and outdoor activations.</p>
-            <div class="tag-row">
-              <span class="tag">Booths</span>
-              <span class="tag">Events</span>
-              <span class="tag">Canopies</span>
-            </div>
-          </article>
-        </div>
-
-      </div>
-    </section>
-
-    <section id="packages">
-      <div class="wrap">
-        <div class="section-head">
-          <h3>Fast checkout items</h3>
-        </div>
-
-        <div class="package-grid">
-          <article class="surface card-block">
-            <h4>Business card order</h4>
-            <p>For brands that need a simple paper piece ready to hand out, leave behind, or stack at the table.</p>
-            <ul class="package-list">
-              <li>Live one-time checkout path</li>
-              <li>Great for networking and retail counters</li>
-              <li>Quote first if the specs still need work</li>
+            <div class="shop-price" id="businessCardsPrice">$100.00</div>
+            <p>Best for counters, meetings, launches, leave-behinds, and quick handoffs that need to look polished.</p>
+            <ul class="simple-list">
+              <li>Fixed-price checkout path</li>
+              <li>Good default for standard card runs</li>
+              <li>Switch to quote if the specs need review first</li>
             </ul>
             <button
-              class="btn"
+              class="btn btn-primary"
               type="button"
               data-service-preset="Business cards"
-              data-prefill-note="Need business cards for a launch, table, or daily handout."
+              data-prefill-note="Need business cards for a launch, event table, or everyday handout."
+              data-preset-message="Business cards selected. Add your contact details, then continue to checkout."
+              data-scroll-target="quote"
             >
-              Prefill business card quote
+              Start business card checkout
             </button>
           </article>
 
-          <article class="surface card-block">
-            <h4>Event tent order</h4>
-            <p>For booths and activations that need a bigger physical anchor than signage alone.</p>
-            <ul class="package-list">
-              <li>Live one-time checkout path</li>
-              <li>Best for outdoor and event visibility</li>
-              <li>Use the quote form to confirm artwork and timing</li>
+          <article class="surface shop-card">
+            <span class="mini-label">Checkout</span>
+            <h4>Event tents</h4>
+            <div class="shop-price" id="eventTentsPrice">$1,000.00</div>
+            <p>Best for pop-ups, church events, community booths, vendor tables, and outdoor brand presence.</p>
+            <ul class="simple-list">
+              <li>Fixed-price checkout path</li>
+              <li>Built for booth visibility and event presence</li>
+              <li>Quote first if the setup needs special handling</li>
             </ul>
             <button
-              class="btn"
+              class="btn btn-primary"
               type="button"
               data-service-preset="Event tents"
               data-prefill-note="Need a branded event tent for a booth, activation, or outdoor event."
+              data-preset-message="Event tents selected. Add your contact details, then continue to checkout."
+              data-scroll-target="quote"
             >
-              Prefill event tent quote
+              Start event tent checkout
+            </button>
+          </article>
+
+          <article class="surface shop-card">
+            <span class="mini-label">Quote</span>
+            <h4>Custom quote</h4>
+            <div class="shop-price shop-price--muted">Manual review</div>
+            <p>Use this when the run is custom, the product is different, the artwork needs help, or you want pricing before any payment step.</p>
+            <ul class="simple-list">
+              <li>Best for custom print requests</li>
+              <li>Good when specs or turnaround still need review</li>
+              <li>Keeps the lead moving without forcing checkout</li>
+            </ul>
+            <button
+              class="btn"
+              type="button"
+              data-service-preset="Custom quote"
+              data-prefill-note="Need a custom quote outside the standard business card and event tent checkout flow."
+              data-preset-message="Custom quote selected. Tell us what you need and send the request."
+              data-scroll-target="quote"
+            >
+              Request custom quote
             </button>
           </article>
         </div>
-      </div>
-    </section>
 
-    <section id="pricing">
-      <div class="wrap">
-        <div class="section-head">
-          <h3>Fast pricing snapshot</h3>
-          <p>Two fixed checkout items are live right now. Anything custom should still start with a quote.</p>
-        </div>
-
-        <div class="pricing-layout">
-          <div class="surface pricing-card">
-            <div class="pricing-intro">
-              <p>Use these as the live checkout amounts for the two products currently on the site.</p>
-            </div>
-
-            <div class="pricing-notes">
-              <div class="pricing-note">
-                <strong>Business cards</strong>
-                <span id="businessCardsPrice">$100.00</span>
-              </div>
-              <div class="pricing-note">
-                <strong>Event tents</strong>
-                <span id="eventTentsPrice">$1,000.00</span>
-              </div>
-              <div class="pricing-note">
-                <strong>Business card fit</strong>
-                <span>Networking, counters, handouts, and launch day leave-behinds.</span>
-              </div>
-              <div class="pricing-note">
-                <strong>Event tent fit</strong>
-                <span>Booths, outdoor activations, community events, and brand presence.</span>
-              </div>
-            </div>
-          </div>
-
-          <aside class="surface pricing-side">
-            <h4>How checkout works</h4>
-            <p>
-              The live checkout is intentionally narrow. Pick business cards or event tents, add your contact info, and pay online when the product fits.
-            </p>
-            <ul class="simple-list">
-              <li>Choose business cards or event tents in the form.</li>
-              <li>Use checkout for the fast fixed-price path.</li>
-              <li>Use the quote flow when specs, artwork, or turnaround still need review.</li>
-              <li>If the job is not one of those two, send the quote and Third Eye will follow up manually.</li>
-            </ul>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <section id="process">
-      <div class="wrap">
-        <div class="section-head">
-          <h3>How the order flow works</h3>
-          <p>Simple on purpose. Pick the product, send the details, then move into checkout or follow-up.</p>
-        </div>
-
-        <div class="step-grid">
-          <article class="surface card-block">
-            <div class="step-number">01</div>
-            <h4>Pick the product</h4>
-            <p>Choose business cards or event tents, then add the quantity, timing, and artwork status.</p>
-          </article>
-
-          <article class="surface card-block">
-            <div class="step-number">02</div>
-            <h4>Quote or checkout</h4>
-            <p>Send the quote if anything still needs review, or go straight into the live one-time checkout for the selected product.</p>
-          </article>
-
-          <article class="surface card-block">
-            <div class="step-number">03</div>
-            <h4>Confirm production</h4>
-            <p>Third Eye follows up on the specs, confirms the production path, and moves the job into fulfillment.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="faq">
-      <div class="wrap">
-        <div class="section-head">
-          <h3>Quick answers</h3>
-        </div>
-
-        <div class="faq-grid">
-          <article class="surface card-block">
-            <h4>Can custom work still be quoted?</h4>
-            <p>Yes. The storefront is focused on business cards and event tents right now, but the quote form can still start a custom conversation.</p>
-          </article>
-
-          <article class="surface card-block">
-            <h4>Do I need finished artwork first?</h4>
-            <p>No. Finished artwork is faster, but the form can still be used when the design needs cleanup or direction.</p>
-          </article>
-
-          <article class="surface card-block">
-            <h4>Is checkout the final approval?</h4>
-            <p>Not by itself. Checkout gets the order moving, then Third Eye confirms specs, timing, and any production notes before fulfillment.</p>
-          </article>
+        <div class="callout">
+          Checkout is intentionally narrow so the site can move faster. If the order is not a standard business card or event tent run, the custom quote path stays visible instead of forcing the wrong checkout.
         </div>
       </div>
     </section>
@@ -1405,12 +1388,13 @@
     <section id="quote" class="quote-section">
       <div class="wrap">
         <div class="section-head">
-          <h3>Request a quote or start checkout</h3>
+          <h3>Finish the order</h3>
         </div>
 
         <div class="quote-grid">
           <aside class="surface contact-card">
-            <h4>Contact</h4>
+            <h4>Need help before you pay?</h4>
+            <p>Call, text, or DM if you want to confirm fit before checkout. Custom jobs should still start here with a quote request.</p>
 
             <div class="contact-points">
               <div class="phone-action">
@@ -1427,10 +1411,49 @@
           </aside>
 
           <div class="surface form-card">
-            <h4>Quote form</h4>
-            <p>Business cards and event tents are live for online checkout. Anything else should start with a quote.</p>
+            <h4>Checkout or request a quote</h4>
+            <p>Pick the fast checkout path for business cards or event tents. If the order needs a different setup, switch to custom quote.</p>
 
             <form id="quoteForm" action="" method="POST" novalidate>
+              <input id="serviceType" name="serviceType" type="hidden" />
+
+              <div class="service-choice-grid" aria-label="Choose your path">
+                <button
+                  class="service-choice"
+                  type="button"
+                  data-service-choice="Business cards"
+                  data-service-preset="Business cards"
+                  data-prefill-note="Need business cards for a launch, event table, or everyday handout."
+                >
+                  <strong>Business cards</strong>
+                  <span>Fixed-price checkout for a standard card run.</span>
+                </button>
+                <button
+                  class="service-choice"
+                  type="button"
+                  data-service-choice="Event tents"
+                  data-service-preset="Event tents"
+                  data-prefill-note="Need a branded event tent for a booth, activation, or outdoor event."
+                >
+                  <strong>Event tents</strong>
+                  <span>Fixed-price checkout for a standard branded tent order.</span>
+                </button>
+                <button
+                  class="service-choice"
+                  type="button"
+                  data-service-choice="Custom quote"
+                  data-service-preset="Custom quote"
+                  data-prefill-note="Need a custom quote outside the standard business card and event tent checkout flow."
+                >
+                  <strong>Custom quote</strong>
+                  <span>Use this when the job needs review before payment.</span>
+                </button>
+              </div>
+
+              <div class="choice-note" id="serviceChoiceNote">
+                Choose business cards, event tents, or custom quote.
+              </div>
+
               <div class="field-grid">
                 <label for="name">
                   Name
@@ -1443,37 +1466,14 @@
               </div>
 
               <div class="field-grid">
-                <label for="serviceType">
-                  Service type
-                  <select id="serviceType" name="serviceType">
-                    <option value="">Select a service...</option>
-                    <option>Business cards</option>
-                    <option>Event tents</option>
-                  </select>
-                </label>
                 <label for="quantity">
                   Quantity
                   <input id="quantity" name="quantity" inputmode="numeric" placeholder="500 cards or 1 tent" />
                 </label>
-              </div>
-
-              <div class="preset-row" aria-label="Quick presets">
-                <button
-                  class="preset"
-                  type="button"
-                  data-service-preset="Business cards"
-                  data-prefill-note="Need business cards for a launch, event table, or everyday handout."
-                >
-                  Business cards
-                </button>
-                <button
-                  class="preset"
-                  type="button"
-                  data-service-preset="Event tents"
-                  data-prefill-note="Need a branded event tent for a booth, activation, or outdoor event."
-                >
-                  Event tents
-                </button>
+                <label for="needBy">
+                  Need by
+                  <input id="needBy" name="needBy" placeholder="MM/DD or event date" />
+                </label>
               </div>
 
               <label for="notes">
@@ -1508,69 +1508,21 @@
                     </label>
                   </div>
 
-                  <div class="field-grid">
-                    <label for="garment">
-                      Product details
-                      <input id="garment" name="garment" placeholder="Matte cards, canopy size, tent walls, table setup" />
-                    </label>
-                    <label for="locations">
-                      Placement, size, or sides
-                      <input id="locations" name="locations" placeholder="Two-sided cards, 10x10 tent, full walls, etc." />
-                    </label>
-                  </div>
-
-                  <div class="field-grid">
-                    <label for="colors">
-                      Ink or print colors
-                      <select id="colors" name="colors">
-                        <option value="">Select...</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5+</option>
-                      </select>
-                    </label>
-                    <label for="needBy">
-                      Need by
-                      <input id="needBy" name="needBy" placeholder="MM/DD or event date" />
-                    </label>
-                  </div>
-
-                  <div class="field-grid">
-                    <label for="budget">
-                      Budget range
-                      <select id="budget" name="budget">
-                        <option value="">Select...</option>
-                        <option>Under $100</option>
-                        <option>$100 - $250</option>
-                        <option>$250 - $1,000</option>
-                        <option>$1,000 - $2,500</option>
-                        <option>Not sure yet</option>
-                      </select>
-                    </label>
-                    <label for="fulfillment">
-                      Fulfillment
-                      <select id="fulfillment" name="fulfillment">
-                        <option value="">Select...</option>
-                        <option>San Diego pickup</option>
-                        <option>Ship to one location</option>
-                        <option>Need delivery options</option>
-                        <option>Not sure yet</option>
-                      </select>
-                    </label>
-                  </div>
+                  <label for="garment">
+                    Product details
+                    <input id="garment" name="garment" placeholder="Matte cards, card sides, canopy size, tent walls, table setup" />
+                  </label>
                 </div>
               </details>
 
               <div class="form-actions">
-                <button class="btn btn-primary" type="submit">Send quote request</button>
-                <button class="btn btn-secondary" type="button" id="payDepositBtn">Choose a product above</button>
+                <button class="btn btn-primary" type="button" id="payDepositBtn">Choose business cards or event tents</button>
+                <button class="btn btn-secondary" type="submit" id="sendQuoteBtn">Request a quote instead</button>
               </div>
 
               <div id="formMsg" class="form-status" role="status" aria-live="polite"></div>
               <div class="deposit-note" id="depositNote">
-                Checkout amount: <strong id="depositAmount">Select business cards or event tents</strong>
+                <span id="depositLabel">Fast checkout total</span>: <strong id="depositAmount">Select business cards or event tents</strong>
               </div>
               <div class="deposit-note">
                 Quote requests open a prefilled email draft to gamboaesai@gmail.com.
@@ -1614,16 +1566,15 @@
     const form = document.getElementById("quoteForm");
     const msg = document.getElementById("formMsg");
     const payDepositBtn = document.getElementById("payDepositBtn");
+    const sendQuoteBtn = document.getElementById("sendQuoteBtn");
     const depositNote = document.getElementById("depositNote");
+    const depositLabel = document.getElementById("depositLabel");
     const depositAmount = document.getElementById("depositAmount");
     const businessCardsPrice = document.getElementById("businessCardsPrice");
     const eventTentsPrice = document.getElementById("eventTentsPrice");
     const serviceTypeField = document.getElementById("serviceType");
+    const serviceChoiceNote = document.getElementById("serviceChoiceNote");
     const notesField = document.getElementById("notes");
-    const artStatusField = document.getElementById("artStatus");
-    const colorsField = document.getElementById("colors");
-    const budgetField = document.getElementById("budget");
-    const fulfillmentField = document.getElementById("fulfillment");
     const portalNavLink = document.getElementById("portalNavLink");
     const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
     const stripeCatalog = runtimeConfig.stripeCatalog || {};
@@ -1641,6 +1592,7 @@
     const desktopPhoneMedia = window.matchMedia("(min-width: 721px)");
     const fallbackPhoneNumber = "+1 (619) 257-8389";
     const presetButtons = Array.from(document.querySelectorAll("[data-service-preset]"));
+    const serviceChoiceButtons = Array.from(document.querySelectorAll("[data-service-choice]"));
     const servicePrefillNotes = new Map(
       presetButtons
         .map((button) => [
@@ -1649,19 +1601,14 @@
         ])
         .filter(([preset, note]) => preset && note)
     );
-    const dropdownNoteFields = [
-      { field: artStatusField, label: "Artwork status" },
-      { field: colorsField, label: "Ink or print colors" },
-      { field: budgetField, label: "Budget range" },
-      { field: fulfillmentField, label: "Fulfillment" }
-    ];
     let autoNotesValue = "";
     let manualNotesValue = notesField ? String(notesField.value || "").trim() : "";
     let activeQuoteId = "";
 
     [
       ["Business cards", "Need business cards for a launch, event table, or everyday handout."],
-      ["Event tents", "Need a branded event tent for a booth, activation, or outdoor event."]
+      ["Event tents", "Need a branded event tent for a booth, activation, or outdoor event."],
+      ["Custom quote", "Need a custom quote outside the standard business card and event tent checkout flow."]
     ].forEach(([service, note]) => {
       servicePrefillNotes.set(service, note);
     });
@@ -1746,6 +1693,10 @@
       return null;
     }
 
+    function isCustomQuoteService(serviceType) {
+      return String(serviceType || "").trim().toLowerCase() === "custom quote";
+    }
+
     function updateCatalogPricing() {
       const businessCardsOffer = resolveCheckoutOffer("Business cards");
       const eventTentOffer = resolveCheckoutOffer("Event tents");
@@ -1765,25 +1716,87 @@
       }
     }
 
+    function syncServiceChoiceButtons() {
+      const selectedService = trimFieldValue(serviceTypeField);
+
+      serviceChoiceButtons.forEach((button) => {
+        const choice = String(button.dataset.serviceChoice || "").trim();
+        const isActive = Boolean(choice) && choice === selectedService;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    }
+
     function updateCheckoutUi() {
-      if (!payDepositBtn || !depositAmount) {
+      if (!payDepositBtn || !sendQuoteBtn || !depositAmount || !depositLabel) {
         return;
+      }
+
+      const selectedService = trimFieldValue(serviceTypeField);
+      const offer = resolveCheckoutOffer(selectedService);
+      const isCustomQuote = isCustomQuoteService(selectedService);
+
+      syncServiceChoiceButtons();
+
+      if (serviceChoiceNote) {
+        if (!stripeEnabled) {
+          serviceChoiceNote.textContent = isCustomQuote
+            ? "Custom quote selected. Describe the job and send the request for manual follow-up."
+            : "Online checkout is unavailable right now. Send a quote request instead.";
+        } else if (offer) {
+          serviceChoiceNote.textContent = `Fast checkout is ready for ${offer.label.toLowerCase()}. Add your name and contact, then continue.`;
+        } else if (isCustomQuote) {
+          serviceChoiceNote.textContent = "Custom quote selected. Describe the job and send the request for manual follow-up.";
+        } else {
+          serviceChoiceNote.textContent = "Choose business cards, event tents, or custom quote.";
+        }
       }
 
       if (!stripeEnabled) {
+        payDepositBtn.hidden = true;
+        if (depositNote) {
+          depositNote.hidden = true;
+        }
+        sendQuoteBtn.textContent = isCustomQuote ? "Request custom quote" : "Send quote request";
+        sendQuoteBtn.classList.add("btn-primary");
+        sendQuoteBtn.classList.remove("btn-secondary");
         return;
       }
 
-      const offer = resolveCheckoutOffer(trimFieldValue(serviceTypeField));
+      if (depositNote) {
+        depositNote.hidden = false;
+      }
 
-      if (!offer) {
-        payDepositBtn.textContent = "Checkout business cards or event tents";
-        depositAmount.textContent = "business cards or event tents only";
+      if (offer) {
+        payDepositBtn.hidden = false;
+        payDepositBtn.disabled = false;
+        payDepositBtn.textContent = offer.buttonLabel || "Start checkout";
+        depositLabel.textContent = "Fast checkout total";
+        depositAmount.textContent = formatCurrency(offer.amountCents, offer.currency || depositCurrency);
+        sendQuoteBtn.textContent = `Need changes first? Request a ${offer.label.toLowerCase()} quote`;
+        sendQuoteBtn.classList.remove("btn-primary");
+        sendQuoteBtn.classList.add("btn-secondary");
         return;
       }
 
-      payDepositBtn.textContent = offer.buttonLabel || "Start checkout";
-      depositAmount.textContent = formatCurrency(offer.amountCents, offer.currency || depositCurrency);
+      if (isCustomQuote) {
+        payDepositBtn.hidden = true;
+        depositLabel.textContent = "Custom quote";
+        depositAmount.textContent = "We will review details before any payment step";
+        sendQuoteBtn.textContent = "Request custom quote";
+        sendQuoteBtn.classList.add("btn-primary");
+        sendQuoteBtn.classList.remove("btn-secondary");
+        return;
+      }
+
+      payDepositBtn.hidden = false;
+      payDepositBtn.disabled = true;
+      payDepositBtn.textContent = "Choose business cards or event tents";
+      depositLabel.textContent = "Fast checkout total";
+      depositAmount.textContent = "Select business cards or event tents";
+      sendQuoteBtn.textContent = "Need something custom? Request a quote";
+      sendQuoteBtn.classList.remove("btn-primary");
+      sendQuoteBtn.classList.add("btn-secondary");
     }
 
     syncPortalNavLink();
@@ -1860,27 +1873,9 @@
 
     function buildAutoNotes() {
       const serviceType = trimFieldValue(serviceTypeField);
-      const selectedDetails = dropdownNoteFields
-        .map(({ field, label }) => {
-          const value = trimFieldValue(field);
-          return value ? `${label}: ${value}` : "";
-        })
-        .filter(Boolean);
-      const noteLines = [];
       const serviceNote = servicePrefillNotes.get(serviceType) || "";
 
-      if (serviceNote) {
-        noteLines.push(serviceNote);
-      }
-
-      if (selectedDetails.length) {
-        noteLines.push("Selected details:");
-        selectedDetails.forEach((detail) => {
-          noteLines.push(`- ${detail}`);
-        });
-      }
-
-      return noteLines.join("\n");
+      return serviceNote;
     }
 
     function syncProjectNotes() {
@@ -1922,6 +1917,8 @@
       button.addEventListener("click", () => {
         const preset = String(button.dataset.servicePreset || "").trim();
         const prefillNote = String(button.dataset.prefillNote || "").trim();
+        const presetMessage = String(button.dataset.presetMessage || "").trim();
+        const scrollTarget = String(button.dataset.scrollTarget || "").trim();
 
         if (serviceTypeField && preset) {
           serviceTypeField.value = preset;
@@ -1933,30 +1930,21 @@
 
         syncProjectNotes();
         updateCheckoutUi();
-        form.scrollIntoView({ behavior: "smooth", block: "start" });
-        msg.textContent = preset ? `Preset loaded: ${preset}. Add any missing detail and send the quote.` : "";
+        if (scrollTarget) {
+          const target = document.getElementById(scrollTarget);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+        msg.textContent = presetMessage || (
+          preset
+            ? `Selected ${preset}. Add any missing detail and continue.`
+            : ""
+        );
       });
     });
 
-    if (serviceTypeField) {
-      serviceTypeField.addEventListener("change", () => {
-        syncProjectNotes();
-        updateCheckoutUi();
-      });
-    }
-
-    dropdownNoteFields.forEach(({ field }) => {
-      if (field) {
-        field.addEventListener("change", syncProjectNotes);
-      }
-    });
-
-    if (!stripeEnabled && payDepositBtn) {
-      payDepositBtn.hidden = true;
-      if (depositNote) {
-        depositNote.hidden = true;
-      }
-    } else if (depositAmount) {
+    if (depositAmount) {
       updateCatalogPricing();
       updateCheckoutUi();
     }
@@ -1975,6 +1963,10 @@
       Object.entries(data).forEach(([key, value]) => {
         lead[key] = String(value || "").trim();
       });
+
+      if (!lead.serviceType) {
+        lead.serviceType = "Custom quote";
+      }
 
       return lead;
     }
@@ -2021,7 +2013,7 @@
     }
 
     function buildMailtoUrl(lead) {
-      const serviceLabel = lead.serviceType || "Custom print quote";
+      const serviceLabel = lead.serviceType || "Custom quote";
       const requesterLabel = lead.name || lead.company || lead.contact || "";
       const subject = requesterLabel
         ? `Quote request: ${serviceLabel} - ${requesterLabel}`
@@ -2034,13 +2026,9 @@
         `Company or brand: ${lead.company || "-"}`,
         `Service type: ${lead.serviceType || "-"}`,
         `Quantity: ${lead.quantity || "-"}`,
-        `Product or garment: ${lead.garment || "-"}`,
-        `Placement, size, or sides: ${lead.locations || "-"}`,
-        `Ink or print colors: ${lead.colors || "-"}`,
+        `Product details: ${lead.garment || "-"}`,
         `Artwork status: ${lead.artStatus || "-"}`,
         `Need by: ${lead.needBy || "-"}`,
-        `Budget range: ${lead.budget || "-"}`,
-        `Fulfillment: ${lead.fulfillment || "-"}`,
         "",
         "Project notes:",
         lead.notes || "-"
