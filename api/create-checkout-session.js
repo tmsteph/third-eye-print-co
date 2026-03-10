@@ -1,5 +1,5 @@
 const { normalizeLead, minimalLeadValidation } = require("../lib/lead");
-const { resolveCheckoutProduct } = require("../lib/runtime-config");
+const { resolveCheckoutSelection } = require("../lib/runtime-config");
 
 function readJsonBody(req) {
   if (typeof req.body === "string") {
@@ -91,10 +91,10 @@ function createCheckoutSessionHandler(options = {}) {
         return;
       }
 
-      const checkoutProduct = resolveCheckoutProduct(lead.serviceType, env);
-      if (!checkoutProduct) {
+      const checkoutSelection = resolveCheckoutSelection(lead, env);
+      if (!checkoutSelection) {
         sendJson(res, 400, {
-          error: "Online checkout is currently available for business cards and event tents only.",
+          error: "Choose a valid business card pack, tent package, or bundle deal before checkout.",
         });
         return;
       }
@@ -108,11 +108,11 @@ function createCheckoutSessionHandler(options = {}) {
           {
             quantity: 1,
             price_data: {
-              currency: checkoutProduct.currency,
-              unit_amount: checkoutProduct.amountCents,
+              currency: checkoutSelection.currency,
+              unit_amount: checkoutSelection.amountCents,
               product_data: {
-                name: checkoutProduct.productName,
-                description: checkoutProduct.description,
+                name: checkoutSelection.productName,
+                description: checkoutSelection.description,
               },
             },
           },
@@ -122,10 +122,12 @@ function createCheckoutSessionHandler(options = {}) {
         metadata: {
           name: lead.name || "",
           contact: lead.contact || "",
-          serviceType: lead.serviceType || checkoutProduct.label,
-          checkoutService: checkoutProduct.key,
-          checkoutAmountCents: String(checkoutProduct.amountCents),
-          quantity: lead.quantity || "",
+          serviceType: lead.serviceType || checkoutSelection.label,
+          checkoutService: checkoutSelection.key,
+          checkoutOptionId: checkoutSelection.option.id,
+          checkoutOptionLabel: checkoutSelection.option.label,
+          checkoutAmountCents: String(checkoutSelection.amountCents),
+          quantity: lead.quantity || checkoutSelection.option.quantityLabel || "",
           garment: lead.garment || "",
           needBy: lead.needBy || "",
         },

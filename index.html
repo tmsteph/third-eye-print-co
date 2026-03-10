@@ -6,12 +6,12 @@
   <title>Third Eye Print Co. - Business Cards and Event Tents</title>
   <meta
     name="description"
-    content="Third Eye Print Co. offers a fast quote and checkout path for business cards and event tents in San Diego."
+    content="Third Eye Print Co. offers fast checkout for business cards, tent packages, and bundle deals in San Diego."
   />
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#0b0b0f" />
   <meta property="og:title" content="Third Eye Print Co." />
-  <meta property="og:description" content="Business cards and event tents with a faster quote and checkout flow." />
+  <meta property="og:description" content="Business cards, tent packages, and bundle deals with a faster quote and checkout flow." />
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -620,7 +620,7 @@
     .shop-grid {
       display: grid;
       gap: 14px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .shop-card {
@@ -642,6 +642,10 @@
     }
 
     .shop-price {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: baseline;
       font-family: "Fraunces", serif;
       font-size: clamp(30px, 4vw, 42px);
       line-height: 1;
@@ -653,6 +657,32 @@
       font-size: 20px;
       letter-spacing: 0;
       color: var(--muted);
+    }
+
+    .shop-price-prefix {
+      font-size: 16px;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .tier-list {
+      margin-top: 0;
+    }
+
+    .tier-list li {
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .tier-list strong {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .tier-list span {
+      color: var(--muted);
+      font-size: 13px;
     }
 
     .pricing-layout {
@@ -855,6 +885,18 @@
       display: grid;
       gap: 12px;
       margin-top: 18px;
+    }
+
+    .field-stack {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .field-help {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
     }
 
     .field-grid {
@@ -1061,12 +1103,13 @@
     }
 
     @media (max-width: 1024px) {
+      .shop-grid,
+      .service-choice-grid,
       .offer-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .package-grid,
-      .shop-grid,
       .step-grid,
       .faq-grid,
       .quote-grid,
@@ -1110,7 +1153,8 @@
 
       .offer-grid,
       .field-grid,
-      .service-choice-grid {
+      .service-choice-grid,
+      .shop-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1242,7 +1286,7 @@
         </div>
         <div class="brand-copy">
           <h1>Third Eye Print Co.</h1>
-          <p>Business cards and event tents - San Diego</p>
+          <p>Cards, tents, and bundles - San Diego</p>
         </div>
       </a>
 
@@ -1263,9 +1307,9 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <h2>Checkout business cards or event tents. Quote anything custom.</h2>
+          <h2>Checkout business cards, tent packages, or bundle deals. Quote anything custom.</h2>
           <p>
-            Third Eye Print Co. is keeping the storefront narrow on purpose: two fixed-price products with a faster path to payment, plus a custom quote option when the job needs a different setup.<br />
+            Third Eye Print Co. is keeping the storefront narrow on purpose: card packs, tent packages, and tent-plus-card bundles with a faster path to payment, plus a custom quote option when the job needs a different setup.<br />
             <span class="hero-copy-followup">If it fits the standard product, move toward checkout. If it does not, send the quote instead.</span>
           </p>
 
@@ -1284,8 +1328,8 @@
           </div>
 
           <ul class="hero-points">
-            <li>Use checkout for standard business cards and event tents.</li>
-            <li>Use the quote path for custom specs, artwork help, or anything outside those two products.</li>
+            <li>Use checkout for standard business cards, tent packages, and tent-plus-card bundles.</li>
+            <li>Use the quote path for custom specs, artwork help, or anything outside the listed card, tent, and bundle options.</li>
             <li>Local pickup is available in San Diego. Shipping and other fulfillment can still be quoted per project.</li>
           </ul>
         </div>
@@ -1298,10 +1342,10 @@
           <div class="panel-stack">
             <div class="mini-card">
               <span class="mini-label">Fastest path</span>
-              <strong>Pick the product, add contact details, then move into checkout or a custom quote.</strong>
+              <strong>Pick the product, choose a package, add contact details, then move into checkout or a custom quote.</strong>
             </div>
 
-            <div class="review-note">Two products are live for checkout. Custom work still has a clear quote path.</div>
+            <div class="review-note">Cards, tents, and combined bundles are live for checkout. Custom work still has a clear quote path.</div>
           </div>
         </aside>
       </div>
@@ -1311,26 +1355,30 @@
       <div class="wrap">
         <div class="section-head">
           <h3>Pick your path</h3>
-          <p>Checkout is the fast path for the two fixed-price products. If the job needs different specs, extra help, or something else entirely, use the custom quote path instead.</p>
+          <p>Checkout is the fast path for card packs, tent packages, and tent-plus-card bundles. If the job needs different specs, extra help, or something else entirely, use the custom quote path instead.</p>
         </div>
 
         <div class="shop-grid">
           <article class="surface shop-card">
             <span class="mini-label">Checkout</span>
             <h4>Business cards</h4>
-            <div class="shop-price" id="businessCardsPrice">$100.00</div>
+            <div class="shop-price">
+              <span class="shop-price-prefix">From</span>
+              <span id="businessCardsPrice">$35.00</span>
+            </div>
             <p>Best for counters, meetings, launches, leave-behinds, and quick handoffs that need to look polished.</p>
-            <ul class="simple-list">
-              <li>Fixed-price checkout path</li>
-              <li>Good default for standard card runs</li>
-              <li>Switch to quote if the specs need review first</li>
+            <ul class="simple-list tier-list" id="businessCardsTiers">
+              <li><strong>50 cards</strong><span>$35.00</span></li>
+              <li><strong>100 cards</strong><span>$55.00</span></li>
+              <li><strong>200 cards</strong><span>$80.00</span></li>
+              <li><strong>500 cards</strong><span>$100.00</span></li>
             </ul>
             <button
               class="btn btn-primary"
               type="button"
               data-service-preset="Business cards"
               data-prefill-note="Need business cards for a launch, event table, or everyday handout."
-              data-preset-message="Business cards selected. Add your contact details, then continue to checkout."
+              data-preset-message="Business cards selected. Choose a card pack, add your contact details, then continue to checkout."
               data-scroll-target="quote"
             >
               Start business card checkout
@@ -1340,22 +1388,50 @@
           <article class="surface shop-card">
             <span class="mini-label">Checkout</span>
             <h4>Event tents</h4>
-            <div class="shop-price" id="eventTentsPrice">$1,000.00</div>
+            <div class="shop-price">
+              <span class="shop-price-prefix">From</span>
+              <span id="eventTentsPrice">$1,000.00</span>
+            </div>
             <p>Best for pop-ups, church events, community booths, vendor tables, and outdoor brand presence.</p>
-            <ul class="simple-list">
-              <li>Fixed-price checkout path</li>
-              <li>Built for booth visibility and event presence</li>
-              <li>Quote first if the setup needs special handling</li>
+            <ul class="simple-list tier-list" id="eventTentsTiers">
+              <li><strong>1 tent</strong><span>$1,000.00</span></li>
+              <li><strong>3 tents</strong><span>$2,700.00</span></li>
+              <li><strong>5 tents</strong><span>$4,250.00</span></li>
             </ul>
             <button
               class="btn btn-primary"
               type="button"
               data-service-preset="Event tents"
               data-prefill-note="Need a branded event tent for a booth, activation, or outdoor event."
-              data-preset-message="Event tents selected. Add your contact details, then continue to checkout."
+              data-preset-message="Event tents selected. Choose a tent package, add your contact details, then continue to checkout."
               data-scroll-target="quote"
             >
               Start event tent checkout
+            </button>
+          </article>
+
+          <article class="surface shop-card">
+            <span class="mini-label">Checkout</span>
+            <h4>Tent and card bundles</h4>
+            <div class="shop-price">
+              <span class="shop-price-prefix">From</span>
+              <span id="bundleDealsPrice">$1,025.00</span>
+            </div>
+            <p>Best when you need both booth presence and handouts in one order instead of piecing separate products together.</p>
+            <ul class="simple-list tier-list" id="bundleDealsTiers">
+              <li><strong>1 tent + 100 cards</strong><span>$1,025.00</span></li>
+              <li><strong>3 tents + 200 cards</strong><span>$2,750.00</span></li>
+              <li><strong>5 tents + 500 cards</strong><span>$4,300.00</span></li>
+            </ul>
+            <button
+              class="btn btn-primary"
+              type="button"
+              data-service-preset="Tent and card bundles"
+              data-prefill-note="Need a tent and business card bundle for an event, booth, or activation."
+              data-preset-message="Bundle deal selected. Choose a bundle, add your contact details, then continue to checkout."
+              data-scroll-target="quote"
+            >
+              Start bundle checkout
             </button>
           </article>
 
@@ -1373,7 +1449,7 @@
               class="btn"
               type="button"
               data-service-preset="Custom quote"
-              data-prefill-note="Need a custom quote outside the standard business card and event tent checkout flow."
+              data-prefill-note="Need a custom quote outside the standard card, tent, and bundle checkout flow."
               data-preset-message="Custom quote selected. Tell us what you need and send the request."
               data-scroll-target="quote"
             >
@@ -1383,7 +1459,7 @@
         </div>
 
         <div class="callout">
-          Checkout is intentionally narrow so the site can move faster. If the order is not a standard business card or event tent run, the custom quote path stays visible instead of forcing the wrong checkout.
+          Checkout is intentionally narrow so the site can move faster. If the order is not a standard card pack, tent package, or listed bundle, the custom quote path stays visible instead of forcing the wrong checkout.
         </div>
       </div>
     </section>
@@ -1415,10 +1491,12 @@
 
           <div class="surface form-card">
             <h4>Checkout or request a quote</h4>
-            <p>Pick the fast checkout path for business cards or event tents. If the order needs a different setup, switch to custom quote.</p>
+            <p>Pick the fast checkout path for business cards, tent packages, or listed bundles. If the order needs a different setup, switch to custom quote.</p>
 
             <form id="quoteForm" action="" method="POST" novalidate>
               <input id="serviceType" name="serviceType" type="hidden" />
+              <input id="quantity" name="quantity" type="hidden" />
+              <input id="checkoutOptionLabel" name="checkoutOptionLabel" type="hidden" />
 
               <div class="service-choice-grid" aria-label="Choose your path">
                 <button
@@ -1439,14 +1517,24 @@
                   data-prefill-note="Need a branded event tent for a booth, activation, or outdoor event."
                 >
                   <strong>Event tents</strong>
-                  <span>Fixed-price checkout for a standard branded tent order.</span>
+                  <span>Discounted checkout packages for 1, 3, or 5 tents.</span>
+                </button>
+                <button
+                  class="service-choice"
+                  type="button"
+                  data-service-choice="Tent and card bundles"
+                  data-service-preset="Tent and card bundles"
+                  data-prefill-note="Need a tent and business card bundle for an event, booth, or activation."
+                >
+                  <strong>Tent and card bundles</strong>
+                  <span>Combined checkout deals for tents plus matching card packs.</span>
                 </button>
                 <button
                   class="service-choice"
                   type="button"
                   data-service-choice="Custom quote"
                   data-service-preset="Custom quote"
-                  data-prefill-note="Need a custom quote outside the standard business card and event tent checkout flow."
+                  data-prefill-note="Need a custom quote outside the standard card, tent, and bundle checkout flow."
                 >
                   <strong>Custom quote</strong>
                   <span>Use this when the job needs review before payment.</span>
@@ -1454,7 +1542,7 @@
               </div>
 
               <div class="choice-note" id="serviceChoiceNote">
-                Choose business cards, event tents, or custom quote.
+                Choose business cards, event tents, a bundle deal, or custom quote.
               </div>
 
               <div class="field-grid">
@@ -1469,10 +1557,17 @@
               </div>
 
               <div class="field-grid">
-                <label for="quantity">
-                  Quantity
-                  <input id="quantity" name="quantity" inputmode="numeric" placeholder="500 cards or 1 tent" />
-                </label>
+                <div class="field-stack" id="checkoutOptionSection">
+                  <label for="checkoutOptionId">
+                    <span id="checkoutOptionFieldLabel">Checkout package</span>
+                    <select id="checkoutOptionId" name="checkoutOptionId">
+                      <option value="">Choose a checkout package...</option>
+                    </select>
+                  </label>
+                  <div class="field-help" id="checkoutOptionNote">
+                    Select a package to see the checkout total.
+                  </div>
+                </div>
                 <label for="needBy">
                   Need by
                   <input id="needBy" name="needBy" placeholder="MM/DD or event date" />
@@ -1484,7 +1579,7 @@
                 <textarea
                   id="notes"
                   name="notes"
-                  placeholder="What are you making, what date matters, and do you already have artwork?"
+                  placeholder="What are you making, what date matters, and do you already have artwork? If this is custom, include the quantity here."
                 ></textarea>
               </label>
 
@@ -1513,19 +1608,19 @@
 
                   <label for="garment">
                     Product details
-                    <input id="garment" name="garment" placeholder="Matte cards, card sides, canopy size, tent walls, table setup" />
+                    <input id="garment" name="garment" placeholder="Matte cards, card sides, canopy size, tent walls, booth setup, or custom specs" />
                   </label>
                 </div>
               </details>
 
               <div class="form-actions">
-                <button class="btn btn-primary" type="button" id="payDepositBtn">Choose business cards or event tents</button>
+                <button class="btn btn-primary" type="button" id="payDepositBtn">Choose a checkout package</button>
                 <button class="btn btn-secondary" type="submit" id="sendQuoteBtn">Request a quote instead</button>
               </div>
 
               <div id="formMsg" class="form-status" role="status" aria-live="polite"></div>
               <div class="deposit-note" id="depositNote">
-                <span id="depositLabel">Fast checkout total</span>: <strong id="depositAmount">Select business cards or event tents</strong>
+                <span id="depositLabel">Fast checkout total</span>: <strong id="depositAmount">Select a checkout package</strong>
               </div>
               <div class="deposit-note">
                 Quote requests open a prefilled email draft to gamboaesai@gmail.com.
@@ -1541,7 +1636,7 @@
     <div class="wrap footer-inner">
       <div>
         <strong style="color: var(--text);">Third Eye Print Co.</strong><br />
-        San Diego business cards, event tents, and focused quote support.
+        San Diego business cards, tent packages, bundle deals, and focused quote support.
       </div>
 
       <div class="footer-contacts">
@@ -1574,14 +1669,76 @@
     const depositLabel = document.getElementById("depositLabel");
     const depositAmount = document.getElementById("depositAmount");
     const businessCardsPrice = document.getElementById("businessCardsPrice");
+    const businessCardsTiers = document.getElementById("businessCardsTiers");
     const eventTentsPrice = document.getElementById("eventTentsPrice");
+    const eventTentsTiers = document.getElementById("eventTentsTiers");
+    const bundleDealsPrice = document.getElementById("bundleDealsPrice");
+    const bundleDealsTiers = document.getElementById("bundleDealsTiers");
     const serviceTypeField = document.getElementById("serviceType");
+    const quantityField = document.getElementById("quantity");
+    const checkoutOptionLabelField = document.getElementById("checkoutOptionLabel");
+    const checkoutOptionField = document.getElementById("checkoutOptionId");
+    const checkoutOptionSection = document.getElementById("checkoutOptionSection");
+    const checkoutOptionFieldLabel = document.getElementById("checkoutOptionFieldLabel");
+    const checkoutOptionNote = document.getElementById("checkoutOptionNote");
     const serviceChoiceNote = document.getElementById("serviceChoiceNote");
     const notesField = document.getElementById("notes");
     const portalNavLink = document.getElementById("portalNavLink");
     const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
-    const stripeCatalog = runtimeConfig.stripeCatalog || {};
     const quoteEmailTo = String(runtimeConfig.quoteEmailTo || "gamboaesai@gmail.com").trim();
+    const fallbackStripeCatalog = {
+      businessCards: {
+        key: "businessCards",
+        label: "Business cards",
+        buttonLabel: "Checkout business cards",
+        currency: "usd",
+        productName: "Third Eye Print Co. Business Cards",
+        description: "Fast checkout for business card packs.",
+        defaultOptionId: "cards-100",
+        startingAtCents: 3500,
+        options: [
+          { id: "cards-50", label: "50 cards", quantityLabel: "50 cards", amountCents: 3500, description: "Starter business card pack." },
+          { id: "cards-100", label: "100 cards", quantityLabel: "100 cards", amountCents: 5500, description: "Popular business card pack." },
+          { id: "cards-200", label: "200 cards", quantityLabel: "200 cards", amountCents: 8000, description: "Larger business card run." },
+          { id: "cards-500", label: "500 cards", quantityLabel: "500 cards", amountCents: 10000, description: "Best-value bulk business card pack." },
+        ],
+      },
+      eventTent: {
+        key: "eventTent",
+        label: "Event tents",
+        buttonLabel: "Checkout event tent package",
+        currency: "usd",
+        productName: "Third Eye Print Co. Event Tents",
+        description: "Fast checkout for event tent packages.",
+        defaultOptionId: "tent-1",
+        startingAtCents: 100000,
+        options: [
+          { id: "tent-1", label: "1 tent", quantityLabel: "1 tent", amountCents: 100000, description: "Single branded event tent." },
+          { id: "tent-3", label: "3 tents", quantityLabel: "3 tents", amountCents: 270000, description: "Three event tents with bundle pricing." },
+          { id: "tent-5", label: "5 tents", quantityLabel: "5 tents", amountCents: 425000, description: "Five event tents with the strongest tent discount." },
+        ],
+      },
+      bundleDeal: {
+        key: "bundleDeal",
+        label: "Tent and card bundles",
+        buttonLabel: "Checkout bundle deal",
+        currency: "usd",
+        productName: "Third Eye Print Co. Tent and Card Bundle",
+        description: "Fast checkout for tent and card bundle deals.",
+        defaultOptionId: "bundle-1-100",
+        startingAtCents: 102500,
+        options: [
+          { id: "bundle-1-100", label: "1 tent + 100 cards", quantityLabel: "1 tent + 100 cards", amountCents: 102500, description: "Starter event bundle with tent and cards." },
+          { id: "bundle-3-200", label: "3 tents + 200 cards", quantityLabel: "3 tents + 200 cards", amountCents: 275000, description: "Mid-size event bundle with tent discount and added cards." },
+          { id: "bundle-5-500", label: "5 tents + 500 cards", quantityLabel: "5 tents + 500 cards", amountCents: 430000, description: "Largest event bundle for teams, events, and activations." },
+        ],
+      },
+    };
+    const stripeCatalog = {
+      businessCards: mergeCatalogService(fallbackStripeCatalog.businessCards, runtimeConfig.stripeCatalog && runtimeConfig.stripeCatalog.businessCards),
+      eventTent: mergeCatalogService(fallbackStripeCatalog.eventTent, runtimeConfig.stripeCatalog && runtimeConfig.stripeCatalog.eventTent),
+      bundleDeal: mergeCatalogService(fallbackStripeCatalog.bundleDeal, runtimeConfig.stripeCatalog && runtimeConfig.stripeCatalog.bundleDeal),
+    };
 
     const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
       ? window.ThirdEyeGun.createContext()
@@ -1611,7 +1768,8 @@
     [
       ["Business cards", "Need business cards for a launch, event table, or everyday handout."],
       ["Event tents", "Need a branded event tent for a booth, activation, or outdoor event."],
-      ["Custom quote", "Need a custom quote outside the standard business card and event tent checkout flow."]
+      ["Tent and card bundles", "Need a tent and business card bundle for an event, booth, or activation."],
+      ["Custom quote", "Need a custom quote outside the standard card, tent, and bundle checkout flow."]
     ].forEach(([service, note]) => {
       servicePrefillNotes.set(service, note);
     });
@@ -1670,52 +1828,152 @@
       }
     }
 
+    function mergeCatalogService(fallbackService, configuredService) {
+      const mergedService = {
+        ...fallbackService,
+        ...(configuredService || {}),
+      };
+      const configuredOptions = configuredService && Array.isArray(configuredService.options)
+        ? configuredService.options
+        : [];
+
+      mergedService.options = configuredOptions.length
+        ? configuredOptions.map((option, index) => ({
+          ...(fallbackService.options[index] || {}),
+          ...option,
+        }))
+        : fallbackService.options.map((option) => ({ ...option }));
+
+      if (!Number.isFinite(Number(mergedService.startingAtCents)) || Number(mergedService.startingAtCents) <= 0) {
+        mergedService.startingAtCents = mergedService.options.reduce((lowest, option) => (
+          option.amountCents < lowest ? option.amountCents : lowest
+        ), mergedService.options[0] ? mergedService.options[0].amountCents : 0);
+      }
+
+      return mergedService;
+    }
+
+    function resolveCatalogService(serviceKey) {
+      return stripeCatalog[serviceKey] || null;
+    }
+
     function resolveCheckoutOffer(serviceType) {
       const normalized = String(serviceType || "").trim().toLowerCase();
 
       if (normalized === "business cards") {
-        return stripeCatalog.businessCards || {
-          key: "businessCards",
-          label: "Business cards",
-          buttonLabel: "Checkout business cards",
-          amountCents: 10000,
-          currency: "usd"
-        };
+        return resolveCatalogService("businessCards");
       }
 
       if (normalized === "event tents" || normalized === "event tent") {
-        return stripeCatalog.eventTent || {
-          key: "eventTent",
-          label: "Event tents",
-          buttonLabel: "Checkout event tent",
-          amountCents: 100000,
-          currency: "usd"
-        };
+        return resolveCatalogService("eventTent");
+      }
+
+      if (
+        normalized === "tent and card bundles" ||
+        normalized === "tent and card bundle" ||
+        normalized === "bundle" ||
+        normalized === "bundles"
+      ) {
+        return resolveCatalogService("bundleDeal");
       }
 
       return null;
+    }
+
+    function resolveCheckoutOption(service, optionValue) {
+      if (!service || !Array.isArray(service.options)) {
+        return null;
+      }
+
+      const normalizedValue = String(optionValue || "").trim().toLowerCase();
+      if (!normalizedValue) {
+        return null;
+      }
+
+      return service.options.find((option) => {
+        const candidates = [option.id, option.label, option.quantityLabel];
+        return candidates.some((candidate) => String(candidate || "").trim().toLowerCase() === normalizedValue);
+      }) || null;
+    }
+
+    function getDefaultCheckoutOption(service) {
+      if (!service || !Array.isArray(service.options) || !service.options.length) {
+        return null;
+      }
+
+      return resolveCheckoutOption(service, service.defaultOptionId) || service.options[0];
+    }
+
+    function resolveCheckoutSelection(serviceType, optionValue) {
+      const service = resolveCheckoutOffer(serviceType);
+      if (!service) {
+        return null;
+      }
+
+      const option = resolveCheckoutOption(service, optionValue);
+      if (!option) {
+        return null;
+      }
+
+      return {
+        ...service,
+        option,
+        amountCents: option.amountCents,
+      };
     }
 
     function isCustomQuoteService(serviceType) {
       return String(serviceType || "").trim().toLowerCase() === "custom quote";
     }
 
+    function renderTierList(listElement, service) {
+      if (!listElement || !service || !Array.isArray(service.options)) {
+        return;
+      }
+
+      listElement.textContent = "";
+
+      service.options.forEach((option) => {
+        const item = document.createElement("li");
+        const label = document.createElement("strong");
+        const price = document.createElement("span");
+
+        label.textContent = option.label;
+        price.textContent = formatCurrency(option.amountCents, option.currency || service.currency || depositCurrency);
+
+        item.appendChild(label);
+        item.appendChild(price);
+        listElement.appendChild(item);
+      });
+    }
+
     function updateCatalogPricing() {
-      const businessCardsOffer = resolveCheckoutOffer("Business cards");
-      const eventTentOffer = resolveCheckoutOffer("Event tents");
+      const businessCardsOffer = resolveCatalogService("businessCards");
+      const eventTentOffer = resolveCatalogService("eventTent");
+      const bundleDealOffer = resolveCatalogService("bundleDeal");
 
       if (businessCardsPrice && businessCardsOffer) {
         businessCardsPrice.textContent = formatCurrency(
-          businessCardsOffer.amountCents,
+          businessCardsOffer.startingAtCents,
           businessCardsOffer.currency || depositCurrency
         );
+        renderTierList(businessCardsTiers, businessCardsOffer);
       }
 
       if (eventTentsPrice && eventTentOffer) {
         eventTentsPrice.textContent = formatCurrency(
-          eventTentOffer.amountCents,
+          eventTentOffer.startingAtCents,
           eventTentOffer.currency || depositCurrency
         );
+        renderTierList(eventTentsTiers, eventTentOffer);
+      }
+
+      if (bundleDealsPrice && bundleDealOffer) {
+        bundleDealsPrice.textContent = formatCurrency(
+          bundleDealOffer.startingAtCents,
+          bundleDealOffer.currency || depositCurrency
+        );
+        renderTierList(bundleDealsTiers, bundleDealOffer);
       }
     }
 
@@ -1730,16 +1988,88 @@
       });
     }
 
+    function setCheckoutSelection(option) {
+      if (checkoutOptionField) {
+        checkoutOptionField.value = option ? option.id : "";
+      }
+
+      if (checkoutOptionLabelField) {
+        checkoutOptionLabelField.value = option ? option.label : "";
+      }
+
+      if (quantityField) {
+        quantityField.value = option ? (option.quantityLabel || option.label) : "";
+      }
+    }
+
+    function populateCheckoutOptions(service) {
+      if (!checkoutOptionField) {
+        return null;
+      }
+
+      const currentSelectionValue = trimFieldValue(checkoutOptionField);
+
+      checkoutOptionField.textContent = "";
+
+      if (!service || !Array.isArray(service.options) || !service.options.length) {
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Choose a checkout package...";
+        checkoutOptionField.appendChild(placeholder);
+        checkoutOptionField.disabled = true;
+        setCheckoutSelection(null);
+        return null;
+      }
+
+      const existingOption = resolveCheckoutOption(service, currentSelectionValue);
+      const selectedOption = existingOption || getDefaultCheckoutOption(service);
+
+      service.options.forEach((option) => {
+        const selectOption = document.createElement("option");
+        selectOption.value = option.id;
+        selectOption.textContent = `${option.label} - ${formatCurrency(option.amountCents, option.currency || service.currency || depositCurrency)}`;
+        checkoutOptionField.appendChild(selectOption);
+      });
+
+      checkoutOptionField.disabled = false;
+      setCheckoutSelection(selectedOption);
+      return selectedOption;
+    }
+
     function updateCheckoutUi() {
       if (!payDepositBtn || !sendQuoteBtn || !depositAmount || !depositLabel) {
         return;
       }
 
       const selectedService = trimFieldValue(serviceTypeField);
-      const offer = resolveCheckoutOffer(selectedService);
+      const service = resolveCheckoutOffer(selectedService);
+      const option = service ? populateCheckoutOptions(service) : populateCheckoutOptions(null);
+      const offer = option ? resolveCheckoutSelection(selectedService, option.id) : null;
       const isCustomQuote = isCustomQuoteService(selectedService);
 
       syncServiceChoiceButtons();
+
+      if (checkoutOptionSection) {
+        checkoutOptionSection.hidden = isCustomQuote;
+      }
+
+      if (checkoutOptionFieldLabel) {
+        checkoutOptionFieldLabel.textContent = service && service.label
+          ? `${service.label} package`
+          : "Checkout package";
+      }
+
+      if (checkoutOptionNote) {
+        if (!stripeEnabled) {
+          checkoutOptionNote.textContent = "Checkout is unavailable right now. Send a quote request instead.";
+        } else if (offer) {
+          checkoutOptionNote.textContent = `${offer.option.label} selected at ${formatCurrency(offer.amountCents, offer.currency || depositCurrency)}.`;
+        } else if (isCustomQuote) {
+          checkoutOptionNote.textContent = "Custom quote selected. Include the quantity or bundle idea in the notes.";
+        } else {
+          checkoutOptionNote.textContent = "Choose a checkout path to load the available packages.";
+        }
+      }
 
       if (serviceChoiceNote) {
         if (!stripeEnabled) {
@@ -1747,11 +2077,11 @@
             ? "Custom quote selected. Describe the job and send the request for manual follow-up."
             : "Online checkout is unavailable right now. Send a quote request instead.";
         } else if (offer) {
-          serviceChoiceNote.textContent = `Fast checkout is ready for ${offer.label.toLowerCase()}. Add your name and contact, then continue.`;
+          serviceChoiceNote.textContent = `${offer.label} selected. Review the package, add your name and contact, then continue.`;
         } else if (isCustomQuote) {
           serviceChoiceNote.textContent = "Custom quote selected. Describe the job and send the request for manual follow-up.";
         } else {
-          serviceChoiceNote.textContent = "Choose business cards, event tents, or custom quote.";
+          serviceChoiceNote.textContent = "Choose business cards, event tents, a bundle deal, or custom quote.";
         }
       }
 
@@ -1773,8 +2103,8 @@
       if (offer) {
         payDepositBtn.hidden = false;
         payDepositBtn.disabled = false;
-        payDepositBtn.textContent = offer.buttonLabel || "Start checkout";
-        depositLabel.textContent = "Fast checkout total";
+        payDepositBtn.textContent = `Checkout ${offer.option.label.toLowerCase()}`;
+        depositLabel.textContent = "Checkout total";
         depositAmount.textContent = formatCurrency(offer.amountCents, offer.currency || depositCurrency);
         sendQuoteBtn.textContent = `Need changes first? Request a ${offer.label.toLowerCase()} quote`;
         sendQuoteBtn.classList.remove("btn-primary");
@@ -1794,9 +2124,9 @@
 
       payDepositBtn.hidden = false;
       payDepositBtn.disabled = true;
-      payDepositBtn.textContent = "Choose business cards or event tents";
-      depositLabel.textContent = "Fast checkout total";
-      depositAmount.textContent = "Select business cards or event tents";
+      payDepositBtn.textContent = "Choose a checkout package";
+      depositLabel.textContent = "Checkout total";
+      depositAmount.textContent = "Select business cards, event tents, or a bundle";
       sendQuoteBtn.textContent = "Need something custom? Request a quote";
       sendQuoteBtn.classList.remove("btn-primary");
       sendQuoteBtn.classList.add("btn-secondary");
@@ -1877,8 +2207,18 @@
     function buildAutoNotes() {
       const serviceType = trimFieldValue(serviceTypeField);
       const serviceNote = servicePrefillNotes.get(serviceType) || "";
+      const selection = resolveCheckoutSelection(serviceType, trimFieldValue(checkoutOptionField));
+      const noteLines = [];
 
-      return serviceNote;
+      if (serviceNote) {
+        noteLines.push(serviceNote);
+      }
+
+      if (selection) {
+        noteLines.push(`Selected package: ${selection.option.label} (${formatCurrency(selection.amountCents, selection.currency || depositCurrency)}).`);
+      }
+
+      return noteLines.join("\n");
     }
 
     function syncProjectNotes() {
@@ -1947,6 +2287,18 @@
       });
     });
 
+    if (checkoutOptionField) {
+      checkoutOptionField.addEventListener("change", () => {
+        const selection = resolveCheckoutSelection(
+          trimFieldValue(serviceTypeField),
+          trimFieldValue(checkoutOptionField)
+        );
+        setCheckoutSelection(selection ? selection.option : null);
+        syncProjectNotes();
+        updateCheckoutUi();
+      });
+    }
+
     if (depositAmount) {
       updateCatalogPricing();
       updateCheckoutUi();
@@ -1971,6 +2323,10 @@
         lead.serviceType = "Custom quote";
       }
 
+      if (!lead.quantity && lead.checkoutOptionLabel) {
+        lead.quantity = lead.checkoutOptionLabel;
+      }
+
       return lead;
     }
 
@@ -1981,7 +2337,9 @@
     }
 
     function canStartDeposit(lead) {
-      return Boolean(lead.name) && Boolean(lead.contact) && Boolean(resolveCheckoutOffer(lead.serviceType));
+      return Boolean(lead.name)
+        && Boolean(lead.contact)
+        && Boolean(resolveCheckoutSelection(lead.serviceType, lead.checkoutOptionId || lead.checkoutOptionLabel || lead.quantity));
     }
 
     function wait(ms) {
@@ -2028,7 +2386,8 @@
         `Contact: ${lead.contact || "-"}`,
         `Company or brand: ${lead.company || "-"}`,
         `Service type: ${lead.serviceType || "-"}`,
-        `Quantity: ${lead.quantity || "-"}`,
+        `Selected package: ${lead.checkoutOptionLabel || "-"}`,
+        `Quantity or size: ${lead.quantity || "-"}`,
         `Product details: ${lead.garment || "-"}`,
         `Artwork status: ${lead.artStatus || "-"}`,
         `Need by: ${lead.needBy || "-"}`,
@@ -2114,7 +2473,7 @@
         const lead = formDataToLead();
 
         if (!canStartDeposit(lead)) {
-          msg.textContent = "Choose business cards or event tents and enter name and contact before checkout.";
+          msg.textContent = "Choose a valid card pack, tent package, or bundle deal and enter name and contact before checkout.";
           return;
         }
 
