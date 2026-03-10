@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { spawn } from "child_process";
+import { chromium } from "playwright";
 
 const ROOT = path.resolve(process.cwd());
 const PORT = 8787;
@@ -14,25 +15,51 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function run(command, args) {
-  return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { stdio: "pipe" });
-    let stderr = "";
+function getFileSize(filePath) {
+  return fs.statSync(filePath).size;
+}
 
-    child.stderr.on("data", (chunk) => {
-      stderr += String(chunk);
-    });
+function resolveChromeExecutable() {
+  const candidates = [
+    process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium-browser",
+    "/usr/bin/chromium"
+  ].filter(Boolean);
 
-    child.on("error", reject);
-    child.on("exit", (code) => {
-      if (code === 0) {
-        resolve(stderr.trim());
-        return;
-      }
+  for (const candidate of candidates) {
+    try {
+      fs.accessSync(candidate, fs.constants.X_OK);
+      return candidate;
+    } catch (_error) {
+      // Ignore missing browser candidates and keep looking.
+    }
+  }
 
-      reject(new Error(`${command} exited with code ${code}\n${stderr}`));
-    });
-  });
+  return null;
+}
+
+function countTracks(values, tolerance = 8) {
+  const tracks = [];
+
+  for (const value of [...values].sort((left, right) => left - right)) {
+    const lastTrack = tracks[tracks.length - 1];
+    if (lastTrack === undefined || Math.abs(value - lastTrack) > tolerance) {
+      tracks.push(value);
+    }
+  }
+
+  return tracks.length;
+}
+
+function roundMetric(metric) {
+  return {
+    label: metric.label,
+    x: Math.round(metric.x),
+    y: Math.round(metric.y),
+    width: Math.round(metric.width),
+    height: Math.round(metric.height)
+  };
 }
 
 async function waitForServer(url, attempts = 100) {
@@ -58,46 +85,108 @@ async function assertHtmlContains(url, requiredFragments) {
   const missing = requiredFragments.filter((fragment) => !html.includes(fragment));
 
   if (missing.length) {
-    throw new Error(`Missing expected content: ${missing.join(", ")}`);
+    throw new Error(`Missing expected content at ${url}: ${missing.join(", ")}`);
   }
 }
 
-async function captureChromium(name, width, height, extraArgs = []) {
-  const output = path.join(SCREENSHOT_DIR, `${name}.png`);
-  const args = [
-    "--headless",
-    "--disable-gpu",
-    "--hide-scrollbars",
-    `--window-size=${width},${height}`,
-    `--screenshot=${output}`,
-    ...extraArgs,
-    BASE_URL
-  ];
+async function captureHomepage(browser, scenario) {
+  const page = await browser.newPage({
+    colorScheme: "dark",
+    viewport: {
+      width: scenario.width,
+      height: scenario.height
+    }
+  });
 
-  await run("chromium-browser", args);
-  return output;
+  await page.goto(BASE_URL, { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+
+  const buttons = page.locator(".hero-actions > .btn, .hero-actions > .phone-action .btn");
+  const buttonCount = await buttons.count();
+  if (buttonCount !== 4) {
+    throw new Error(`Expected 4 hero CTA buttons for ${scenario.name}, received ${buttonCount}`);
+  }
+
+  const metrics = await buttons.evaluateAll((elements) => {
+    return elements.map((element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        label: element.textContent.replace(/\s+/g, " ").trim(),
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height
+      };
+    });
+  });
+
+  const columnCount = countTracks(metrics.map((metric) => metric.x));
+  const rowCount = countTracks(metrics.map((metric) => metric.y));
+  const widthSpread = Math.max(...metrics.map((metric) => metric.width)) - Math.min(...metrics.map((metric) => metric.width));
+  const heightSpread = Math.max(...metrics.map((metric) => metric.height)) - Math.min(...metrics.map((metric) => metric.height));
+
+  if (columnCount !== scenario.expectedColumns) {
+    throw new Error(`Expected ${scenario.expectedColumns} CTA columns for ${scenario.name}, received ${columnCount}`);
+  }
+
+  if (rowCount !== scenario.expectedRows) {
+    throw new Error(`Expected ${scenario.expectedRows} CTA rows for ${scenario.name}, received ${rowCount}`);
+  }
+
+  if (widthSpread > 4) {
+    throw new Error(`Hero CTA widths drifted by ${widthSpread.toFixed(2)}px for ${scenario.name}`);
+  }
+
+  if (heightSpread > 2) {
+    throw new Error(`Hero CTA heights drifted by ${heightSpread.toFixed(2)}px for ${scenario.name}`);
+  }
+
+  const screenshotPath = path.join(SCREENSHOT_DIR, `${scenario.name}.png`);
+  await page.screenshot({
+    path: screenshotPath,
+    fullPage: true
+  });
+  await page.close();
+
+  return {
+    name: scenario.name,
+    file: screenshotPath,
+    bytes: getFileSize(screenshotPath),
+    viewport: {
+      width: scenario.width,
+      height: scenario.height
+    },
+    columns: columnCount,
+    rows: rowCount,
+    buttons: metrics.map(roundMetric)
+  };
 }
 
-async function captureFirefox(name, width, height) {
-  const output = path.join(SCREENSHOT_DIR, `${name}.png`);
-  const args = [
-    "--headless",
-    "--window-size",
-    `${width},${height}`,
-    "--screenshot",
-    output,
-    BASE_URL
-  ];
+const scenarios = [
+  {
+    name: "homepage-desktop-playwright",
+    width: 1440,
+    height: 2200,
+    expectedColumns: 2,
+    expectedRows: 2
+  },
+  {
+    name: "homepage-tablet-playwright",
+    width: 820,
+    height: 2200,
+    expectedColumns: 1,
+    expectedRows: 4
+  },
+  {
+    name: "homepage-mobile-playwright",
+    width: 430,
+    height: 2200,
+    expectedColumns: 1,
+    expectedRows: 4
+  }
+];
 
-  await run("firefox", args);
-  return output;
-}
-
-function getFileSize(filePath) {
-  return fs.statSync(filePath).size;
-}
-
-const server = spawn("vercel", ["dev", "--yes", "--listen", `${HOST}:${PORT}`], {
+const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", HOST], {
   cwd: ROOT,
   env: { ...process.env },
   stdio: "inherit"
@@ -107,8 +196,8 @@ try {
   await waitForServer(BASE_URL);
 
   await assertHtmlContains(BASE_URL, [
-    "Core offerings",
-    "Starter packages",
+    "Get cards and tents fast. Need custom specs? Get a quote.",
+    "Choose your order path",
     "Request a quote"
   ]);
   await assertHtmlContains(`${BASE_URL}/auth/`, [
@@ -125,35 +214,28 @@ try {
     "Lead feed"
   ]);
 
-  const outputs = [];
-  outputs.push({
-    name: "chromium-desktop",
-    file: await captureChromium("chromium-desktop", 1440, 3200)
-  });
-  outputs.push({
-    name: "firefox-desktop",
-    file: await captureFirefox("firefox-desktop", 1440, 3200)
-  });
-  outputs.push({
-    name: "chromium-mobile",
-    file: await captureChromium("chromium-mobile", 430, 3200, [
-      "--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/122.0.0.0 Mobile/15E148 Safari/604.1"
-    ])
+  const browser = await chromium.launch({
+    executablePath: resolveChromeExecutable() ?? undefined,
+    headless: true
   });
 
-  const report = outputs.map(({ name, file }) => ({
-    name,
-    file,
-    bytes: getFileSize(file)
-  }));
+  try {
+    const report = [];
 
-  fs.writeFileSync(
-    path.join(SCREENSHOT_DIR, "report.json"),
-    JSON.stringify(report, null, 2)
-  );
+    for (const scenario of scenarios) {
+      report.push(await captureHomepage(browser, scenario));
+    }
 
-  console.log("Visual smoke check passed.");
-  console.log(JSON.stringify(report, null, 2));
+    fs.writeFileSync(
+      path.join(SCREENSHOT_DIR, "report.json"),
+      JSON.stringify(report, null, 2)
+    );
+
+    console.log("Visual smoke check passed.");
+    console.log(JSON.stringify(report, null, 2));
+  } finally {
+    await browser.close();
+  }
 } finally {
   server.kill("SIGTERM");
 }
