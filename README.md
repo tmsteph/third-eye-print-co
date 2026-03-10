@@ -1,7 +1,7 @@
 # third-eye-print-co
 
 Third Eye Print Co site with:
-- Stripe Checkout deposit flow
+- Stripe Checkout flow for business cards and event tents
 - GunJS relay as the lead database
 - Gun/SEA admin auth with pub-key allowlisting + local admin graph (`/auth/`, `/admin/`)
 - Vercel serverless functions for public config + Stripe checkout
@@ -22,6 +22,8 @@ cp .env.example .env
 
 3. Set required values in `.env`:
 - `STRIPE_SECRET_KEY` (your Stripe secret key)
+- `STRIPE_BUSINESS_CARDS_CENTS` (optional override, default `10000`)
+- `STRIPE_EVENT_TENT_CENTS` (optional override, default `100000`)
 - `SITE_URL` (for local dev: `http://localhost:8787`, production example: `https://third-eye.3dvr.tech`)
 - `GUN_RELAY_URLS` (comma-separated relay peers, recommended)
 - `GUN_RELAY_URL` (single relay fallback, optional)
@@ -52,8 +54,8 @@ This writes screenshots and a small report to `artifacts/screenshots/`.
 
 ## API routes
 
-- `GET /config.js`: Rewritten to `/api/config` and exposes safe public runtime config (`gunRelayUrls`, `adminPubs`, deposit amount/currency).
-- `POST /api/create-checkout-session`: Creates a Stripe Checkout session for the configured deposit amount.
+- `GET /config.js`: Rewritten to `/api/config` and exposes safe public runtime config (`gunRelayUrls`, `adminPubs`, and the live checkout amounts for business cards and event tents).
+- `POST /api/create-checkout-session`: Creates a Stripe Checkout session for business cards or event tents.
 
 ## Admin auth
 
