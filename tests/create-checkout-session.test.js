@@ -66,7 +66,8 @@ test("create-checkout-session creates a business card checkout", async () => {
       body: {
         lead: {
           name: "Jane Doe",
-          contact: "jane@example.com",
+          email: "jane@example.com",
+          phone: "+16195551212",
           quoteId: "quote-123",
           serviceType: "Business cards",
           checkoutOptionId: "cards-100",
@@ -82,6 +83,10 @@ test("create-checkout-session creates a business card checkout", async () => {
   assert.equal(calls.payload.line_items[0].price_data.unit_amount, 5500);
   assert.equal(calls.payload.line_items[0].price_data.product_data.name, "Third Eye Print Co. Business Cards - 100 cards");
   assert.equal(calls.payload.metadata.checkoutService, "businessCards");
+  assert.equal(calls.payload.customer_email, "jane@example.com");
+  assert.equal(calls.payload.metadata.email, "jane@example.com");
+  assert.equal(calls.payload.metadata.phone, "+16195551212");
+  assert.equal(calls.payload.metadata.contact, "jane@example.com / +16195551212");
   assert.equal(calls.payload.metadata.quoteId, "quote-123");
   assert.equal(calls.payload.metadata.checkoutOptionId, "cards-100");
   assert.equal(calls.payload.metadata.checkoutOptionLabel, "100 cards");
@@ -119,7 +124,8 @@ test("create-checkout-session creates an event tent checkout", async () => {
       body: {
         lead: {
           name: "Jane Doe",
-          contact: "jane@example.com",
+          email: "jane@example.com",
+          phone: "+16195551212",
           serviceType: "Event tent",
           checkoutOptionId: "tent-3",
           quantity: "3 tents",
@@ -154,7 +160,8 @@ test("create-checkout-session creates a tent and card bundle checkout", async ()
       body: {
         lead: {
           name: "Jane Doe",
-          contact: "jane@example.com",
+          email: "jane@example.com",
+          phone: "+16195551212",
           serviceType: "Tent and card bundles",
           checkoutOptionId: "bundle-5-500",
           quantity: "5 tents + 500 cards",
@@ -170,7 +177,7 @@ test("create-checkout-session creates a tent and card bundle checkout", async ()
   assert.equal(calls.payload.metadata.checkoutOptionLabel, "5 tents + 500 cards");
 });
 
-test("create-checkout-session allows checkout without name or contact", async () => {
+test("create-checkout-session allows checkout without name, email, or phone", async () => {
   const calls = {};
   const handler = createCheckoutSessionHandler({
     env: {
@@ -198,7 +205,10 @@ test("create-checkout-session allows checkout without name or contact", async ()
 
   assert.equal(res.statusCode, 200);
   assert.equal(calls.payload.metadata.name, "");
+  assert.equal(calls.payload.metadata.email, "");
+  assert.equal(calls.payload.metadata.phone, "");
   assert.equal(calls.payload.metadata.contact, "");
+  assert.equal(calls.payload.customer_email, undefined);
   assert.equal(calls.payload.metadata.checkoutOptionLabel, "50 cards");
 });
 
@@ -218,7 +228,8 @@ test("create-checkout-session rejects unsupported services or missing package se
       body: {
         lead: {
           name: "Jane Doe",
-          contact: "jane@example.com",
+          email: "jane@example.com",
+          phone: "+16195551212",
           serviceType: "Embroidery",
         },
       },

@@ -1340,7 +1340,7 @@
           <div class="panel-stack">
             <div class="mini-card">
               <span class="mini-label">Fast path</span>
-              <strong>Pick a package, add contact info, and pay online in minutes.</strong>
+              <strong>Pick a package and pay online in minutes.</strong>
             </div>
 
             <div class="review-note">Ready-to-buy packages check out online. Custom work starts with a quote.</div>
@@ -1486,7 +1486,7 @@
 
           <div class="surface form-card">
             <h4>Checkout or custom quote</h4>
-            <p>Select a package and continue to secure checkout. For quote requests, leave a phone or email so we can reply.</p>
+            <p>Select a package and continue to secure checkout. For quote requests, add your email and phone so we can reply.</p>
 
             <form id="quoteForm" action="" method="POST" novalidate>
               <input id="serviceType" name="serviceType" type="hidden" />
@@ -1545,14 +1545,18 @@
                   Name
                   <input id="name" name="name" autocomplete="name" placeholder="Your name" />
                 </label>
-                <label for="contact">
-                  Phone or email
-                  <input id="contact" name="contact" autocomplete="email" placeholder="Best phone or email" />
-                  <span class="field-help">Needed for quote follow-up. Checkout can continue without it.</span>
+                <label for="email">
+                  Email
+                  <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
                 </label>
               </div>
 
               <div class="field-grid">
+                <label for="phone">
+                  Phone number
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="Best number to reach you" />
+                  <span class="field-help">Quotes work best with both email and phone. Checkout can still continue without them.</span>
+                </label>
                 <div class="field-stack" id="checkoutOptionSection">
                   <label for="checkoutOptionId">
                     <span id="checkoutOptionFieldLabel">Checkout package</span>
@@ -1564,11 +1568,12 @@
                     Choose a package to view your total.
                   </div>
                 </div>
-                <label for="needBy">
-                  Need by
-                  <input id="needBy" name="needBy" placeholder="Date needed (MM/DD or event date)" />
-                </label>
               </div>
+
+              <label for="needBy">
+                Need by
+                <input id="needBy" name="needBy" placeholder="Date needed (MM/DD or event date)" />
+              </label>
 
               <label for="notes">
                 Project notes
@@ -1676,7 +1681,8 @@
     const checkoutOptionNote = document.getElementById("checkoutOptionNote");
     const serviceChoiceNote = document.getElementById("serviceChoiceNote");
     const nameField = document.getElementById("name");
-    const contactField = document.getElementById("contact");
+    const emailField = document.getElementById("email");
+    const phoneField = document.getElementById("phone");
     const needByField = document.getElementById("needBy");
     const notesField = document.getElementById("notes");
     const garmentField = document.getElementById("garment");
@@ -2076,7 +2082,7 @@
         } else if (offer) {
           serviceChoiceNote.textContent = `${offer.label} selected. Continue to checkout when you are ready.`;
         } else if (isCustomQuote) {
-          serviceChoiceNote.textContent = "Custom quote selected. Add contact info and project details, then send the request.";
+          serviceChoiceNote.textContent = "Custom quote selected. Add your email, phone, and project details, then send the request.";
         } else {
           serviceChoiceNote.textContent = "Choose cards, tents, bundles, or custom quote.";
         }
@@ -2131,7 +2137,8 @@
 
     const validationFields = [
       nameField,
-      contactField,
+      emailField,
+      phoneField,
       checkoutOptionField,
       needByField,
       notesField,
@@ -2182,11 +2189,25 @@
       );
     }
 
+    function buildLeadContactSummary(lead) {
+      return [lead.email, lead.phone]
+        .map((value) => String(value || "").trim())
+        .filter(Boolean)
+        .join(" / ");
+    }
+
     function getQuoteValidationError(lead) {
-      if (!String(lead.contact || "").trim()) {
+      if (!String(lead.email || "").trim()) {
         return {
-          message: "Add a phone number or email so we can reply to your quote request.",
-          field: contactField
+          message: "Add an email address so we can send your quote.",
+          field: emailField
+        };
+      }
+
+      if (!String(lead.phone || "").trim()) {
+        return {
+          message: "Add a phone number so we can follow up about your quote.",
+          field: phoneField
         };
       }
 
@@ -2411,6 +2432,8 @@
         lead.quantity = lead.checkoutOptionLabel;
       }
 
+      lead.contact = buildLeadContactSummary(lead);
+
       return lead;
     }
 
@@ -2453,7 +2476,7 @@
 
     function buildMailtoUrl(lead) {
       const serviceLabel = lead.serviceType || "Custom quote";
-      const requesterLabel = lead.name || lead.company || lead.contact || "";
+      const requesterLabel = lead.name || lead.company || lead.email || lead.phone || lead.contact || "";
       const subject = requesterLabel
         ? `Quote request: ${serviceLabel} - ${requesterLabel}`
         : `Quote request: ${serviceLabel}`;
@@ -2461,7 +2484,8 @@
         "New quote request",
         "",
         `Name: ${lead.name || "-"}`,
-        `Contact: ${lead.contact || "-"}`,
+        `Email: ${lead.email || "-"}`,
+        `Phone: ${lead.phone || "-"}`,
         `Company or brand: ${lead.company || "-"}`,
         `Service type: ${lead.serviceType || "-"}`,
         `Selected package: ${lead.checkoutOptionLabel || "-"}`,

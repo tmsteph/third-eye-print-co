@@ -183,14 +183,23 @@ async function assertQuoteValidationMessages(browser) {
   await page.locator("#quoteForm").scrollIntoViewIfNeeded();
 
   await page.locator("#sendQuoteBtn").click();
-  await waitForStatusMessage(page, "Add a phone number or email so we can reply to your quote request.");
+  await waitForStatusMessage(page, "Add an email address so we can send your quote.");
 
-  const contactInvalid = await page.locator("#contact").getAttribute("aria-invalid");
-  if (contactInvalid !== "true") {
-    throw new Error("Quote validation did not flag the contact field when reply info was missing.");
+  const emailInvalid = await page.locator("#email").getAttribute("aria-invalid");
+  if (emailInvalid !== "true") {
+    throw new Error("Quote validation did not flag the email field when it was missing.");
   }
 
-  await page.locator("#contact").fill("buyer@example.com");
+  await page.locator("#email").fill("buyer@example.com");
+  await page.locator("#sendQuoteBtn").click();
+  await waitForStatusMessage(page, "Add a phone number so we can follow up about your quote.");
+
+  const phoneInvalid = await page.locator("#phone").getAttribute("aria-invalid");
+  if (phoneInvalid !== "true") {
+    throw new Error("Quote validation did not flag the phone field when it was missing.");
+  }
+
+  await page.locator("#phone").fill("+1 (619) 555-0100");
   await page.locator("#sendQuoteBtn").click();
   await waitForStatusMessage(page, "Add a few project details so we know what to quote.");
 
@@ -239,8 +248,13 @@ async function assertCheckoutAllowsMissingIdentity(browser) {
     throw new Error("Checkout request was not captured during the Playwright smoke test.");
   }
 
-  if (checkoutRequest.lead.name !== "" || checkoutRequest.lead.contact !== "") {
-    throw new Error("Checkout request unexpectedly required name or contact before payment.");
+  if (
+    checkoutRequest.lead.name !== ""
+    || checkoutRequest.lead.email !== ""
+    || checkoutRequest.lead.phone !== ""
+    || checkoutRequest.lead.contact !== ""
+  ) {
+    throw new Error("Checkout request unexpectedly required name, email, or phone before payment.");
   }
 
   await page.close();

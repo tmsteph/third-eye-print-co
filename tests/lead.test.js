@@ -16,7 +16,8 @@ test("normalizeLead sanitizes all expected fields", () => {
   const lead = normalizeLead({
     name: "  Jane   Doe  ",
     company: "  Third Eye   ",
-    contact: " jane@example.com ",
+    email: " jane@example.com ",
+    phone: " +1 (619) 555-1212 ",
     quoteId: " quote-123 ",
     serviceType: " Screen Print ",
     checkoutOptionId: " cards-100 ",
@@ -35,7 +36,9 @@ test("normalizeLead sanitizes all expected fields", () => {
   assert.deepEqual(lead, {
     name: "Jane Doe",
     company: "Third Eye",
-    contact: "jane@example.com",
+    email: "jane@example.com",
+    phone: "+1 (619) 555-1212",
+    contact: "jane@example.com / +1 (619) 555-1212",
     quoteId: "quote-123",
     serviceType: "Screen Print",
     checkoutOptionId: "cards-100",

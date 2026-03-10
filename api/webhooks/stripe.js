@@ -107,8 +107,16 @@ function buildStripeLeadRecord(event) {
     metadata.quantity || checkoutOptionLabel || "",
     120
   );
+  const email = safeText(
+    metadata.email || customerDetails.email || "",
+    180
+  );
+  const phone = safeText(
+    metadata.phone || customerDetails.phone || "",
+    80
+  );
   const contact = safeText(
-    metadata.contact || customerDetails.email || customerDetails.phone || "",
+    metadata.contact || [email, phone].filter(Boolean).join(" / "),
     180
   );
 
@@ -119,6 +127,8 @@ function buildStripeLeadRecord(event) {
     createdAt: resolveCreatedAt(event),
     name: safeText(metadata.name || customerDetails.name || "", 120),
     company: "",
+    email,
+    phone,
     contact,
     serviceType: safeText(metadata.serviceType || "", 120),
     checkoutOptionLabel,

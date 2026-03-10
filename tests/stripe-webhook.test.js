@@ -55,7 +55,8 @@ test("buildStripeLeadRecord maps paid checkout events into Gun lead records", ()
         metadata: {
           quoteId: "quote-123",
           name: "Jane Doe",
-          contact: "jane@example.com",
+          email: "jane@example.com",
+          phone: "+16195551212",
           serviceType: "Tent and card bundles",
           checkoutOptionLabel: "1 tent + 100 cards",
           quantity: "1 tent + 100 cards",
@@ -75,6 +76,9 @@ test("buildStripeLeadRecord maps paid checkout events into Gun lead records", ()
   assert.equal(record.checkoutAmountCents, "102500");
   assert.equal(record.checkoutCurrency, "usd");
   assert.equal(record.paymentIntentId, "pi_123");
+  assert.equal(record.email, "jane@example.com");
+  assert.equal(record.phone, "+16195551212");
+  assert.equal(record.contact, "jane@example.com / +16195551212");
 });
 
 test("buildStripeLeadRecord falls back to Stripe customer details when lead metadata is blank", () => {
@@ -103,7 +107,9 @@ test("buildStripeLeadRecord falls back to Stripe customer details when lead meta
   });
 
   assert.equal(record.name, "Stripe Buyer");
-  assert.equal(record.contact, "buyer@example.com");
+  assert.equal(record.email, "buyer@example.com");
+  assert.equal(record.phone, "+16195550000");
+  assert.equal(record.contact, "buyer@example.com / +16195550000");
   assert.equal(record.customerPhone, "+16195550000");
 });
 
@@ -123,7 +129,8 @@ test("stripe webhook persists paid checkout sessions", async () => {
           metadata: {
             quoteId: "quote-abc",
             name: "Jane Doe",
-            contact: "jane@example.com",
+            email: "jane@example.com",
+            phone: "+16195551212",
             serviceType: "Business cards",
             checkoutOptionLabel: "100 cards",
             quantity: "100 cards",
@@ -166,6 +173,8 @@ test("stripe webhook persists paid checkout sessions", async () => {
   assert.equal(stripeCalls.webhookSecret, "whsec_test_secret");
   assert.equal(persisted.length, 1);
   assert.equal(persisted[0].quoteId, "quote-abc");
+  assert.equal(persisted[0].email, "jane@example.com");
+  assert.equal(persisted[0].phone, "+16195551212");
   assert.equal(persisted[0].checkoutSessionId, "cs_test_paid");
   assert.equal(res.body.recordId, "stripe-evt_test_paid");
 });
