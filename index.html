@@ -310,13 +310,27 @@
     }
 
     .hero-actions > .btn,
-    .hero-actions > .phone-action {
+    .hero-actions > .hero-secondary-actions {
       flex: 1 1 180px;
       min-width: 0;
     }
 
     .hero-actions .btn {
       width: 100%;
+    }
+
+    .hero-secondary-actions {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      flex: 1 1 372px;
+      min-width: 0;
+    }
+
+    .hero-secondary-actions > .btn,
+    .hero-secondary-actions > .phone-action {
+      flex: 1 1 0;
+      min-width: 0;
     }
 
     .phone-action {
@@ -1187,9 +1201,13 @@
       }
 
       .hero-actions > .btn,
-      .hero-actions > .phone-action {
+      .hero-actions > .hero-secondary-actions {
         flex: 0 1 260px;
         width: min(100%, 260px);
+      }
+
+      .hero-secondary-actions {
+        flex-direction: column;
       }
 
       .hero-actions .phone-copy-note {
@@ -1316,14 +1334,16 @@
           <div class="hero-actions">
             <a class="btn btn-primary" href="#shop">Start checkout</a>
             <a class="btn btn-secondary" href="#quote">Need a custom quote?</a>
-            <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
-              View Instagram
-            </a>
-            <div class="phone-action">
-              <a class="btn" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
-                <span>Call or Text</span>
+            <div class="hero-secondary-actions">
+              <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
+                View Instagram
               </a>
-              <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
+              <div class="phone-action">
+                <a class="btn" href="tel:+16192578389" data-phone-copy="+1 (619) 257-8389">
+                  <span>Call or Text</span>
+                </a>
+                <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
+              </div>
             </div>
           </div>
 
