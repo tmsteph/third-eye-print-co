@@ -1,4 +1,4 @@
-const { normalizeLead, minimalLeadValidation } = require("../lib/lead");
+const { normalizeLead } = require("../lib/lead");
 const { resolveCheckoutSelection } = require("../lib/runtime-config");
 
 function readJsonBody(req) {
@@ -86,11 +86,6 @@ function createCheckoutSessionHandler(options = {}) {
     try {
       const body = await readJsonBody(req);
       const lead = normalizeLead(body && body.lead ? body.lead : body || {});
-      if (!minimalLeadValidation(lead)) {
-        sendJson(res, 400, { error: "Name and contact are required before payment." });
-        return;
-      }
-
       const checkoutSelection = resolveCheckoutSelection(lead, env);
       if (!checkoutSelection) {
         sendJson(res, 400, {
@@ -119,8 +114,14 @@ function createCheckoutSessionHandler(options = {}) {
         ],
         success_url: `${siteUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${siteUrl}/?payment=cancelled`,
+        customer_email: lead.email || undefined,
+        phone_number_collection: {
+          enabled: true,
+        },
         metadata: {
           name: lead.name || "",
+          email: lead.email || "",
+          phone: lead.phone || "",
           contact: lead.contact || "",
           quoteId: lead.quoteId || "",
           serviceType: lead.serviceType || checkoutSelection.label,

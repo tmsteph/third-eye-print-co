@@ -11,5 +11,8 @@
   "dependencies": {
     "gun": "^0.2020.1241",
     "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.2"
   }
 }

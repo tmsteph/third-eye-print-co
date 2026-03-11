@@ -3,7 +3,6 @@ const assert = require("node:assert/strict");
 
 const {
   cleanText,
-  minimalLeadValidation,
   normalizeLead,
 } = require("../lib/lead");
 
@@ -17,7 +16,8 @@ test("normalizeLead sanitizes all expected fields", () => {
   const lead = normalizeLead({
     name: "  Jane   Doe  ",
     company: "  Third Eye   ",
-    contact: " jane@example.com ",
+    email: " jane@example.com ",
+    phone: " +1 (619) 555-1212 ",
     quoteId: " quote-123 ",
     serviceType: " Screen Print ",
     checkoutOptionId: " cards-100 ",
@@ -36,7 +36,9 @@ test("normalizeLead sanitizes all expected fields", () => {
   assert.deepEqual(lead, {
     name: "Jane Doe",
     company: "Third Eye",
-    contact: "jane@example.com",
+    email: "jane@example.com",
+    phone: "+1 (619) 555-1212",
+    contact: "jane@example.com / +1 (619) 555-1212",
     quoteId: "quote-123",
     serviceType: "Screen Print",
     checkoutOptionId: "cards-100",
@@ -51,10 +53,4 @@ test("normalizeLead sanitizes all expected fields", () => {
     fulfillment: "Pickup",
     notes: "Need this before launch week.",
   });
-});
-
-test("minimalLeadValidation requires name and contact", () => {
-  assert.equal(minimalLeadValidation({ name: "Jane", contact: "jane@example.com" }), true);
-  assert.equal(minimalLeadValidation({ name: "Jane", contact: "" }), false);
-  assert.equal(minimalLeadValidation({ name: "", contact: "jane@example.com" }), false);
 });
