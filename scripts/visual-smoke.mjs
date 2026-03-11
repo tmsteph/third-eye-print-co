@@ -280,7 +280,11 @@ async function assertQuoteValidationMessages(browser) {
   await mockRuntimeConfig(page, { stripeEnabled: true });
   await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  await page.locator("#quoteForm").scrollIntoViewIfNeeded();
+  await page.locator('a.btn.btn-secondary[href="#quote"]').click();
+  await page.waitForFunction(() => {
+    return window.location.hash === "#quote"
+      && document.getElementById("serviceType")?.value === "Custom quote";
+  });
 
   await page.locator("#sendQuoteBtn").click();
   await waitForStatusMessage(page, "Add an email address so we can send your quote.");
@@ -323,8 +327,11 @@ async function assertCustomQuoteUi(browser) {
   await mockRuntimeConfig(page, { stripeEnabled: true });
   await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  await page.locator("#quoteForm").scrollIntoViewIfNeeded();
-  await page.locator('[data-service-choice="Custom quote"]').click();
+  await page.locator('a.btn.btn-secondary[href="#quote"]').click();
+  await page.waitForFunction(() => {
+    return window.location.hash === "#quote"
+      && document.getElementById("serviceType")?.value === "Custom quote";
+  });
 
   const customQuoteState = await page.evaluate(() => {
     const checkoutSection = document.getElementById("checkoutOptionSection");
@@ -333,6 +340,7 @@ async function assertCustomQuoteUi(browser) {
     const choiceNote = document.getElementById("serviceChoiceNote");
 
     return {
+      serviceType: document.getElementById("serviceType")?.value || "",
       checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null,
       payButtonHidden: payButton ? payButton.hidden : null,
       depositNoteHidden: depositNote ? depositNote.hidden : null,
@@ -341,6 +349,10 @@ async function assertCustomQuoteUi(browser) {
       sendQuoteLabel: document.getElementById("sendQuoteBtn")?.textContent.trim() || ""
     };
   });
+
+  if (customQuoteState.serviceType !== "Custom quote") {
+    throw new Error("The hero custom quote CTA did not switch the form into custom quote mode.");
+  }
 
   if (customQuoteState.checkoutSectionHidden !== true) {
     throw new Error("Custom quote mode still shows the checkout package controls.");

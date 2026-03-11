@@ -1291,7 +1291,7 @@
       <div class="nav-cluster">
         <nav class="nav-links" aria-label="Primary">
           <a href="#shop">Checkout</a>
-          <a href="#quote">Custom quote</a>
+          <a href="#quote" data-service-link-preset="Custom quote">Custom quote</a>
         </nav>
         <div class="nav-actions">
           <a href="/auth/" class="nav-account" id="portalNavLink" data-state="signed-out">Portal</a>
@@ -1313,7 +1313,7 @@
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="#shop">Start secure checkout</a>
-            <a class="btn btn-secondary" href="#quote">Request custom quote</a>
+            <a class="btn btn-secondary" href="#quote" data-service-link-preset="Custom quote">Request custom quote</a>
             <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
               View Instagram portfolio
             </a>
@@ -1751,6 +1751,7 @@
     const desktopPhoneMedia = window.matchMedia("(min-width: 721px)");
     const fallbackPhoneNumber = "+1 (619) 257-8389";
     const presetButtons = Array.from(document.querySelectorAll("[data-service-preset]"));
+    const presetLinks = Array.from(document.querySelectorAll("[data-service-link-preset]"));
     const serviceChoiceButtons = Array.from(document.querySelectorAll("[data-service-choice]"));
     const servicePrefillNotes = new Map(
       presetButtons
@@ -1807,6 +1808,66 @@
 
     function trimFieldValue(field) {
       return field ? String(field.value || "").trim() : "";
+    }
+
+    function activateServicePreset(preset, {
+      prefillNote = "",
+      presetMessage = "",
+      scrollTarget = "",
+      announce = true
+    } = {}) {
+      const normalizedPreset = String(preset || "").trim();
+      const normalizedPrefillNote = String(prefillNote || "").trim() || servicePrefillNotes.get(normalizedPreset) || "";
+      const normalizedPresetMessage = String(presetMessage || "").trim();
+      const normalizedScrollTarget = String(scrollTarget || "").trim();
+
+      if (serviceTypeField && normalizedPreset) {
+        serviceTypeField.value = normalizedPreset;
+      }
+
+      if (normalizedPreset && normalizedPrefillNote) {
+        servicePrefillNotes.set(normalizedPreset, normalizedPrefillNote);
+      }
+
+      syncProjectNotes();
+      updateCheckoutUi();
+
+      if (normalizedScrollTarget) {
+        const target = document.getElementById(normalizedScrollTarget);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      if (!announce) {
+        setFormMessage("");
+        return;
+      }
+
+      setFormMessage(normalizedPresetMessage || (
+        normalizedPreset
+          ? `Selected ${normalizedPreset}. Add any missing detail and continue.`
+          : ""
+      ));
+    }
+
+    function activatePresetFromHash() {
+      const normalizedHash = String(window.location.hash || "").trim().toLowerCase();
+      if (!normalizedHash) {
+        return;
+      }
+
+      const matchingLink = presetLinks.find((link) => (
+        String(link.getAttribute("href") || "").trim().toLowerCase() === normalizedHash
+      ));
+
+      if (!matchingLink) {
+        return;
+      }
+
+      activateServicePreset(String(matchingLink.dataset.serviceLinkPreset || "").trim(), {
+        announce: false
+      });
     }
 
     function formatCurrency(cents, currencyCode = depositCurrency) {
@@ -2208,8 +2269,10 @@
     }
 
     function hasQuoteProjectDetails(lead) {
+      const manualProjectNotes = stripAutoNotes(trimFieldValue(notesField));
+
       return Boolean(
-        trimFieldValue(notesField)
+        manualProjectNotes
         || trimFieldValue(garmentField)
         || trimFieldValue(needByField)
         || String(lead.quantity || "").trim()
@@ -2281,6 +2344,10 @@
       if (!event || event.key === portalAliasStorageKey) {
         syncPortalNavLink();
       }
+    });
+
+    window.addEventListener("hashchange", () => {
+      activatePresetFromHash();
     });
 
     function showPhoneCopyNote(link, message) {
@@ -2406,27 +2473,19 @@
         const presetMessage = String(button.dataset.presetMessage || "").trim();
         const scrollTarget = String(button.dataset.scrollTarget || "").trim();
 
-        if (serviceTypeField && preset) {
-          serviceTypeField.value = preset;
-        }
+        activateServicePreset(preset, {
+          prefillNote,
+          presetMessage,
+          scrollTarget
+        });
+      });
+    });
 
-        if (preset && prefillNote) {
-          servicePrefillNotes.set(preset, prefillNote);
-        }
-
-        syncProjectNotes();
-        updateCheckoutUi();
-        if (scrollTarget) {
-          const target = document.getElementById(scrollTarget);
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }
-        setFormMessage(presetMessage || (
-          preset
-            ? `Selected ${preset}. Add any missing detail and continue.`
-            : ""
-        ));
+    presetLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        activateServicePreset(String(link.dataset.serviceLinkPreset || "").trim(), {
+          announce: false
+        });
       });
     });
 
@@ -2456,6 +2515,8 @@
       updateCatalogPricing();
       updateCheckoutUi();
     }
+
+    activatePresetFromHash();
 
     const paymentStatus = new URLSearchParams(window.location.search).get("payment");
     if (paymentStatus === "success") {
