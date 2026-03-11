@@ -2001,6 +2001,34 @@
       }
     }
 
+    function getDefaultCheckoutPathOptions() {
+      return [
+        resolveCatalogService("businessCards"),
+        resolveCatalogService("eventTent"),
+        resolveCatalogService("bundleDeal")
+      ].filter((service) => service && Array.isArray(service.options) && service.options.length);
+    }
+
+    function getCheckoutPathValue(service) {
+      return service ? `service:${service.key}` : "";
+    }
+
+    function resolveCheckoutPathFromValue(value) {
+      const rawValue = String(value || "").trim();
+      const normalizedValue = rawValue.toLowerCase();
+      if (!normalizedValue.startsWith("service:")) {
+        return null;
+      }
+
+      const serviceKey = rawValue.slice(rawValue.indexOf(":") + 1).trim();
+      const normalizedServiceKey = serviceKey.toLowerCase();
+
+      return Object.values(stripeCatalog).find((service) => (
+        service
+        && String(service.key || "").trim().toLowerCase() === normalizedServiceKey
+      )) || resolveCatalogService(serviceKey) || null;
+    }
+
     function populateCheckoutOptions(service) {
       if (!checkoutOptionField) {
         return null;
@@ -2015,7 +2043,14 @@
         placeholder.value = "";
         placeholder.textContent = "Choose a package...";
         checkoutOptionField.appendChild(placeholder);
-        checkoutOptionField.disabled = true;
+        getDefaultCheckoutPathOptions().forEach((pathService) => {
+          const selectOption = document.createElement("option");
+          selectOption.value = getCheckoutPathValue(pathService);
+          selectOption.textContent = `${pathService.label} - from ${formatCurrency(pathService.startingAtCents, pathService.currency || depositCurrency)}`;
+          checkoutOptionField.appendChild(selectOption);
+        });
+        checkoutOptionField.disabled = false;
+        checkoutOptionField.value = "";
         setCheckoutSelection(null);
         return null;
       }
@@ -2397,9 +2432,19 @@
 
     if (checkoutOptionField) {
       checkoutOptionField.addEventListener("change", () => {
+        const selectedValue = trimFieldValue(checkoutOptionField);
+        const selectedPath = resolveCheckoutPathFromValue(selectedValue);
+
+        if (selectedPath && serviceTypeField) {
+          serviceTypeField.value = selectedPath.label || "";
+          syncProjectNotes();
+          updateCheckoutUi();
+          return;
+        }
+
         const selection = resolveCheckoutSelection(
           trimFieldValue(serviceTypeField),
-          trimFieldValue(checkoutOptionField)
+          selectedValue
         );
         setCheckoutSelection(selection ? selection.option : null);
         syncProjectNotes();

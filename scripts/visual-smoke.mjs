@@ -193,6 +193,12 @@ async function assertChoosePackageButtonNavigatesToShop(browser) {
   await page.evaluate(() => document.fonts.ready);
   await page.locator("#quoteForm").scrollIntoViewIfNeeded();
   const beforeScrollY = await page.evaluate(() => window.scrollY);
+  const defaultCheckoutOptions = await page.locator("#checkoutOptionId option").evaluateAll((options) => {
+    return options.map((option) => ({
+      value: option.value,
+      label: option.textContent.replace(/\s+/g, " ").trim()
+    }));
+  });
 
   const buttonState = await page.evaluate(() => {
     const button = document.getElementById("payDepositBtn");
@@ -206,6 +212,20 @@ async function assertChoosePackageButtonNavigatesToShop(browser) {
   });
 
   if (
+    defaultCheckoutOptions.length !== 4
+    || defaultCheckoutOptions[0].value !== ""
+    || defaultCheckoutOptions[0].label !== "Choose a package..."
+    || defaultCheckoutOptions[1].value !== "service:businessCards"
+    || !defaultCheckoutOptions[1].label.startsWith("Business cards - from ")
+    || defaultCheckoutOptions[2].value !== "service:eventTent"
+    || !defaultCheckoutOptions[2].label.startsWith("Event tents - from ")
+    || defaultCheckoutOptions[3].value !== "service:bundleDeal"
+    || !defaultCheckoutOptions[3].label.startsWith("Tent and card bundles - from ")
+  ) {
+    throw new Error("Default checkout selector did not expose the three main product paths.");
+  }
+
+  if (
     buttonState.hidden !== false
     || buttonState.disabled !== false
     || buttonState.label !== "Choose a package"
@@ -217,6 +237,33 @@ async function assertChoosePackageButtonNavigatesToShop(browser) {
   await page.locator("#payDepositBtn").click();
   await waitForStatusMessage(page, "Choose a package above to continue to checkout.");
   await page.waitForFunction((previousY) => window.scrollY < previousY - 150, beforeScrollY);
+
+  await page.selectOption("#checkoutOptionId", "service:eventTent");
+  const resolvedPathState = await page.evaluate(() => {
+    const field = document.getElementById("checkoutOptionId");
+    const serviceType = document.getElementById("serviceType");
+    const fieldLabel = document.getElementById("checkoutOptionFieldLabel");
+    const button = document.getElementById("payDepositBtn");
+
+    return {
+      currentValue: field ? field.value : "",
+      optionValues: field ? Array.from(field.options).map((option) => option.value) : [],
+      serviceType: serviceType ? serviceType.value : "",
+      fieldLabel: fieldLabel ? fieldLabel.textContent.replace(/\s+/g, " ").trim() : "",
+      buttonLabel: button ? button.textContent.replace(/\s+/g, " ").trim() : ""
+    };
+  });
+
+  if (
+    resolvedPathState.serviceType !== "Event tents"
+    || resolvedPathState.fieldLabel !== "Event tents package"
+    || !resolvedPathState.currentValue
+    || resolvedPathState.currentValue.startsWith("service:")
+    || !resolvedPathState.optionValues.includes("tent-1")
+    || !resolvedPathState.buttonLabel.startsWith("Checkout ")
+  ) {
+    throw new Error("Selecting a default checkout path did not load package checkout state.");
+  }
 
   await page.close();
 }
