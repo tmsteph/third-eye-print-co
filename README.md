@@ -26,7 +26,7 @@ cp .env.example .env
 - `STRIPE_BUSINESS_CARDS_50_CENTS` / `STRIPE_BUSINESS_CARDS_100_CENTS` / `STRIPE_BUSINESS_CARDS_200_CENTS` / `STRIPE_BUSINESS_CARDS_500_CENTS` (optional business card tier overrides)
 - `STRIPE_EVENT_TENT_1_CENTS` / `STRIPE_EVENT_TENT_3_CENTS` / `STRIPE_EVENT_TENT_5_CENTS` (optional event tent package overrides)
 - `STRIPE_BUNDLE_1_TENT_100_CARDS_CENTS` / `STRIPE_BUNDLE_3_TENTS_200_CARDS_CENTS` / `STRIPE_BUNDLE_5_TENTS_500_CARDS_CENTS` (optional bundle overrides)
-- `SITE_URL` (for local dev: `http://localhost:8787`, production example: `https://third-eye.3dvr.tech`)
+- `SITE_URL` (for local dev: `http://localhost:8787`, production example: `https://www.thirdeyeprintco.com`)
 - `GUN_RELAY_URLS` (comma-separated relay peers, recommended)
 - `GUN_RELAY_URL` (single relay fallback, optional)
 - `ADMIN_PUBS` (comma-separated Gun public keys allowed into `/admin/`, optional if you manage admins in Gun)
