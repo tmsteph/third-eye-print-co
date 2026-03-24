@@ -45,7 +45,7 @@ test("createPublicRuntimeConfig exposes only safe client config", () => {
     GUN_RELAY_URL: "wss://relay.example/gun",
     STRIPE_SECRET_KEY: "sk_test_secret",
     STRIPE_CURRENCY: "usd",
-    STRIPE_BUSINESS_CARDS_500_CENTS: "10000",
+    STRIPE_BUSINESS_CARDS_500_CENTS: "5900",
     STRIPE_EVENT_TENT_1_CENTS: "100000",
     ADMIN_PUBS: "pub-a,pub-b",
     QUOTE_EMAIL_TO: "quotes@example.com",
@@ -54,13 +54,13 @@ test("createPublicRuntimeConfig exposes only safe client config", () => {
   assert.deepEqual(config.gunRelayUrls, ["wss://relay.example/gun"]);
   assert.equal(config.gunRelayUrl, "wss://relay.example/gun");
   assert.equal(config.stripeEnabled, true);
-  assert.equal(config.stripeDepositCents, 3500);
+  assert.equal(config.stripeDepositCents, 2000);
   assert.equal(config.stripeCurrency, "usd");
   assert.deepEqual(config.adminPubs, ["pub-a", "pub-b"]);
   assert.equal(config.quoteEmailTo, "quotes@example.com");
   assert.equal(config.stripeCatalog.businessCards.defaultOptionId, "cards-100");
-  assert.equal(config.stripeCatalog.businessCards.startingAtCents, 3500);
-  assert.equal(config.stripeCatalog.businessCards.options[3].amountCents, 10000);
+  assert.equal(config.stripeCatalog.businessCards.startingAtCents, 2000);
+  assert.equal(config.stripeCatalog.businessCards.options[3].amountCents, 5900);
   assert.equal(config.stripeCatalog.eventTent.defaultOptionId, "tent-1");
   assert.equal(config.stripeCatalog.eventTent.options[0].amountCents, 100000);
   assert.equal(config.stripeCatalog.bundleDeal.defaultOptionId, "bundle-1-100");

@@ -91,7 +91,7 @@ test("buildStripeLeadRecord falls back to Stripe customer details when lead meta
         object: "checkout.session",
         id: "cs_live_456",
         payment_status: "paid",
-        amount_total: 3500,
+        amount_total: 2000,
         currency: "usd",
         metadata: {
           serviceType: "Business cards",
@@ -124,7 +124,7 @@ test("stripe webhook persists paid checkout sessions", async () => {
           object: "checkout.session",
           id: "cs_test_paid",
           payment_status: "paid",
-          amount_total: 5500,
+          amount_total: 2900,
           currency: "usd",
           metadata: {
             quoteId: "quote-abc",
