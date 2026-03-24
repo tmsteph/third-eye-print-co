@@ -43,10 +43,10 @@ test("create-checkout-session creates a business card checkout", async () => {
     env: {
       STRIPE_SECRET_KEY: "sk_test_secret",
       SITE_URL: "https://third-eye.example",
-      STRIPE_BUSINESS_CARDS_50_CENTS: "3500",
-      STRIPE_BUSINESS_CARDS_100_CENTS: "5500",
-      STRIPE_BUSINESS_CARDS_200_CENTS: "8000",
-      STRIPE_BUSINESS_CARDS_500_CENTS: "10000",
+      STRIPE_BUSINESS_CARDS_50_CENTS: "2000",
+      STRIPE_BUSINESS_CARDS_100_CENTS: "2900",
+      STRIPE_BUSINESS_CARDS_200_CENTS: "3900",
+      STRIPE_BUSINESS_CARDS_500_CENTS: "5900",
       STRIPE_EVENT_TENT_1_CENTS: "100000",
       STRIPE_EVENT_TENT_3_CENTS: "270000",
       STRIPE_EVENT_TENT_5_CENTS: "425000",
@@ -80,7 +80,7 @@ test("create-checkout-session creates a business card checkout", async () => {
 
   assert.equal(res.statusCode, 200);
   assert.equal(calls.secretKey, "sk_test_secret");
-  assert.equal(calls.payload.line_items[0].price_data.unit_amount, 5500);
+  assert.equal(calls.payload.line_items[0].price_data.unit_amount, 2900);
   assert.equal(calls.payload.line_items[0].price_data.product_data.name, "Third Eye Print Co. Business Cards - 100 cards");
   assert.equal(calls.payload.metadata.checkoutService, "businessCards");
   assert.equal(calls.payload.customer_email, "jane@example.com");
@@ -104,10 +104,10 @@ test("create-checkout-session creates an event tent checkout", async () => {
     env: {
       STRIPE_SECRET_KEY: "sk_test_secret",
       SITE_URL: "https://third-eye.example",
-      STRIPE_BUSINESS_CARDS_50_CENTS: "3500",
-      STRIPE_BUSINESS_CARDS_100_CENTS: "5500",
-      STRIPE_BUSINESS_CARDS_200_CENTS: "8000",
-      STRIPE_BUSINESS_CARDS_500_CENTS: "10000",
+      STRIPE_BUSINESS_CARDS_50_CENTS: "2000",
+      STRIPE_BUSINESS_CARDS_100_CENTS: "2900",
+      STRIPE_BUSINESS_CARDS_200_CENTS: "3900",
+      STRIPE_BUSINESS_CARDS_500_CENTS: "5900",
       STRIPE_EVENT_TENT_1_CENTS: "100000",
       STRIPE_EVENT_TENT_3_CENTS: "270000",
       STRIPE_EVENT_TENT_5_CENTS: "425000",
