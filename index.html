@@ -608,10 +608,51 @@
       width: 100%;
     }
 
-    .shop-grid {
+    .order-path-layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .path-panel {
       display: grid;
       gap: 14px;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .path-panel-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .path-panel-head h4,
+    .service-choice-heading h5 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .path-panel-head p,
+    .service-choice-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .shop-grid,
+    .quote-card-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .shop-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .quote-card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .shop-card {
@@ -965,6 +1006,54 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .service-choice-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .service-choice-group {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .service-choice-group--quote {
+      border-color: rgba(124, 217, 235, 0.2);
+      background:
+        radial-gradient(260px 160px at 100% 0%, rgba(124, 217, 235, 0.08), transparent 60%),
+        rgba(255, 255, 255, 0.02);
+    }
+
+    .service-choice-heading {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .choice-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(228, 208, 139, 0.22);
+      color: var(--accent);
+      background: rgba(228, 208, 139, 0.08);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .service-choice-grid--quote {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .service-choice {
       display: grid;
       gap: 6px;
@@ -1003,6 +1092,20 @@
     .choice-note {
       color: var(--muted);
       font-size: 13px;
+    }
+
+    .quote-mode-note {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(124, 217, 235, 0.24);
+      background: rgba(124, 217, 235, 0.08);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .quote-mode-note strong {
+      color: #e5fbff;
     }
 
     .details-more {
@@ -1160,7 +1263,8 @@
       .offer-grid,
       .field-grid,
       .service-choice-grid,
-      .shop-grid {
+      .shop-grid,
+      .quote-card-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1362,126 +1466,150 @@
           <h3>Choose your order path</h3>
         </div>
 
-        <div class="shop-grid">
-          <article class="surface shop-card">
-            <span class="mini-label">Checkout</span>
-            <h4>Business cards</h4>
-            <div class="shop-price">
-              <span class="shop-price-prefix">From</span>
-              <span id="businessCardsPrice">$20.00</span>
+        <div class="order-path-layout">
+          <div class="path-panel">
+            <div class="path-panel-head">
+              <div>
+                <h4>Ready-to-checkout packages</h4>
+                <p>Use these when the size and quantity already match a package. Pick one, then pay online.</p>
+              </div>
+              <span class="choice-pill">Fixed price</span>
             </div>
-            <p>Professional cards for handoffs, counters, meetings, and events.</p>
-            <ul class="simple-list tier-list" id="businessCardsTiers">
-              <li><strong>50 cards</strong><span>$20.00</span></li>
-              <li><strong>100 cards</strong><span>$29.00</span></li>
-              <li><strong>200 cards</strong><span>$39.00</span></li>
-              <li><strong>500 cards</strong><span>$59.00</span></li>
-            </ul>
-            <button
-              class="btn btn-primary"
-              type="button"
-              data-service-preset="Business cards"
-              data-prefill-note="Need business cards."
-              data-preset-message="Business cards selected. Pick a card package and continue."
-              data-scroll-target="quote"
-            >
-              Start card checkout
-            </button>
-          </article>
 
-          <article class="surface shop-card">
-            <span class="mini-label">Checkout</span>
-            <h4>Event tents</h4>
-            <div class="shop-price">
-              <span class="shop-price-prefix">From</span>
-              <span id="eventTentsPrice">$1,000.00</span>
+            <div class="shop-grid">
+              <article class="surface shop-card">
+                <span class="mini-label">Checkout</span>
+                <h4>Business cards</h4>
+                <div class="shop-price">
+                  <span class="shop-price-prefix">From</span>
+                  <span id="businessCardsPrice">$20.00</span>
+                </div>
+                <p>Professional cards for handoffs, counters, meetings, and events.</p>
+                <ul class="simple-list tier-list" id="businessCardsTiers">
+                  <li><strong>50 cards</strong><span>$20.00</span></li>
+                  <li><strong>100 cards</strong><span>$29.00</span></li>
+                  <li><strong>200 cards</strong><span>$39.00</span></li>
+                  <li><strong>500 cards</strong><span>$59.00</span></li>
+                </ul>
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  data-service-preset="Business cards"
+                  data-prefill-note="Need business cards."
+                  data-preset-message="Business cards selected. Pick a card package and continue."
+                  data-scroll-target="quote"
+                >
+                  Start card checkout
+                </button>
+              </article>
+
+              <article class="surface shop-card">
+                <span class="mini-label">Checkout</span>
+                <h4>Event tents</h4>
+                <div class="shop-price">
+                  <span class="shop-price-prefix">From</span>
+                  <span id="eventTentsPrice">$1,000.00</span>
+                </div>
+                <p>Branded tents for pop-ups, church events, vendor booths, and outreach.</p>
+                <ul class="simple-list tier-list" id="eventTentsTiers">
+                  <li><strong>1 tent</strong><span>$1,000.00</span></li>
+                  <li><strong>3 tents</strong><span>$2,700.00</span></li>
+                  <li><strong>5 tents</strong><span>$4,250.00</span></li>
+                </ul>
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  data-service-preset="Event tents"
+                  data-prefill-note="Need a branded event tent."
+                  data-preset-message="Event tents selected. Pick a tent package and continue."
+                  data-scroll-target="quote"
+                >
+                  Start tent checkout
+                </button>
+              </article>
+
+              <article class="surface shop-card">
+                <span class="mini-label">Checkout</span>
+                <h4>Tent and card bundles</h4>
+                <div class="shop-price">
+                  <span class="shop-price-prefix">From</span>
+                  <span id="bundleDealsPrice">$1,025.00</span>
+                </div>
+                <p>Bundle tents and cards to launch one complete event setup.</p>
+                <ul class="simple-list tier-list" id="bundleDealsTiers">
+                  <li><strong>1 tent + 100 cards</strong><span>$1,025.00</span></li>
+                  <li><strong>3 tents + 200 cards</strong><span>$2,750.00</span></li>
+                  <li><strong>5 tents + 500 cards</strong><span>$4,300.00</span></li>
+                </ul>
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  data-service-preset="Tent and card bundles"
+                  data-prefill-note="Need a tent and card bundle."
+                  data-preset-message="Bundle selected. Pick a package and continue."
+                  data-scroll-target="quote"
+                >
+                  Start bundle checkout
+                </button>
+              </article>
             </div>
-            <p>Branded tents for pop-ups, church events, vendor booths, and outreach.</p>
-            <ul class="simple-list tier-list" id="eventTentsTiers">
-              <li><strong>1 tent</strong><span>$1,000.00</span></li>
-              <li><strong>3 tents</strong><span>$2,700.00</span></li>
-              <li><strong>5 tents</strong><span>$4,250.00</span></li>
-            </ul>
-            <button
-              class="btn btn-primary"
-              type="button"
-              data-service-preset="Event tents"
-              data-prefill-note="Need a branded event tent."
-              data-preset-message="Event tents selected. Pick a tent package and continue."
-              data-scroll-target="quote"
-            >
-              Start tent checkout
-            </button>
-          </article>
+          </div>
 
-          <article class="surface shop-card">
-            <span class="mini-label">Checkout</span>
-            <h4>Tent and card bundles</h4>
-            <div class="shop-price">
-              <span class="shop-price-prefix">From</span>
-              <span id="bundleDealsPrice">$1,025.00</span>
+          <div class="path-panel">
+            <div class="path-panel-head">
+              <div>
+                <h4>Quote-first work</h4>
+                <p>Use these when we need dimensions, photos, artwork, or a quick review before pricing.</p>
+              </div>
+              <span class="choice-pill">No package required</span>
             </div>
-            <p>Bundle tents and cards to launch one complete event setup.</p>
-            <ul class="simple-list tier-list" id="bundleDealsTiers">
-              <li><strong>1 tent + 100 cards</strong><span>$1,025.00</span></li>
-              <li><strong>3 tents + 200 cards</strong><span>$2,750.00</span></li>
-              <li><strong>5 tents + 500 cards</strong><span>$4,300.00</span></li>
-            </ul>
-            <button
-              class="btn btn-primary"
-              type="button"
-              data-service-preset="Tent and card bundles"
-              data-prefill-note="Need a tent and card bundle."
-              data-preset-message="Bundle selected. Pick a package and continue."
-              data-scroll-target="quote"
-            >
-              Start bundle checkout
-            </button>
-          </article>
 
-          <article class="surface shop-card shop-card--quote">
-            <span class="mini-label">Quote</span>
-            <h4>Ice cream carts</h4>
-            <div class="shop-price shop-price--muted">Quote first</div>
-            <p>Brand the full cart setup with graphics that are easy to read at events.</p>
-            <ul class="simple-list">
-              <li>Cart wraps, panels, and decals</li>
-              <li>Menu boards and flavor signage</li>
-              <li>Umbrella, freezer, or vendor setup details</li>
-            </ul>
-            <button
-              class="btn btn-secondary"
-              type="button"
-              data-service-preset="Ice cream carts"
-              data-prefill-note="Need ice cream cart graphics. Please quote cart wrap, decals, menu/signage, and setup options."
-              data-preset-message="Ice cream carts selected. Add cart details and send the quote request."
-              data-scroll-target="quote"
-            >
-              Quote an ice cream cart
-            </button>
-          </article>
+            <div class="quote-card-grid">
+              <article class="surface shop-card shop-card--quote">
+                <span class="mini-label">Quote first</span>
+                <h4>Ice cream carts</h4>
+                <div class="shop-price shop-price--muted">Cart graphics</div>
+                <p>A guided quote for cart wraps, decals, menus, and vendor setup details.</p>
+                <ul class="simple-list">
+                  <li>Cart wraps, panels, and decals</li>
+                  <li>Menu boards and flavor signage</li>
+                  <li>Umbrella, freezer, or vendor setup details</li>
+                </ul>
+                <button
+                  class="btn btn-secondary"
+                  type="button"
+                  data-service-preset="Ice cream carts"
+                  data-prefill-note="Need ice cream cart graphics. Please quote cart wrap, decals, menu/signage, and setup options."
+                  data-preset-message="Ice cream carts selected. Add cart details and send the quote request."
+                  data-scroll-target="quote"
+                >
+                  Start cart quote
+                </button>
+              </article>
 
-          <article class="surface shop-card">
-            <span class="mini-label">Quote</span>
-            <h4>Custom quote</h4>
-            <div class="shop-price shop-price--muted">Manual review</div>
-            <p>Use this for custom specs, special quantities, design help, or unlisted products.</p>
-            <ul class="simple-list">
-              <li>Custom products or quantities</li>
-              <li>Artwork or setup questions</li>
-              <li>Review before payment</li>
-            </ul>
-            <button
-              class="btn"
-              type="button"
-              data-service-preset="Custom quote"
-              data-prefill-note="Need a custom quote."
-              data-preset-message="Custom quote selected. Add details and send the request."
-              data-scroll-target="quote"
-            >
-              Request custom quote
-            </button>
-          </article>
+              <article class="surface shop-card">
+                <span class="mini-label">Quote first</span>
+                <h4>Something else</h4>
+                <div class="shop-price shop-price--muted">Manual review</div>
+                <p>For custom specs, special quantities, design help, or products not listed above.</p>
+                <ul class="simple-list">
+                  <li>Custom products or quantities</li>
+                  <li>Artwork or setup questions</li>
+                  <li>Review before payment</li>
+                </ul>
+                <button
+                  class="btn"
+                  type="button"
+                  data-service-preset="Custom quote"
+                  data-prefill-note="Need a custom quote."
+                  data-preset-message="Custom quote selected. Add details and send the request."
+                  data-scroll-target="quote"
+                >
+                  Start custom quote
+                </button>
+              </article>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -1495,8 +1623,8 @@
 
         <div class="quote-grid">
           <aside class="surface contact-card">
-            <h4>Questions before checkout?</h4>
-            <p>Call, text, or DM us for a fast answer before you order. Custom jobs start with a quote request.</p>
+            <h4>Need help choosing?</h4>
+            <p>Checkout is for fixed packages. Ice cream carts and custom jobs start with a quote so we can price the right size and setup.</p>
 
             <div class="contact-points">
               <div class="phone-action">
@@ -1514,69 +1642,95 @@
 
           <div class="surface form-card">
             <h4>Checkout or custom quote</h4>
-            <p>Select a package and continue to secure checkout. For quote requests, add your email and phone so we can reply.</p>
+            <p>Choose one lane below. Checkout packages show a price selector; quote-first work asks for details and contact info.</p>
 
             <form id="quoteForm" action="" method="POST" novalidate>
               <input id="serviceType" name="serviceType" type="hidden" />
               <input id="quantity" name="quantity" type="hidden" />
               <input id="checkoutOptionLabel" name="checkoutOptionLabel" type="hidden" />
 
-              <div class="service-choice-grid" aria-label="Choose your path">
-                <button
-                  class="service-choice"
-                  type="button"
-                  data-service-choice="Business cards"
-                  data-service-preset="Business cards"
-                  data-prefill-note="Need business cards."
-                >
-                  <strong>Business cards</strong>
-                  <span>Standard card packs.</span>
-                </button>
-                <button
-                  class="service-choice"
-                  type="button"
-                  data-service-choice="Ice cream carts"
-                  data-service-preset="Ice cream carts"
-                  data-prefill-note="Need ice cream cart graphics. Please quote cart wrap, decals, menu/signage, and setup options."
-                >
-                  <strong>Ice cream carts</strong>
-                  <span>Wraps, decals, menus, and cart signage.</span>
-                </button>
-                <button
-                  class="service-choice"
-                  type="button"
-                  data-service-choice="Event tents"
-                  data-service-preset="Event tents"
-                  data-prefill-note="Need a branded event tent."
-                >
-                  <strong>Event tents</strong>
-                  <span>1, 3, or 5 tent packages.</span>
-                </button>
-                <button
-                  class="service-choice"
-                  type="button"
-                  data-service-choice="Tent and card bundles"
-                  data-service-preset="Tent and card bundles"
-                  data-prefill-note="Need a tent and card bundle."
-                >
-                  <strong>Tent and card bundles</strong>
-                  <span>Tent packages bundled with cards.</span>
-                </button>
-                <button
-                  class="service-choice"
-                  type="button"
-                  data-service-choice="Custom quote"
-                  data-service-preset="Custom quote"
-                  data-prefill-note="Need a custom quote."
-                >
-                  <strong>Custom quote</strong>
-                  <span>Anything that needs review before payment.</span>
-                </button>
+              <div class="service-choice-panel" aria-label="Choose your path">
+                <div class="service-choice-group">
+                  <div class="service-choice-heading">
+                    <div>
+                      <h5>Checkout packages</h5>
+                      <p>Fastest path when one of these packages fits.</p>
+                    </div>
+                    <span class="choice-pill">Pay online</span>
+                  </div>
+
+                  <div class="service-choice-grid">
+                    <button
+                      class="service-choice"
+                      type="button"
+                      data-service-choice="Business cards"
+                      data-service-preset="Business cards"
+                      data-prefill-note="Need business cards."
+                    >
+                      <strong>Business cards</strong>
+                      <span>Standard card packs.</span>
+                    </button>
+                    <button
+                      class="service-choice"
+                      type="button"
+                      data-service-choice="Event tents"
+                      data-service-preset="Event tents"
+                      data-prefill-note="Need a branded event tent."
+                    >
+                      <strong>Event tents</strong>
+                      <span>1, 3, or 5 tent packages.</span>
+                    </button>
+                    <button
+                      class="service-choice"
+                      type="button"
+                      data-service-choice="Tent and card bundles"
+                      data-service-preset="Tent and card bundles"
+                      data-prefill-note="Need a tent and card bundle."
+                    >
+                      <strong>Tent and card bundles</strong>
+                      <span>Tent packages bundled with cards.</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="service-choice-group service-choice-group--quote">
+                  <div class="service-choice-heading">
+                    <div>
+                      <h5>Quote-first work</h5>
+                      <p>No package selector. Send details and we reply with options.</p>
+                    </div>
+                    <span class="choice-pill">Review first</span>
+                  </div>
+
+                  <div class="service-choice-grid service-choice-grid--quote">
+                    <button
+                      class="service-choice"
+                      type="button"
+                      data-service-choice="Ice cream carts"
+                      data-service-preset="Ice cream carts"
+                      data-prefill-note="Need ice cream cart graphics. Please quote cart wrap, decals, menu/signage, and setup options."
+                    >
+                      <strong>Ice cream carts</strong>
+                      <span>Wraps, decals, menus, and cart signage.</span>
+                    </button>
+                    <button
+                      class="service-choice"
+                      type="button"
+                      data-service-choice="Custom quote"
+                      data-service-preset="Custom quote"
+                      data-prefill-note="Need a custom quote."
+                    >
+                      <strong>Something else</strong>
+                      <span>Custom specs, quantities, or design support.</span>
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div class="choice-note" id="serviceChoiceNote">
-                Choose cards, tents, bundles, ice cream carts, or custom quote.
+                Choose a checkout package or quote-first service.
               </div>
+              <div class="quote-mode-note" id="quoteModeNote" hidden></div>
 
               <div class="field-grid">
                 <label for="name">
@@ -1717,6 +1871,7 @@
     const checkoutOptionFieldLabel = document.getElementById("checkoutOptionFieldLabel");
     const checkoutOptionNote = document.getElementById("checkoutOptionNote");
     const serviceChoiceNote = document.getElementById("serviceChoiceNote");
+    const quoteModeNote = document.getElementById("quoteModeNote");
     const nameField = document.getElementById("name");
     const emailField = document.getElementById("email");
     const phoneField = document.getElementById("phone");
@@ -2039,6 +2194,20 @@
       return "Send custom quote request";
     }
 
+    function getQuoteModeMessage(serviceType) {
+      const normalizedServiceType = String(serviceType || "").trim().toLowerCase();
+
+      if (normalizedServiceType === "ice cream carts") {
+        return "<strong>Ice cream carts are quote-first.</strong> Include cart dimensions, photos if you have them, menu/signage needs, and whether artwork is ready.";
+      }
+
+      if (normalizedServiceType === "custom quote") {
+        return "<strong>Custom work is quote-first.</strong> Send the size, quantity, timeline, and artwork status so we can reply with the right next step.";
+      }
+
+      return "";
+    }
+
     function renderTierList(listElement, service) {
       if (!listElement || !service || !Array.isArray(service.options)) {
         return;
@@ -2233,6 +2402,12 @@
         }
 
         serviceChoiceNote.hidden = !serviceChoiceNote.textContent;
+      }
+
+      if (quoteModeNote) {
+        const quoteModeMessage = isQuoteOnly ? getQuoteModeMessage(selectedService) : "";
+        quoteModeNote.innerHTML = quoteModeMessage;
+        quoteModeNote.hidden = !quoteModeMessage;
       }
 
       if (!stripeEnabled) {
