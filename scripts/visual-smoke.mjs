@@ -377,6 +377,70 @@ async function assertCustomQuoteUi(browser) {
   await page.close();
 }
 
+async function assertIceCreamCartQuoteUi(browser) {
+  const page = await browser.newPage({
+    colorScheme: "dark",
+    viewport: {
+      width: 1440,
+      height: 2200
+    }
+  });
+
+  await mockRuntimeConfig(page, { stripeEnabled: true });
+  await page.goto(BASE_URL, { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator('[data-service-preset="Ice cream carts"]').first().click();
+  await page.waitForFunction(() => {
+    return window.location.hash === "#quote"
+      && document.getElementById("serviceType")?.value === "Ice cream carts";
+  });
+
+  const cartQuoteState = await page.evaluate(() => {
+    const checkoutSection = document.getElementById("checkoutOptionSection");
+    const payButton = document.getElementById("payDepositBtn");
+    const depositNote = document.getElementById("depositNote");
+    const choiceNote = document.getElementById("serviceChoiceNote");
+    const notes = document.getElementById("notes");
+
+    return {
+      serviceType: document.getElementById("serviceType")?.value || "",
+      checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null,
+      payButtonHidden: payButton ? payButton.hidden : null,
+      depositNoteHidden: depositNote ? depositNote.hidden : null,
+      choiceNoteHidden: choiceNote ? choiceNote.hidden : null,
+      choiceNoteText: choiceNote ? choiceNote.textContent.trim() : null,
+      sendQuoteLabel: document.getElementById("sendQuoteBtn")?.textContent.trim() || "",
+      notesValue: notes ? notes.value : ""
+    };
+  });
+
+  if (cartQuoteState.serviceType !== "Ice cream carts") {
+    throw new Error("The ice cream cart CTA did not set the expected service type.");
+  }
+
+  if (
+    cartQuoteState.checkoutSectionHidden !== true
+    || cartQuoteState.payButtonHidden !== true
+    || cartQuoteState.depositNoteHidden !== true
+  ) {
+    throw new Error("Ice cream cart quote mode still exposes checkout controls.");
+  }
+
+  if (cartQuoteState.choiceNoteHidden !== true || cartQuoteState.choiceNoteText !== "") {
+    throw new Error("Ice cream cart quote mode still shows package helper copy.");
+  }
+
+  if (cartQuoteState.sendQuoteLabel !== "Send ice cream cart quote request") {
+    throw new Error("Ice cream cart quote mode did not use the expected submit label.");
+  }
+
+  if (!cartQuoteState.notesValue.includes("Need ice cream cart graphics.")) {
+    throw new Error("Ice cream cart quote mode did not prefill the project notes.");
+  }
+
+  await page.close();
+}
+
 async function assertCheckoutAllowsMissingIdentity(browser) {
   const page = await browser.newPage({
     colorScheme: "dark",
@@ -461,9 +525,9 @@ try {
   await waitForServer(BASE_URL);
 
   await assertHtmlContains(BASE_URL, [
-    "Get cards and tents fast. Need custom specs? Get a quote.",
+    "Get cards and tents fast. Branding an ice cream cart? Get a quote.",
     "Choose your order path",
-    "Request a quote"
+    "Ice cream carts"
   ]);
   await assertHtmlContains(`${BASE_URL}/auth/`, [
     "Portal sign in",
@@ -481,6 +545,7 @@ try {
 
   const browser = await chromium.launch({
     executablePath: resolveChromeExecutable() ?? undefined,
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
     headless: true
   });
 
@@ -493,6 +558,7 @@ try {
 
     await assertChoosePackageButtonNavigatesToShop(browser);
     await assertCustomQuoteUi(browser);
+    await assertIceCreamCartQuoteUi(browser);
     await assertQuoteValidationMessages(browser);
     await assertCheckoutAllowsMissingIdentity(browser);
 

@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Third Eye Print Co. - Fast Cards, Tents, and Custom Quotes</title>
+  <title>Third Eye Print Co. - Fast Cards, Tents, Carts, and Custom Quotes</title>
   <meta
     name="description"
-    content="Fast checkout for business cards, event tents, and bundle packages. Need custom specs? Request a quote."
+    content="Fast checkout for business cards, event tents, and bundle packages. Need ice cream cart graphics or custom specs? Request a quote."
   />
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#0b0b0f" />
   <meta property="og:title" content="Third Eye Print Co." />
-  <meta property="og:description" content="Checkout business cards, event tents, and bundles fast. Custom jobs start with a quote." />
+  <meta property="og:description" content="Checkout business cards, event tents, and bundles fast. Ice cream carts and custom jobs start with a quote." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.thirdeyeprintco.com/" />
   <link rel="canonical" href="https://www.thirdeyeprintco.com/" />
@@ -611,7 +611,7 @@
     .shop-grid {
       display: grid;
       gap: 14px;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 
     .shop-card {
@@ -630,6 +630,13 @@
       margin: 0;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    .shop-card--quote {
+      border-color: rgba(124, 217, 235, 0.24);
+      background:
+        radial-gradient(240px 160px at 82% 0%, rgba(124, 217, 235, 0.12), transparent 64%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
     }
 
     .shop-price {
@@ -1286,7 +1293,7 @@
         </div>
         <div class="brand-copy">
           <h1>Third Eye Print Co.</h1>
-          <p>Cards, tents, and quotes - San Diego</p>
+          <p>Cards, tents, carts, and quotes - San Diego</p>
         </div>
       </a>
 
@@ -1307,7 +1314,7 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <h2>Get cards and tents fast. Need custom specs? Get a quote.</h2>
+          <h2>Get cards and tents fast. Branding an ice cream cart? Get a quote.</h2>
           <p>
             Choose a package, checkout securely, and lock in production today.<br />
             <span class="hero-copy-followup">If your project is custom, send details and we will follow up with pricing.</span>
@@ -1329,7 +1336,7 @@
 
           <ul class="hero-points">
             <li>Fixed-price checkout for cards, tents, and bundles.</li>
-            <li>Custom specs and design help start with a quick quote.</li>
+            <li>Ice cream cart graphics, menus, decals, and design help start with a quick quote.</li>
             <li>San Diego pickup available, with shipping by request.</li>
           </ul>
         </div>
@@ -1432,6 +1439,28 @@
             </button>
           </article>
 
+          <article class="surface shop-card shop-card--quote">
+            <span class="mini-label">Quote</span>
+            <h4>Ice cream carts</h4>
+            <div class="shop-price shop-price--muted">Quote first</div>
+            <p>Brand the full cart setup with graphics that are easy to read at events.</p>
+            <ul class="simple-list">
+              <li>Cart wraps, panels, and decals</li>
+              <li>Menu boards and flavor signage</li>
+              <li>Umbrella, freezer, or vendor setup details</li>
+            </ul>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-service-preset="Ice cream carts"
+              data-prefill-note="Need ice cream cart graphics. Please quote cart wrap, decals, menu/signage, and setup options."
+              data-preset-message="Ice cream carts selected. Add cart details and send the quote request."
+              data-scroll-target="quote"
+            >
+              Quote an ice cream cart
+            </button>
+          </article>
+
           <article class="surface shop-card">
             <span class="mini-label">Quote</span>
             <h4>Custom quote</h4>
@@ -1506,6 +1535,16 @@
                 <button
                   class="service-choice"
                   type="button"
+                  data-service-choice="Ice cream carts"
+                  data-service-preset="Ice cream carts"
+                  data-prefill-note="Need ice cream cart graphics. Please quote cart wrap, decals, menu/signage, and setup options."
+                >
+                  <strong>Ice cream carts</strong>
+                  <span>Wraps, decals, menus, and cart signage.</span>
+                </button>
+                <button
+                  class="service-choice"
+                  type="button"
                   data-service-choice="Event tents"
                   data-service-preset="Event tents"
                   data-prefill-note="Need a branded event tent."
@@ -1536,7 +1575,7 @@
               </div>
 
               <div class="choice-note" id="serviceChoiceNote">
-                Choose cards, tents, bundles, or custom quote.
+                Choose cards, tents, bundles, ice cream carts, or custom quote.
               </div>
 
               <div class="field-grid">
@@ -1607,7 +1646,7 @@
 
                   <label for="garment">
                     Product details
-                    <input id="garment" name="garment" placeholder="Card finish, canopy size, tent walls, booth setup, or custom specs" />
+                    <input id="garment" name="garment" placeholder="Card finish, canopy size, tent walls, cart dimensions, booth setup, or custom specs" />
                   </label>
                 </div>
               </details>
@@ -1632,7 +1671,7 @@
     <div class="wrap footer-inner">
       <div>
         <strong style="color: var(--text);">Third Eye Print Co.</strong><br />
-        San Diego business cards, event tents, bundles, and custom quotes.
+        San Diego business cards, event tents, ice cream cart graphics, bundles, and custom quotes.
       </div>
 
       <div class="footer-contacts">
@@ -1771,6 +1810,7 @@
       ["Business cards", "Need business cards."],
       ["Event tents", "Need a branded event tent."],
       ["Tent and card bundles", "Need a tent and card bundle."],
+      ["Ice cream carts", "Need ice cream cart graphics. Please quote cart wrap, decals, menu/signage, and setup options."],
       ["Custom quote", "Need a custom quote."]
     ].forEach(([service, note]) => {
       servicePrefillNotes.set(service, note);
@@ -1984,8 +2024,19 @@
       };
     }
 
-    function isCustomQuoteService(serviceType) {
-      return String(serviceType || "").trim().toLowerCase() === "custom quote";
+    function isQuoteOnlyService(serviceType) {
+      const normalizedServiceType = String(serviceType || "").trim().toLowerCase();
+      return normalizedServiceType === "custom quote" || normalizedServiceType === "ice cream carts";
+    }
+
+    function getQuoteSubmitLabel(serviceType) {
+      const normalizedServiceType = String(serviceType || "").trim().toLowerCase();
+
+      if (normalizedServiceType === "ice cream carts") {
+        return "Send ice cream cart quote request";
+      }
+
+      return "Send custom quote request";
     }
 
     function renderTierList(listElement, service) {
@@ -2142,12 +2193,12 @@
       const service = resolveCheckoutOffer(selectedService);
       const option = service ? populateCheckoutOptions(service) : populateCheckoutOptions(null);
       const offer = option ? resolveCheckoutSelection(selectedService, option.id) : null;
-      const isCustomQuote = isCustomQuoteService(selectedService);
+      const isQuoteOnly = isQuoteOnlyService(selectedService);
 
       syncServiceChoiceButtons();
 
       if (checkoutOptionSection) {
-        checkoutOptionSection.hidden = isCustomQuote;
+        checkoutOptionSection.hidden = isQuoteOnly;
       }
 
       if (checkoutOptionFieldLabel) {
@@ -2161,7 +2212,7 @@
           checkoutOptionNote.textContent = "Checkout is unavailable right now. Send a quote request instead.";
         } else if (offer) {
           checkoutOptionNote.textContent = `${offer.option.label} selected at ${formatCurrency(offer.amountCents, offer.currency || depositCurrency)}.`;
-        } else if (isCustomQuote) {
+        } else if (isQuoteOnly) {
           checkoutOptionNote.textContent = "";
         } else {
           checkoutOptionNote.textContent = "Choose a path to load packages.";
@@ -2170,15 +2221,15 @@
 
       if (serviceChoiceNote) {
         if (!stripeEnabled) {
-          serviceChoiceNote.textContent = isCustomQuote
+          serviceChoiceNote.textContent = isQuoteOnly
             ? ""
             : "Online checkout is unavailable right now. Send a quote request instead.";
         } else if (offer) {
           serviceChoiceNote.textContent = `${offer.label} selected. Continue to checkout when you are ready.`;
-        } else if (isCustomQuote) {
+        } else if (isQuoteOnly) {
           serviceChoiceNote.textContent = "";
         } else {
-          serviceChoiceNote.textContent = "Choose cards, tents, bundles, or custom quote.";
+          serviceChoiceNote.textContent = "Choose cards, tents, bundles, ice cream carts, or custom quote.";
         }
 
         serviceChoiceNote.hidden = !serviceChoiceNote.textContent;
@@ -2189,14 +2240,14 @@
         if (depositNote) {
           depositNote.hidden = true;
         }
-        sendQuoteBtn.textContent = isCustomQuote ? "Send custom quote request" : "Request quote instead";
+        sendQuoteBtn.textContent = isQuoteOnly ? getQuoteSubmitLabel(selectedService) : "Request quote instead";
         sendQuoteBtn.classList.add("btn-primary");
         sendQuoteBtn.classList.remove("btn-secondary");
         return;
       }
 
       if (depositNote) {
-        depositNote.hidden = isCustomQuote || !offer;
+        depositNote.hidden = isQuoteOnly || !offer;
       }
 
       if (offer) {
@@ -2211,9 +2262,9 @@
         return;
       }
 
-      if (isCustomQuote) {
+      if (isQuoteOnly) {
         payDepositBtn.hidden = true;
-        sendQuoteBtn.textContent = "Send custom quote request";
+        sendQuoteBtn.textContent = getQuoteSubmitLabel(selectedService);
         sendQuoteBtn.classList.add("btn-primary");
         sendQuoteBtn.classList.remove("btn-secondary");
         return;
@@ -2305,7 +2356,7 @@
         };
       }
 
-      if (isCustomQuoteService(lead.serviceType) && !hasQuoteProjectDetails(lead)) {
+      if (isQuoteOnlyService(lead.serviceType) && !hasQuoteProjectDetails(lead)) {
         return {
           message: "Add a few project details so we know what to quote.",
           field: notesField
