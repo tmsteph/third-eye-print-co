@@ -192,77 +192,58 @@ async function assertChoosePackageButtonNavigatesToShop(browser) {
   await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
   await page.locator("#quoteForm").scrollIntoViewIfNeeded();
-  const beforeScrollY = await page.evaluate(() => window.scrollY);
-  const defaultCheckoutOptions = await page.locator("#checkoutOptionId option").evaluateAll((options) => {
-    return options.map((option) => ({
-      value: option.value,
-      label: option.textContent.replace(/\s+/g, " ").trim()
-    }));
-  });
 
   const buttonState = await page.evaluate(() => {
     const button = document.getElementById("payDepositBtn");
     const depositNote = document.getElementById("depositNote");
+    const checkoutSection = document.getElementById("checkoutOptionSection");
     return {
       hidden: button ? button.hidden : null,
       disabled: button ? button.disabled : null,
       label: button ? button.textContent.trim() : "",
-      depositNoteHidden: depositNote ? depositNote.hidden : null
+      depositNoteHidden: depositNote ? depositNote.hidden : null,
+      checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null
     };
   });
 
   if (
-    defaultCheckoutOptions.length !== 4
-    || defaultCheckoutOptions[0].value !== ""
-    || defaultCheckoutOptions[0].label !== "Choose a package..."
-    || defaultCheckoutOptions[1].value !== "service:businessCards"
-    || !defaultCheckoutOptions[1].label.startsWith("Business cards - from ")
-    || defaultCheckoutOptions[2].value !== "service:eventTent"
-    || !defaultCheckoutOptions[2].label.startsWith("Event tents - from ")
-    || defaultCheckoutOptions[3].value !== "service:bundleDeal"
-    || !defaultCheckoutOptions[3].label.startsWith("Tent and card bundles - from ")
-  ) {
-    throw new Error("Default checkout selector did not expose the three main product paths.");
-  }
-
-  if (
-    buttonState.hidden !== false
+    buttonState.hidden !== true
     || buttonState.disabled !== false
-    || buttonState.label !== "Choose a package"
+    || buttonState.label !== "Pay online"
     || buttonState.depositNoteHidden !== true
+    || buttonState.checkoutSectionHidden !== true
   ) {
-    throw new Error("Default checkout state did not expose an active 'Choose a package' button.");
+    throw new Error("Default order form state should prioritize the request form and hide payment controls.");
   }
 
-  await page.locator("#payDepositBtn").click();
-  await waitForStatusMessage(page, "Choose a package above to continue to checkout.");
-  await page.waitForFunction((previousY) => window.scrollY < previousY - 150, beforeScrollY);
-
-  await page.selectOption("#checkoutOptionId", "service:eventTent");
+  await page.locator('[data-service-choice="Event tents"]').click();
   const resolvedPathState = await page.evaluate(() => {
     const field = document.getElementById("checkoutOptionId");
     const serviceType = document.getElementById("serviceType");
     const fieldLabel = document.getElementById("checkoutOptionFieldLabel");
     const button = document.getElementById("payDepositBtn");
+    const checkoutSection = document.getElementById("checkoutOptionSection");
 
     return {
       currentValue: field ? field.value : "",
       optionValues: field ? Array.from(field.options).map((option) => option.value) : [],
       serviceType: serviceType ? serviceType.value : "",
       fieldLabel: fieldLabel ? fieldLabel.textContent.replace(/\s+/g, " ").trim() : "",
-      buttonLabel: button ? button.textContent.replace(/\s+/g, " ").trim() : ""
+      buttonLabel: button ? button.textContent.replace(/\s+/g, " ").trim() : "",
+      checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null
     };
   });
 
   if (
     resolvedPathState.serviceType !== "Event tents"
-    || resolvedPathState.fieldLabel !== "Event tents package"
+    || resolvedPathState.fieldLabel !== "Event tents starting package"
     || !resolvedPathState.currentValue
     || resolvedPathState.currentValue.startsWith("service:")
     || !resolvedPathState.optionValues.includes("tent-1")
-    || !resolvedPathState.buttonLabel.startsWith("Checkout ")
+    || resolvedPathState.checkoutSectionHidden !== false
+    || !resolvedPathState.buttonLabel.startsWith("Pay online for ")
   ) {
-    throw new Error("Selecting a default checkout path did not load package checkout state.");
+    throw new Error("Selecting a packaged product did not expose package payment state.");
   }
 
   await page.close();
@@ -280,14 +261,13 @@ async function assertQuoteValidationMessages(browser) {
   await mockRuntimeConfig(page, { stripeEnabled: true });
   await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  await page.locator('a.btn.btn-secondary[href="#quote"]').click();
+  await page.locator('[data-service-choice="Custom quote"]').click();
   await page.waitForFunction(() => {
-    return window.location.hash === "#quote"
-      && document.getElementById("serviceType")?.value === "Custom quote";
+    return document.getElementById("serviceType")?.value === "Custom quote";
   });
 
   await page.locator("#sendQuoteBtn").click();
-  await waitForStatusMessage(page, "Add an email address so we can send your quote.");
+  await waitForStatusMessage(page, "Add an email address so we can reply to your request.");
 
   const emailInvalid = await page.locator("#email").getAttribute("aria-invalid");
   if (emailInvalid !== "true") {
@@ -296,7 +276,7 @@ async function assertQuoteValidationMessages(browser) {
 
   await page.locator("#email").fill("buyer@example.com");
   await page.locator("#sendQuoteBtn").click();
-  await waitForStatusMessage(page, "Add a phone number so we can follow up about your quote.");
+  await waitForStatusMessage(page, "Add a phone number so we can follow up about your order.");
 
   const phoneInvalid = await page.locator("#phone").getAttribute("aria-invalid");
   if (phoneInvalid !== "true") {
@@ -305,7 +285,7 @@ async function assertQuoteValidationMessages(browser) {
 
   await page.locator("#phone").fill("+1 (619) 555-0100");
   await page.locator("#sendQuoteBtn").click();
-  await waitForStatusMessage(page, "Add a few project details so we know what to quote.");
+  await waitForStatusMessage(page, "Add a few project details so we know what you need.");
 
   const notesInvalid = await page.locator("#notes").getAttribute("aria-invalid");
   if (notesInvalid !== "true") {
@@ -327,10 +307,9 @@ async function assertCustomQuoteUi(browser) {
   await mockRuntimeConfig(page, { stripeEnabled: true });
   await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  await page.locator('a.btn.btn-secondary[href="#quote"]').click();
+  await page.locator('[data-service-choice="Custom quote"]').click();
   await page.waitForFunction(() => {
-    return window.location.hash === "#quote"
-      && document.getElementById("serviceType")?.value === "Custom quote";
+    return document.getElementById("serviceType")?.value === "Custom quote";
   });
 
   const customQuoteState = await page.evaluate(() => {
@@ -338,6 +317,7 @@ async function assertCustomQuoteUi(browser) {
     const payButton = document.getElementById("payDepositBtn");
     const depositNote = document.getElementById("depositNote");
     const choiceNote = document.getElementById("serviceChoiceNote");
+    const quoteModeNote = document.getElementById("quoteModeNote");
 
     return {
       serviceType: document.getElementById("serviceType")?.value || "",
@@ -346,12 +326,14 @@ async function assertCustomQuoteUi(browser) {
       depositNoteHidden: depositNote ? depositNote.hidden : null,
       choiceNoteHidden: choiceNote ? choiceNote.hidden : null,
       choiceNoteText: choiceNote ? choiceNote.textContent.trim() : null,
+      quoteModeNoteHidden: quoteModeNote ? quoteModeNote.hidden : null,
+      quoteModeNoteText: quoteModeNote ? quoteModeNote.textContent.trim() : null,
       sendQuoteLabel: document.getElementById("sendQuoteBtn")?.textContent.trim() || ""
     };
   });
 
   if (customQuoteState.serviceType !== "Custom quote") {
-    throw new Error("The hero custom quote CTA did not switch the form into custom quote mode.");
+    throw new Error("The custom job choice did not switch the form into custom request mode.");
   }
 
   if (customQuoteState.checkoutSectionHidden !== true) {
@@ -370,8 +352,12 @@ async function assertCustomQuoteUi(browser) {
     throw new Error("Custom quote mode still shows helper copy that should be hidden.");
   }
 
-  if (customQuoteState.sendQuoteLabel !== "Send custom quote request") {
-    throw new Error("Custom quote mode did not keep the expected quote submit button label.");
+  if (customQuoteState.quoteModeNoteHidden !== false || !customQuoteState.quoteModeNoteText.includes("For anything else:")) {
+    throw new Error("Custom request mode did not show the expected helper note.");
+  }
+
+  if (customQuoteState.sendQuoteLabel !== "Send order request") {
+    throw new Error("Custom request mode did not keep the expected submit button label.");
   }
 
   await page.close();
@@ -400,6 +386,7 @@ async function assertIceCreamCartQuoteUi(browser) {
     const payButton = document.getElementById("payDepositBtn");
     const depositNote = document.getElementById("depositNote");
     const choiceNote = document.getElementById("serviceChoiceNote");
+    const quoteModeNote = document.getElementById("quoteModeNote");
     const notes = document.getElementById("notes");
 
     return {
@@ -409,6 +396,8 @@ async function assertIceCreamCartQuoteUi(browser) {
       depositNoteHidden: depositNote ? depositNote.hidden : null,
       choiceNoteHidden: choiceNote ? choiceNote.hidden : null,
       choiceNoteText: choiceNote ? choiceNote.textContent.trim() : null,
+      quoteModeNoteHidden: quoteModeNote ? quoteModeNote.hidden : null,
+      quoteModeNoteText: quoteModeNote ? quoteModeNote.textContent.trim() : null,
       sendQuoteLabel: document.getElementById("sendQuoteBtn")?.textContent.trim() || "",
       notesValue: notes ? notes.value : ""
     };
@@ -423,19 +412,23 @@ async function assertIceCreamCartQuoteUi(browser) {
     || cartQuoteState.payButtonHidden !== true
     || cartQuoteState.depositNoteHidden !== true
   ) {
-    throw new Error("Ice cream cart quote mode still exposes checkout controls.");
+    throw new Error("Ice cream cart request mode still exposes payment controls.");
   }
 
   if (cartQuoteState.choiceNoteHidden !== true || cartQuoteState.choiceNoteText !== "") {
-    throw new Error("Ice cream cart quote mode still shows package helper copy.");
+    throw new Error("Ice cream cart request mode still shows package helper copy.");
   }
 
-  if (cartQuoteState.sendQuoteLabel !== "Send ice cream cart quote request") {
-    throw new Error("Ice cream cart quote mode did not use the expected submit label.");
+  if (cartQuoteState.quoteModeNoteHidden !== false || !cartQuoteState.quoteModeNoteText.includes("For ice cream carts:")) {
+    throw new Error("Ice cream cart request mode did not show the expected detail helper note.");
+  }
+
+  if (cartQuoteState.sendQuoteLabel !== "Send order request") {
+    throw new Error("Ice cream cart request mode did not use the expected submit label.");
   }
 
   if (!cartQuoteState.notesValue.includes("Need ice cream cart graphics.")) {
-    throw new Error("Ice cream cart quote mode did not prefill the project notes.");
+    throw new Error("Ice cream cart request mode did not prefill the project notes.");
   }
 
   await page.close();
@@ -525,8 +518,8 @@ try {
   await waitForServer(BASE_URL);
 
   await assertHtmlContains(BASE_URL, [
-    "Get cards and tents fast. Branding an ice cream cart? Get a quote.",
-    "Choose your order path",
+    "Tell us what you need printed. We’ll help with the rest.",
+    "Pick a starting point",
     "Ice cream carts"
   ]);
   await assertHtmlContains(`${BASE_URL}/auth/`, [

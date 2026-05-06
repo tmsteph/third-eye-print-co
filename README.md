@@ -2,7 +2,7 @@
 
 Third Eye Print Co site with:
 - Stripe Checkout flow for business cards, tent packages, and bundle deals
-- Quote-first lead capture for ice cream cart graphics and other custom jobs
+- Order request lead capture for ice cream cart graphics and other reviewed jobs
 - GunJS relay as the lead database
 - Gun/SEA admin auth with pub-key allowlisting + local admin graph (`/auth/`, `/admin/`)
 - Vercel serverless functions for public config, Stripe checkout, and Stripe webhook confirmation
