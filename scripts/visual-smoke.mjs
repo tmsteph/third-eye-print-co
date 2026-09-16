@@ -216,7 +216,7 @@ async function assertChoosePackageButtonNavigatesToShop(browser) {
     throw new Error("Default order form state should prioritize the request form and hide payment controls.");
   }
 
-  await page.locator('[data-service-choice="Event tents"]').click();
+  await page.locator('[data-service-choice="Business cards"]').click();
   const resolvedPathState = await page.evaluate(() => {
     const field = document.getElementById("checkoutOptionId");
     const serviceType = document.getElementById("serviceType");
@@ -235,11 +235,11 @@ async function assertChoosePackageButtonNavigatesToShop(browser) {
   });
 
   if (
-    resolvedPathState.serviceType !== "Event tents"
-    || resolvedPathState.fieldLabel !== "Event tents starting package"
+    resolvedPathState.serviceType !== "Business cards"
+    || resolvedPathState.fieldLabel !== "Business cards starting package"
     || !resolvedPathState.currentValue
     || resolvedPathState.currentValue.startsWith("service:")
-    || !resolvedPathState.optionValues.includes("tent-1")
+    || !resolvedPathState.optionValues.includes("cards-100")
     || resolvedPathState.checkoutSectionHidden !== false
     || !resolvedPathState.buttonLabel.startsWith("Pay online for ")
   ) {
@@ -363,7 +363,7 @@ async function assertCustomQuoteUi(browser) {
   await page.close();
 }
 
-async function assertIceCreamCartQuoteUi(browser) {
+async function assertApparelQuoteUi(browser) {
   const page = await browser.newPage({
     colorScheme: "dark",
     viewport: {
@@ -375,13 +375,12 @@ async function assertIceCreamCartQuoteUi(browser) {
   await mockRuntimeConfig(page, { stripeEnabled: true });
   await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  await page.locator('[data-service-preset="Ice cream carts"]').first().click();
+  await page.locator('[data-service-preset="T-shirts & apparel"]').first().click();
   await page.waitForFunction(() => {
-    return window.location.hash === "#quote"
-      && document.getElementById("serviceType")?.value === "Ice cream carts";
+    return document.getElementById("serviceType")?.value === "T-shirts & apparel";
   });
 
-  const cartQuoteState = await page.evaluate(() => {
+  const apparelQuoteState = await page.evaluate(() => {
     const checkoutSection = document.getElementById("checkoutOptionSection");
     const payButton = document.getElementById("payDepositBtn");
     const depositNote = document.getElementById("depositNote");
@@ -403,32 +402,32 @@ async function assertIceCreamCartQuoteUi(browser) {
     };
   });
 
-  if (cartQuoteState.serviceType !== "Ice cream carts") {
-    throw new Error("The ice cream cart CTA did not set the expected service type.");
+  if (apparelQuoteState.serviceType !== "T-shirts & apparel") {
+    throw new Error("The apparel CTA did not set the expected service type.");
   }
 
   if (
-    cartQuoteState.checkoutSectionHidden !== true
-    || cartQuoteState.payButtonHidden !== true
-    || cartQuoteState.depositNoteHidden !== true
+    apparelQuoteState.checkoutSectionHidden !== true
+    || apparelQuoteState.payButtonHidden !== true
+    || apparelQuoteState.depositNoteHidden !== true
   ) {
-    throw new Error("Ice cream cart request mode still exposes payment controls.");
+    throw new Error("Apparel request mode still exposes payment controls.");
   }
 
-  if (cartQuoteState.choiceNoteHidden !== true || cartQuoteState.choiceNoteText !== "") {
-    throw new Error("Ice cream cart request mode still shows package helper copy.");
+  if (apparelQuoteState.choiceNoteHidden !== true || apparelQuoteState.choiceNoteText !== "") {
+    throw new Error("Apparel request mode still shows package helper copy.");
   }
 
-  if (cartQuoteState.quoteModeNoteHidden !== false || !cartQuoteState.quoteModeNoteText.includes("For ice cream carts:")) {
-    throw new Error("Ice cream cart request mode did not show the expected detail helper note.");
+  if (apparelQuoteState.quoteModeNoteHidden !== false || !apparelQuoteState.quoteModeNoteText.includes("For apparel:")) {
+    throw new Error("Apparel request mode did not show the expected detail helper note.");
   }
 
-  if (cartQuoteState.sendQuoteLabel !== "Send order request") {
-    throw new Error("Ice cream cart request mode did not use the expected submit label.");
+  if (apparelQuoteState.sendQuoteLabel !== "Send order request") {
+    throw new Error("Apparel request mode did not use the expected submit label.");
   }
 
-  if (!cartQuoteState.notesValue.includes("Need ice cream cart graphics.")) {
-    throw new Error("Ice cream cart request mode did not prefill the project notes.");
+  if (!apparelQuoteState.notesValue.includes("Need T-shirts or apparel printed.")) {
+    throw new Error("Apparel request mode did not prefill the project notes.");
   }
 
   await page.close();
@@ -518,9 +517,9 @@ try {
   await waitForServer(BASE_URL);
 
   await assertHtmlContains(BASE_URL, [
-    "Tell us what you need printed. We’ll help with the rest.",
-    "Pick a starting point",
-    "Ice cream carts"
+    "Business cards. Made easy.",
+    "What do you need?",
+    "T-shirts & apparel"
   ]);
   await assertHtmlContains(`${BASE_URL}/auth/`, [
     "Portal sign in",
@@ -551,7 +550,7 @@ try {
 
     await assertChoosePackageButtonNavigatesToShop(browser);
     await assertCustomQuoteUi(browser);
-    await assertIceCreamCartQuoteUi(browser);
+    await assertApparelQuoteUi(browser);
     await assertQuoteValidationMessages(browser);
     await assertCheckoutAllowsMissingIdentity(browser);
 

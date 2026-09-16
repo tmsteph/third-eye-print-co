@@ -87,11 +87,11 @@ test("createStripeCatalog uses defaults when env values are missing", () => {
 test("resolveCheckoutSelection returns the selected option details", () => {
   const selection = resolveCheckoutSelection({
     serviceType: "Tent and card bundles",
-    checkoutOptionId: "bundle-3-200",
+    checkoutOptionId: "bundle-3-250",
   });
 
   assert.equal(selection.key, "bundleDeal");
-  assert.equal(selection.option.id, "bundle-3-200");
-  assert.equal(selection.option.label, "3 tents + 200 cards");
+  assert.equal(selection.option.id, "bundle-3-250");
+  assert.equal(selection.option.label, "3 tents + 250 cards");
   assert.equal(selection.amountCents, 275000);
 });

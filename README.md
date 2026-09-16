@@ -24,9 +24,9 @@ cp .env.example .env
 3. Set required values in `.env`:
 - `STRIPE_SECRET_KEY` (your Stripe secret key)
 - `STRIPE_WEBHOOK_SECRET` (the Stripe signing secret for your deployed webhook endpoint)
-- `STRIPE_BUSINESS_CARDS_50_CENTS` / `STRIPE_BUSINESS_CARDS_100_CENTS` / `STRIPE_BUSINESS_CARDS_200_CENTS` / `STRIPE_BUSINESS_CARDS_500_CENTS` (optional business card tier overrides)
+- `STRIPE_BUSINESS_CARDS_50_CENTS` / `STRIPE_BUSINESS_CARDS_100_CENTS` / `STRIPE_BUSINESS_CARDS_250_CENTS` / `STRIPE_BUSINESS_CARDS_500_CENTS` (optional business card tier overrides)
 - `STRIPE_EVENT_TENT_1_CENTS` / `STRIPE_EVENT_TENT_3_CENTS` / `STRIPE_EVENT_TENT_5_CENTS` (optional event tent package overrides)
-- `STRIPE_BUNDLE_1_TENT_100_CARDS_CENTS` / `STRIPE_BUNDLE_3_TENTS_200_CARDS_CENTS` / `STRIPE_BUNDLE_5_TENTS_500_CARDS_CENTS` (optional bundle overrides)
+- `STRIPE_BUNDLE_1_TENT_100_CARDS_CENTS` / `STRIPE_BUNDLE_3_TENTS_250_CARDS_CENTS` / `STRIPE_BUNDLE_5_TENTS_500_CARDS_CENTS` (optional bundle overrides)
 - `SITE_URL` (for local dev: `http://localhost:8787`, production example: `https://www.thirdeyeprintco.com`)
 - `GUN_RELAY_URLS` (comma-separated relay peers, recommended)
 - `GUN_RELAY_URL` (single relay fallback, optional)
@@ -54,6 +54,13 @@ npm run test:visual
 ```
 
 This writes screenshots and a small report to `artifacts/screenshots/`.
+
+## Fulfillment
+
+- 4over is the current production partner, but there is no direct 4over API integration yet. Fulfillment is manual after the customer request/payment reaches Third Eye.
+- The public business-card checkout intentionally uses production-friendly quantities: 50, 100, 250, and 500 cards.
+- Premium stocks, special finishes, apparel, signs, tents, and unusual quantities stay on the quote path until their production specs are standardized.
+- Legacy `200`-card environment variable names are still accepted as fallbacks so existing deployments do not break while moving to the 250-card tier.
 
 ## API routes
 
