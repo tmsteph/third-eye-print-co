@@ -32,6 +32,8 @@ cp .env.example .env
 - `GUN_RELAY_URL` (single relay fallback, optional)
 - `ADMIN_PUBS` (comma-separated Gun public keys allowed into `/admin/`, optional if you manage admins in Gun)
 - `QUOTE_EMAIL_TO` (public quote mailto target)
+- `GMAIL_USER` + `GMAIL_APP_PASSWORD` (server-side Gmail sender for optional business-card artwork)
+- `BUSINESS_CARD_ORDER_EMAIL` (one or more comma-separated recipients for submitted artwork; falls back to `QUOTE_EMAIL_TO`/`GMAIL_USER`)
 
 4. Run the Vercel dev server:
 
@@ -44,6 +46,14 @@ vercel dev --listen 127.0.0.1:8787
 ```text
 http://localhost:8787
 ```
+
+
+## Public app routes
+
+- `/business-cards/`: focused quantity → optional artwork → payment flow. The upload control is only exposed when server-side Gmail delivery is configured.
+- `/t-shirts/`: compact apparel request flow.
+- `/custom/`: compact request flow for signs, tents, decals, menus, banners, and other jobs.
+- The previous long-form storefront is retired from the public flow; Git history remains the source of truth if anything needs to be recovered.
 
 ## Visual smoke checks
 
@@ -65,7 +75,7 @@ This writes screenshots and a small report to `artifacts/screenshots/`.
 ## API routes
 
 - `GET /config.js`: Rewritten to `/api/config` and exposes safe public runtime config (`gunRelayUrls`, `adminPubs`, and the live checkout tiers for cards, tents, and bundles).
-- `POST /api/create-checkout-session`: Creates a Stripe Checkout session for a valid card pack, tent package, or bundle deal.
+- `POST /api/create-checkout-session`: Creates a Stripe Checkout session. For business cards it also validates optional PDF/JPG/PNG artwork (2 files / 2.5 MB total), emails the actual attachments before redirecting to Stripe, and expires the Stripe session if artwork delivery fails.
 - `POST /api/webhooks/stripe`: Verifies Stripe webhook signatures and writes confirmed payment events back into `third-eye-print-co/leads` in Gun.
 
 ## Stripe webhook setup

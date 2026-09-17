@@ -3,92 +3,17 @@ import path from "path";
 import { spawn } from "child_process";
 import { chromium } from "playwright";
 
-const ROOT = path.resolve(process.cwd());
-const PORT = 8787;
-const HOST = "127.0.0.1";
-const BASE = `http://${HOST}:${PORT}`;
-const OUT = path.join(ROOT, "artifacts", "screenshots");
-fs.mkdirSync(OUT, { recursive: true });
-
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-async function waitForServer() {
-  for (let i = 0; i < 80; i += 1) {
-    try { if ((await fetch(BASE)).ok) return; } catch {}
-    await wait(200);
-  }
-  throw new Error("Local server did not start");
-}
-
-function browserExecutable() {
-  for (const candidate of [process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH, "/usr/bin/google-chrome", "/usr/bin/chromium"]) {
-    if (candidate && fs.existsSync(candidate)) return candidate;
-  }
-  return undefined;
-}
-
-async function mockConfig(page) {
-  await page.route("**/config.js", async (route) => route.fulfill({
-    status: 200,
-    contentType: "application/javascript",
-    body: `window.THIRD_EYE_CONFIG=${JSON.stringify({
-      stripeEnabled: true,
-      stripeCatalog: { businessCards: {
-        key: "businessCards", label: "Business cards", currency: "usd", defaultOptionId: "cards-100", options: [
-          {id:"cards-50",label:"50 cards",amountCents:2000},
-          {id:"cards-100",label:"100 cards",amountCents:2900},
-          {id:"cards-250",label:"250 cards",amountCents:3900},
-          {id:"cards-500",label:"500 cards",amountCents:5900}
-        ]
-      }}
-    })};`
-  }));
-}
-
-async function checkLauncher(browser, width, height, name) {
-  const page = await browser.newPage({ viewport: { width, height }, colorScheme: "dark" });
-  await page.goto(BASE, { waitUntil: "networkidle" });
-  const href = await page.locator('a[href="/business-cards/"]').first().getAttribute("href");
-  if (href !== "/business-cards/") throw new Error("Homepage business-card CTA is not a separate page");
-  if (await page.locator('a[href^="#quote"]').count()) throw new Error("Homepage still contains the old scrolling order CTA");
-  const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-  if (scrollHeight > height + 220) throw new Error(`Homepage is too tall for ${name}: ${scrollHeight}px`);
-  await page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: true });
-  await page.close();
-}
-
-async function checkCardCheckout(browser) {
-  const page = await browser.newPage({ viewport: { width: 430, height: 900 }, colorScheme: "dark" });
-  await mockConfig(page);
-  let checkoutBody = null;
-  await page.route("**/api/create-checkout-session", async (route) => {
-    checkoutBody = route.request().postDataJSON();
-    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ id: "cs_test", url: `${BASE}/business-cards/?payment=cancelled` }) });
-  });
-  await page.goto(`${BASE}/business-cards/`, { waitUntil: "networkidle" });
-  if (await page.getByText("Call or text", { exact: false }).count()) throw new Error("Card checkout still contains call/text distractions");
-  if ((await page.locator("#qty button").count()) !== 4) throw new Error("Expected four card quantities");
-  if (!(await page.locator("#pay").isEnabled())) throw new Error("Payment should be available without artwork");
-  if (await page.locator('input[type="file"]').count()) throw new Error("Unimplemented artwork upload must not be exposed");
-  const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-  if (scrollHeight > 980) throw new Error(`Business-card checkout is too tall: ${scrollHeight}px`);
-
-  await page.locator("#qty button").filter({ hasText: "250" }).click();
-  await page.screenshot({ path: path.join(OUT, "business-cards-mobile.png"), fullPage: true });
-  await page.locator("#pay").click();
-  await page.waitForURL("**/business-cards/?payment=cancelled");
-  if (!checkoutBody || checkoutBody.lead.checkoutOptionId !== "cards-250") throw new Error("Selected quantity did not reach checkout");
-  if (checkoutBody.lead.artStatus !== "Send artwork later") throw new Error("Checkout must preserve the post-payment artwork handoff");
-  await page.close();
-}
-
-const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", HOST], { cwd: ROOT, stdio: "ignore" });
-try {
-  await waitForServer();
-  const browser = await chromium.launch({ executablePath: browserExecutable(), args: ["--no-sandbox", "--disable-setuid-sandbox"], headless: true });
-  try {
-    await checkLauncher(browser, 1440, 900, "launcher-desktop");
-    await checkLauncher(browser, 430, 900, "launcher-mobile");
-    await checkCardCheckout(browser);
-    console.log("App-style visual smoke check passed.");
-  } finally { await browser.close(); }
-} finally { server.kill("SIGTERM"); }
+const ROOT=path.resolve(process.cwd()),PORT=8787,HOST="127.0.0.1",BASE=`http://${HOST}:${PORT}`,OUT=path.join(ROOT,"artifacts","screenshots");
+fs.mkdirSync(OUT,{recursive:true});
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function waitForServer(){for(let i=0;i<80;i++){try{if((await fetch(BASE)).ok)return}catch{}await wait(150)}throw new Error("Local server did not start")}
+function browserExecutable(){for(const c of [process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,"/usr/bin/google-chrome","/usr/bin/chromium"]){if(c&&fs.existsSync(c))return c}}
+const config={stripeEnabled:true,artworkUploadConfigured:true,maxArtworkBytes:2500000,quoteEmailTo:"orders@example.com",stripeCatalog:{businessCards:{key:"businessCards",label:"Business cards",currency:"usd",defaultOptionId:"cards-100",options:[{id:"cards-50",label:"50 cards",amountCents:2000},{id:"cards-100",label:"100 cards",amountCents:2900},{id:"cards-250",label:"250 cards",amountCents:3900},{id:"cards-500",label:"500 cards",amountCents:5900}]}}};
+async function mockConfig(page,overrides={}){await page.route("**/config.js",r=>r.fulfill({status:200,contentType:"application/javascript",body:`window.THIRD_EYE_CONFIG=${JSON.stringify({...config,...overrides})};`}))}
+async function assertImages(page){const broken=await page.locator("img").evaluateAll(imgs=>imgs.filter(i=>!i.complete||i.naturalWidth===0).map(i=>i.getAttribute("src")));if(broken.length)throw new Error(`Broken images: ${broken.join(", ")}`)}
+async function checkLauncher(browser){for(const [w,h,name] of [[1440,900,"launcher-desktop"],[430,900,"launcher-mobile"]]){const page=await browser.newPage({viewport:{width:w,height:h},colorScheme:"dark"});await page.goto(BASE,{waitUntil:"networkidle"});for(const href of ["/business-cards/","/t-shirts/","/custom/"]){if(!(await page.locator(`a[href="${href}"]`).count()))throw new Error(`Missing launcher link ${href}`)}if(await page.locator('a[href*="#quote"]').count())throw new Error("Old scrolling quote link is still public");await assertImages(page);if((await page.evaluate(()=>document.documentElement.scrollHeight))>h+220)throw new Error(`${name} scrolls too much`);await page.screenshot({path:path.join(OUT,`${name}.png`),fullPage:true});await page.close()}}
+async function checkCards(browser){const page=await browser.newPage({viewport:{width:430,height:900},colorScheme:"dark"});await mockConfig(page);let checkoutBody=null;await page.route("**/api/create-checkout-session",async route=>{checkoutBody=route.request().postDataJSON();await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({url:`${BASE}/business-cards/?payment=cancelled&artwork=received&order=TEPC-TEST`})})});await page.goto(`${BASE}/business-cards/`,{waitUntil:"networkidle"});await assertImages(page);if(await page.locator("#artPanel").isHidden())throw new Error("Working artwork upload is not visible when configured");if((await page.locator('input[type="file"]').count())!==1)throw new Error("Expected one artwork picker");await page.locator("#qty button").filter({hasText:"250"}).click();await page.locator("#artwork").setInputFiles({name:"front.pdf",mimeType:"application/pdf",buffer:Buffer.from("test art")});await page.screenshot({path:path.join(OUT,"business-cards-mobile.png"),fullPage:true});await page.locator("#pay").click();await page.waitForURL("**/business-cards/?payment=cancelled&artwork=received&order=TEPC-TEST");if(checkoutBody?.lead?.checkoutOptionId!=="cards-250")throw new Error("Quantity did not reach checkout");if(checkoutBody?.artwork?.[0]?.name!=="front.pdf"||!checkoutBody.artwork[0].data)throw new Error("Artwork bytes did not reach checkout API");await page.close();
+const hidden=await browser.newPage({viewport:{width:430,height:900}});await mockConfig(hidden,{artworkUploadConfigured:false});await hidden.goto(`${BASE}/business-cards/`,{waitUntil:"networkidle"});if(!(await hidden.locator("#artPanel").isHidden()))throw new Error("Upload must be hidden when mail delivery is unavailable");await hidden.close()}
+async function checkRequestPage(browser,pathName,title){const page=await browser.newPage({viewport:{width:430,height:900}});await mockConfig(page);await page.goto(`${BASE}${pathName}`,{waitUntil:"networkidle"});await assertImages(page);if(!(await page.getByText(title,{exact:true}).count()))throw new Error(`${pathName} missing ${title}`);if(await page.getByText("Call or text",{exact:false}).count())throw new Error(`${pathName} has call/text detour`);await page.close()}
+const server=spawn("python3",["-m","http.server",String(PORT),"--bind",HOST],{cwd:ROOT,stdio:"ignore"});
+try{await waitForServer();const browser=await chromium.launch({executablePath:browserExecutable(),args:["--no-sandbox","--disable-setuid-sandbox"],headless:true});try{await checkLauncher(browser);await checkCards(browser);await checkRequestPage(browser,"/t-shirts/","T-shirts");await checkRequestPage(browser,"/custom/","Other printing");console.log("App-style visual smoke check passed.")}finally{await browser.close()}}finally{server.kill("SIGTERM")}

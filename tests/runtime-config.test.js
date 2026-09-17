@@ -49,11 +49,15 @@ test("createPublicRuntimeConfig exposes only safe client config", () => {
     STRIPE_EVENT_TENT_1_CENTS: "100000",
     ADMIN_PUBS: "pub-a,pub-b",
     QUOTE_EMAIL_TO: "quotes@example.com",
+    GMAIL_USER: "3dvr@example.com",
+    GMAIL_APP_PASSWORD: "app-pass",
   });
 
   assert.deepEqual(config.gunRelayUrls, ["wss://relay.example/gun"]);
   assert.equal(config.gunRelayUrl, "wss://relay.example/gun");
   assert.equal(config.stripeEnabled, true);
+  assert.equal(config.artworkUploadConfigured, true);
+  assert.equal(config.maxArtworkBytes, 2500000);
   assert.equal(config.stripeDepositCents, 2000);
   assert.equal(config.stripeCurrency, "usd");
   assert.deepEqual(config.adminPubs, ["pub-a", "pub-b"]);
