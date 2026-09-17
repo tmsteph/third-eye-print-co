@@ -155,7 +155,9 @@ function createArtworkUploadHandler(options = {}) {
       return sendJson(res, 200, { ok: true, orderId });
     } catch (error) {
       console.error("Artwork upload failed", error);
-      return sendJson(res, Number(error.statusCode) || 500, { error: error.statusCode ? error.message : "Could not send artwork. Please try again." });
+      const validationStatus = [400, 413].includes(Number(error.statusCode)) ? Number(error.statusCode) : 500;
+      const message = validationStatus === 500 ? "Could not verify payment or send artwork. Please try again." : error.message;
+      return sendJson(res, validationStatus, { error: message });
     }
   };
 }

@@ -17,3 +17,6 @@ test("artwork must match the paid order",async()=>{const sent=[];const handler=c
 test("already-received artwork is idempotent",async()=>{const sent=[];const handler=createArtworkUploadHandler({env,stripeFactory:stripeFactory({...paid,metadata:{...paid.metadata,artworkState:"received"}}),mailTransport:{async sendMail(p){sent.push(p)}}});const r=await invoke(handler,{sessionId:"cs_paid",orderId:"TEPC-PAID",artwork:art});assert.equal(r.statusCode,200);assert.equal(r.body.alreadyReceived,true);assert.equal(sent.length,0)});
 
 test("artwork validation rejects unsupported types",()=>{assert.throws(()=>decodeArtworkFiles([{name:"bad.svg",type:"image/svg+xml",data:Buffer.from("x").toString("base64")}]),/PDF, JPG, or PNG/)});
+
+
+test("Stripe lookup errors are not exposed to the browser",async()=>{const handler=createArtworkUploadHandler({env,stripeFactory:()=>({checkout:{sessions:{async retrieve(){const error=new Error("No such checkout.session: secret-ish-detail");error.statusCode=404;throw error}}}}),mailTransport:{async sendMail(){throw new Error("must not send")}}});const r=await invoke(handler,{sessionId:"cs_bad",orderId:"TEPC-BAD",artwork:art});assert.equal(r.statusCode,500);assert.equal(r.body.error,"Could not verify payment or send artwork. Please try again.");assert.doesNotMatch(r.body.error,/checkout\.session/)})
