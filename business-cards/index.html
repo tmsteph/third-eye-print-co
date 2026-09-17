@@ -13,7 +13,7 @@
     *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
     .shell{max-width:620px;margin:auto;min-height:100vh;padding:16px;display:flex;flex-direction:column}.top{display:flex;align-items:center;justify-content:space-between;padding:4px 0 20px}.back{color:var(--muted);font-weight:700}.brand{font-weight:800}
     main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:6px 0 110px}h1{margin:0;font-size:clamp(34px,9vw,52px);line-height:1;letter-spacing:-.04em}.intro{color:var(--muted);margin:6px 0 0}.panel{border:1px solid var(--line);background:var(--card);border-radius:24px;padding:18px}.label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:10px}
-    .qty{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.qty button{border:1px solid var(--line);background:#0f1016;color:var(--text);border-radius:16px;padding:14px 8px;font-weight:800}.qty button span{display:block;color:var(--muted);font-size:12px;font-weight:600;margin-top:3px}.qty button.active{border-color:#7c7047;background:#211f17;box-shadow:inset 0 0 0 1px #7c7047}.art-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.art-copy strong{display:block}.art-copy span{display:block;color:var(--muted);font-size:13px;margin-top:2px}.choose{border:1px solid var(--line);background:#0f1016;color:var(--text);border-radius:13px;padding:10px 12px;font-weight:700;white-space:nowrap}.file-note{margin-top:10px;color:var(--muted);font-size:12px}.file-note strong{color:var(--text)}input[type=file]{display:none}
+    .qty{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.qty button{border:1px solid var(--line);background:#0f1016;color:var(--text);border-radius:16px;padding:14px 8px;font-weight:800}.qty button span{display:block;color:var(--muted);font-size:12px;font-weight:600;margin-top:3px}.qty button.active{border-color:#7c7047;background:#211f17;box-shadow:inset 0 0 0 1px #7c7047}.art-note{color:var(--muted);font-size:13px;margin:0}.art-email{display:inline-flex;margin-top:12px;border:1px solid var(--line);background:#0f1016;border-radius:13px;padding:10px 12px;font-weight:800}
     .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(11,11,15,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:12px 16px max(12px,env(safe-area-inset-bottom))}.bar-inner{max-width:588px;margin:auto;display:flex;align-items:center;gap:12px}.summary{flex:1}.summary span{display:block;color:var(--muted);font-size:12px}.summary strong{font-size:20px}.pay{border:0;border-radius:16px;background:linear-gradient(135deg,#f0db97,#d8bc64);color:#0b0b0f;padding:14px 20px;font-weight:900;min-width:180px}.pay:disabled{opacity:.55;cursor:wait}.status{min-height:21px;color:var(--muted);font-size:13px;text-align:center}.status.error{color:var(--danger)}.success{border-color:#52633f;background:#151b12}.success h2{margin:0 0 6px}.success p{color:var(--muted);margin:0}
     @media(max-width:520px){.qty{grid-template-columns:repeat(2,1fr)}main{justify-content:flex-start;padding-top:30px}.bar-inner{gap:10px}.pay{min-width:150px;padding-inline:15px}}
   </style>
@@ -24,8 +24,7 @@
     <main>
       <div><h1>Business cards</h1><p class="intro">Pick a quantity. Pay now. Send artwork whenever you’re ready.</p></div>
       <section class="panel"><span class="label">1 · Quantity</span><div class="qty" id="qty"></div></section>
-      <section class="panel"><span class="label">2 · Artwork · optional</span><div class="art-row"><div class="art-copy"><strong id="artTitle">Send it later</strong><span id="artSubtitle">No artwork needed to checkout.</span></div><label class="choose" for="artwork">Choose file</label></div><input id="artwork" type="file" accept=".pdf,.png,.jpg,.jpeg,.svg,.ai,.eps" /><div class="file-note" id="fileNote">Optional. You can also send artwork after payment.</div></section>
-      <section class="panel success" id="success" hidden><h2>Payment received.</h2><p>Your card order is in. Artwork can be sent afterward.</p></section>
+      <section class="panel success" id="success" hidden><h2>Payment received.</h2><p class="art-note">Your order is in. Attach your artwork to an email whenever you’re ready.</p><a class="art-email" id="emailArtwork" href="#">Email artwork →</a></section>
       <div class="status" id="status" aria-live="polite"></div>
     </main>
   </div>
@@ -41,15 +40,12 @@
     const configured = runtime.stripeCatalog && runtime.stripeCatalog.businessCards;
     const options = configured && Array.isArray(configured.options) && configured.options.length ? configured.options : fallback;
     let selected = options.find(o => o.id === 'cards-100') || options[0];
-    let artworkName = '';
     const qty = document.getElementById('qty');
     const summaryQty = document.getElementById('summaryQty');
     const summaryPrice = document.getElementById('summaryPrice');
     const pay = document.getElementById('pay');
     const status = document.getElementById('status');
-    const artwork = document.getElementById('artwork');
-    const artTitle = document.getElementById('artTitle');
-    const artSubtitle = document.getElementById('artSubtitle');
+    const emailArtwork = document.getElementById('emailArtwork');
     const success = document.getElementById('success');
     const money = cents => new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(Number(cents||0)/100);
     function render(){
@@ -57,12 +53,13 @@
       options.forEach(o=>{const b=document.createElement('button');b.type='button';b.className=o.id===selected.id?'active':'';b.innerHTML=`${o.label.replace(' cards','')}<span>${money(o.amountCents)}</span>`;b.onclick=()=>{selected=o;render()};qty.appendChild(b)});
       summaryQty.textContent=selected.label;summaryPrice.textContent=money(selected.amountCents);pay.textContent=`Pay ${money(selected.amountCents)}`;
     }
-    artwork.addEventListener('change',()=>{const f=artwork.files&&artwork.files[0];artworkName=f?f.name:'';artTitle.textContent=f?'Artwork selected':'Send it later';artSubtitle.textContent=f?f.name:'No artwork needed to checkout.'});
     pay.addEventListener('click',async()=>{
       status.className='status';status.textContent='Opening secure checkout…';pay.disabled=true;
-      try{const r=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lead:{serviceType:'Business cards',checkoutOptionId:selected.id,checkoutOptionLabel:selected.label,quantity:selected.label,artStatus:artworkName?'Artwork selected before checkout':'Send artwork later',notes:artworkName?`Artwork filename: ${artworkName}`:''}})});const body=await r.json();if(!r.ok||!body.url)throw new Error(body.error||'Checkout unavailable');window.location.assign(body.url)}catch(e){status.className='status error';status.textContent=e.message||'Checkout unavailable. Please try again.';pay.disabled=false}
+      try{const r=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lead:{serviceType:'Business cards',checkoutOptionId:selected.id,checkoutOptionLabel:selected.label,quantity:selected.label,artStatus:'Send artwork later'}})});const body=await r.json();if(!r.ok||!body.url)throw new Error(body.error||'Checkout unavailable');window.location.assign(body.url)}catch(e){status.className='status error';status.textContent=e.message||'Checkout unavailable. Please try again.';pay.disabled=false}
     });
-    const params=new URLSearchParams(location.search);if(params.get('payment')==='success'){success.hidden=false;status.textContent='';history.replaceState({},'',location.pathname)}else if(params.get('payment')==='cancelled'){status.textContent='Payment canceled. Your quantity is still selected.';history.replaceState({},'',location.pathname)}
+    const artEmail = runtime.quoteEmail || 'gamboaesai@gmail.com';
+    function updateArtworkEmail(){const subject=`Business card artwork - ${selected.label}`;const body=`Hi Third Eye Print Co.,%0D%0A%0D%0APlease find my artwork attached for my ${selected.label} business card order.%0D%0A`;emailArtwork.href=`mailto:${encodeURIComponent(artEmail)}?subject=${encodeURIComponent(subject)}&body=${body}`}
+    const params=new URLSearchParams(location.search);if(params.get('payment')==='success'){success.hidden=false;updateArtworkEmail();status.textContent=''}else if(params.get('payment')==='cancelled'){status.textContent='Payment canceled. Your quantity is still selected.'}
     render();
   </script>
 </body>

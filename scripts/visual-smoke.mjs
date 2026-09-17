@@ -68,18 +68,16 @@ async function checkCardCheckout(browser) {
   if (await page.getByText("Call or text", { exact: false }).count()) throw new Error("Card checkout still contains call/text distractions");
   if ((await page.locator("#qty button").count()) !== 4) throw new Error("Expected four card quantities");
   if (!(await page.locator("#pay").isEnabled())) throw new Error("Payment should be available without artwork");
-  if ((await page.locator("#artSubtitle").textContent()).trim() !== "No artwork needed to checkout.") throw new Error("Artwork is not clearly optional");
+  if (await page.locator('input[type="file"]').count()) throw new Error("Unimplemented artwork upload must not be exposed");
   const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
   if (scrollHeight > 980) throw new Error(`Business-card checkout is too tall: ${scrollHeight}px`);
 
   await page.locator("#qty button").filter({ hasText: "250" }).click();
-  await page.locator("#artwork").setInputFiles({ name: "artwork.pdf", mimeType: "application/pdf", buffer: Buffer.from("test artwork") });
-  if (!(await page.locator("#artSubtitle").textContent()).includes("artwork.pdf")) throw new Error("Optional artwork selection is not reflected in UI");
   await page.screenshot({ path: path.join(OUT, "business-cards-mobile.png"), fullPage: true });
   await page.locator("#pay").click();
   await page.waitForURL("**/business-cards/?payment=cancelled");
   if (!checkoutBody || checkoutBody.lead.checkoutOptionId !== "cards-250") throw new Error("Selected quantity did not reach checkout");
-  if (!checkoutBody.lead.notes.includes("artwork.pdf")) throw new Error("Artwork filename was not kept with the checkout metadata");
+  if (checkoutBody.lead.artStatus !== "Send artwork later") throw new Error("Checkout must preserve the post-payment artwork handoff");
   await page.close();
 }
 
