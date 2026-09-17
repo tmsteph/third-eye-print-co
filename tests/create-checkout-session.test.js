@@ -90,8 +90,9 @@ test("create-checkout-session creates a business card checkout", async () => {
   assert.equal(calls.payload.metadata.quoteId, "quote-123");
   assert.equal(calls.payload.metadata.checkoutOptionId, "cards-100");
   assert.equal(calls.payload.metadata.checkoutOptionLabel, "100 cards");
-  assert.deepEqual(calls.payload.phone_number_collection, { enabled: true });
-  assert.equal(calls.payload.success_url, "https://third-eye.example/?payment=success&session_id={CHECKOUT_SESSION_ID}");
+  assert.deepEqual(calls.payload.phone_number_collection, { enabled: false });
+  assert.equal(calls.payload.success_url, "https://third-eye.example/business-cards/?payment=success&session_id={CHECKOUT_SESSION_ID}");
+  assert.equal(calls.payload.cancel_url, "https://third-eye.example/business-cards/?payment=cancelled");
   assert.deepEqual(res.body, {
     id: "cs_test_123",
     url: "https://checkout.stripe.test/session",

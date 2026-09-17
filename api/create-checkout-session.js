@@ -112,11 +112,15 @@ function createCheckoutSessionHandler(options = {}) {
             },
           },
         ],
-        success_url: `${siteUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${siteUrl}/?payment=cancelled`,
+        success_url: checkoutSelection.key === "businessCards"
+          ? `${siteUrl}/business-cards/?payment=success&session_id={CHECKOUT_SESSION_ID}`
+          : `${siteUrl}/custom/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: checkoutSelection.key === "businessCards"
+          ? `${siteUrl}/business-cards/?payment=cancelled`
+          : `${siteUrl}/custom/?payment=cancelled`,
         customer_email: lead.email || undefined,
         phone_number_collection: {
-          enabled: true,
+          enabled: checkoutSelection.key !== "businessCards",
         },
         metadata: {
           name: lead.name || "",

@@ -1,0 +1,2851 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Third Eye Print Co. - Simple Business Cards and Custom Printing</title>
+  <meta
+    name="description"
+    content="Simple business card ordering in San Diego, plus T-shirts, signs, tents, decals, and custom print help."
+  />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <meta property="og:title" content="Third Eye Print Co." />
+  <meta property="og:description" content="Order business cards simply, or request T-shirts and other custom printing from Third Eye Print Co." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.thirdeyeprintco.com/" />
+  <link rel="canonical" href="https://www.thirdeyeprintco.com/" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      color-scheme: only dark;
+      --anchor-offset: 38px;
+      --bg: #0b0b0f;
+      --panel: rgba(17, 18, 26, 0.86);
+      --panel-strong: rgba(20, 21, 30, 0.96);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --text: #f5f5f2;
+      --muted: #bfc4cf;
+      --line: rgba(255, 255, 255, 0.12);
+      --line-strong: rgba(255, 255, 255, 0.2);
+      --accent: #e4d08b;
+      --accent-soft: rgba(228, 208, 139, 0.16);
+      --cool: #7cd9eb;
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.4);
+      --radius: 24px;
+      --max: 1140px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: var(--anchor-offset);
+      background: #0a0a0d;
+      forced-color-adjust: none;
+    }
+
+    section[id] {
+      scroll-margin-top: var(--anchor-offset);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #0a0a0d 0%, #0d0d11 100%);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+      overflow-x: clip;
+      forced-color-adjust: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 10, 14, 0.78);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+
+    .nav-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-copy p {
+      margin: 3px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      min-width: 0;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex: 0 0 auto;
+    }
+
+    .nav-links a,
+    .nav-actions a {
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+      font-size: 13px;
+      transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-actions a:hover {
+      color: var(--text);
+      border-color: rgba(228, 208, 139, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-actions .nav-cta {
+      border-color: transparent;
+      color: #0b0b0f;
+      background: linear-gradient(135deg, #f0db97, #d8bc64);
+      font-weight: 800;
+    }
+
+    .nav-actions .nav-account {
+      padding-inline: 8px;
+      border-color: transparent;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 600;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-actions .nav-account[data-state="signed-in"] {
+      color: var(--text);
+    }
+
+    .nav-actions .nav-account:hover {
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .hero {
+      position: relative;
+      isolation: isolate;
+      padding: 64px 0 24px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(600px 300px at 8% 4%, rgba(124, 217, 235, 0.12), transparent 64%),
+        radial-gradient(680px 340px at 94% 2%, rgba(228, 208, 139, 0.09), transparent 62%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 16px rgba(228, 208, 139, 0.5);
+    }
+
+    .hero-copy h2 {
+      margin: 18px 0 12px;
+      font-family: "Fraunces", serif;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+      max-width: 12ch;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .hero-copy-followup {
+      display: inline-block;
+      margin-top: 8px;
+    }
+
+    .hero-copy,
+    .hero-panel,
+    .card-block,
+    .pricing-card,
+    .pricing-side,
+    .contact-card,
+    .form-card {
+      min-width: 0;
+    }
+
+    .hero-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+      align-items: start;
+    }
+
+    .hero-actions .btn {
+      width: 100%;
+    }
+
+    .hero-actions .phone-action .btn {
+      border-color: rgba(124, 217, 235, 0.34);
+      color: #e5fbff;
+      background: rgba(124, 217, 235, 0.09);
+    }
+
+    .phone-action {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .phone-copy-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      min-height: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .phone-copy-note.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(228, 208, 139, 0.35);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn-primary {
+      border-color: transparent;
+      color: #0b0b0f;
+      background: linear-gradient(135deg, #f0db97, #d8bc64);
+    }
+
+    .btn-secondary {
+      border-color: rgba(124, 217, 235, 0.34);
+      color: #e5fbff;
+      background: rgba(124, 217, 235, 0.09);
+    }
+
+    .btn:disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .hero-points {
+      display: grid;
+      gap: 10px;
+      margin: 26px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .hero-points li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero-points li::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background: rgba(124, 217, 235, 0.85);
+      flex: 0 0 auto;
+    }
+
+    .surface {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .hero-panel {
+      overflow: hidden;
+    }
+
+    .hero-photo {
+      aspect-ratio: 1.08 / 1;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background: #111;
+    }
+
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .panel-stack {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .mini-card {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .mini-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .mini-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .simple-list {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .simple-list li {
+      display: flex;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .simple-list li::before {
+      content: "+";
+      color: var(--accent);
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .review-note {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 0 4px 4px;
+    }
+
+    section {
+      padding: 26px 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .section-head h3 {
+      margin: 0;
+      font-family: "Fraunces", serif;
+      font-size: clamp(28px, 3.2vw, 36px);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .offer-grid,
+    .package-grid,
+    .step-grid,
+    .faq-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .offer-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .package-grid,
+    .step-grid,
+    .faq-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card-block {
+      padding: 18px;
+    }
+
+    .card-block h4 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .card-block p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .section-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .package-grid .card-block,
+    .faq-grid .card-block {
+      background: var(--panel-soft);
+    }
+
+    .package-grid .card-block h4,
+    .step-grid .card-block h4 {
+      font-size: 19px;
+    }
+
+    .package-list {
+      display: grid;
+      gap: 7px;
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .package-list li {
+      margin: 0;
+    }
+
+    .package-grid .btn {
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    .order-path-layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .path-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .path-panel-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .path-panel-head h4,
+    .service-choice-heading h5 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .path-panel-head p,
+    .service-choice-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .shop-grid,
+    .quote-card-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .shop-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .quote-card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .shop-card {
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+    }
+
+    .shop-card h4 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .shop-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .shop-card--quote {
+      border-color: rgba(124, 217, 235, 0.24);
+      background:
+        radial-gradient(240px 160px at 82% 0%, rgba(124, 217, 235, 0.12), transparent 64%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    }
+
+    .shop-price {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: baseline;
+      font-family: "Fraunces", serif;
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+
+    .shop-price--muted {
+      font-size: 20px;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .shop-price-prefix {
+      font-size: 16px;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .tier-list {
+      margin-top: 0;
+    }
+
+    .tier-list li {
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .tier-list strong {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .tier-list span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pricing-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 14px;
+    }
+
+    .pricing-card,
+    .pricing-side {
+      padding: 18px;
+    }
+
+    .pricing-intro {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .pricing-intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .pricing-assumptions {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-style: italic;
+      line-height: 1.45;
+    }
+
+    .table-scroll {
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.26);
+      max-width: 100%;
+    }
+
+    table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+    }
+
+    caption {
+      padding: 14px 12px 10px;
+      text-align: left;
+    }
+
+    .pricing-caption-title {
+      color: var(--muted);
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    tr:hover td {
+      background: rgba(228, 208, 139, 0.06);
+    }
+
+    .pricing-notes {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pricing-note {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px 14px;
+    }
+
+    .pricing-note strong {
+      color: var(--text);
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .pricing-note span {
+      color: var(--muted);
+      display: block;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .pricing-side h4 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .pricing-side p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .pricing-side .simple-list {
+      margin-top: 14px;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(228, 208, 139, 0.25);
+      background: rgba(228, 208, 139, 0.12);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .quote-section {
+      padding-bottom: 64px;
+    }
+
+    .quote-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+      gap: 14px;
+    }
+
+    .contact-card,
+    .form-card {
+      padding: 18px;
+    }
+
+    .contact-card h4,
+    .form-card h4 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    .contact-card p,
+    .form-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .contact-points {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      font-weight: 700;
+    }
+
+    .contact-link span {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    form {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .field-stack {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .field-help {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(5, 5, 8, 0.35);
+      color: var(--text);
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #8f96a3;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(228, 208, 139, 0.34);
+      background: rgba(5, 5, 8, 0.48);
+      outline: none;
+    }
+
+    input[aria-invalid="true"],
+    textarea[aria-invalid="true"],
+    select[aria-invalid="true"] {
+      border-color: rgba(255, 142, 120, 0.72);
+      background: rgba(67, 22, 18, 0.4);
+    }
+
+    textarea {
+      min-height: 132px;
+      resize: vertical;
+    }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .preset {
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .preset:hover {
+      border-color: rgba(228, 208, 139, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .service-choice-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .service-choice-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .service-choice-group {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .service-choice-group--quote {
+      border-color: rgba(124, 217, 235, 0.2);
+      background:
+        radial-gradient(260px 160px at 100% 0%, rgba(124, 217, 235, 0.08), transparent 60%),
+        rgba(255, 255, 255, 0.02);
+    }
+
+    .service-choice-heading {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .choice-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(228, 208, 139, 0.22);
+      color: var(--accent);
+      background: rgba(228, 208, 139, 0.08);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .service-choice-grid--quote {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .service-choice {
+      display: grid;
+      gap: 6px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      text-align: left;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    .service-choice strong {
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .service-choice span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .service-choice:hover {
+      transform: translateY(-1px);
+      border-color: rgba(228, 208, 139, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .service-choice.is-active {
+      border-color: rgba(228, 208, 139, 0.42);
+      background: rgba(228, 208, 139, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(228, 208, 139, 0.18);
+    }
+
+    .choice-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .quote-mode-note {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(124, 217, 235, 0.24);
+      background: rgba(124, 217, 235, 0.08);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .quote-mode-note strong {
+      color: #e5fbff;
+    }
+
+    .details-more {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+      overflow: hidden;
+    }
+
+    .details-more summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .details-more summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .details-more summary span {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .details-more[open] summary {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .details-body {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .form-status,
+    .deposit-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .form-status[data-state="error"] {
+      color: #ffbaad;
+    }
+
+    .footer {
+      padding: 28px 0 40px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-contacts {
+      display: grid;
+      gap: 8px;
+    }
+
+    .footer-contact-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-contact-label {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .footer-contacts a {
+      color: var(--muted);
+      text-decoration: underline;
+      text-decoration-color: rgba(228, 208, 139, 0.35);
+    }
+
+    .footer-contacts a:hover {
+      color: var(--text);
+    }
+
+    @media (max-width: 1024px) {
+      .shop-grid,
+      .service-choice-grid,
+      .offer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .package-grid,
+      .step-grid,
+      .faq-grid,
+      .quote-grid,
+      .pricing-layout,
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-notes {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero-actions {
+        grid-template-columns: 1fr;
+        max-width: min(100%, 440px);
+      }
+    }
+
+    @media (max-width: 720px) {
+      :root {
+        --anchor-offset: 48px;
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+
+      .nav-cluster,
+      .nav-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+
+      .nav-cluster {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .offer-grid,
+      .field-grid,
+      .service-choice-grid,
+      .shop-grid,
+      .quote-card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .hero-copy h2 {
+        font-size: clamp(34px, 10.5vw, 46px);
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+        max-width: none;
+      }
+
+      .hero-copy {
+        text-align: center;
+      }
+
+      .hero-copy h2,
+      .hero-copy p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero-actions .btn {
+        font-size: 13px;
+      }
+
+      .hero-actions {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-actions .phone-copy-note {
+        text-align: center;
+      }
+
+      .hero-points {
+        justify-items: center;
+      }
+
+      .hero-points li {
+        width: min(100%, 32ch);
+        text-align: left;
+      }
+
+      .pricing-card,
+      .pricing-side {
+        padding: 14px;
+      }
+
+      .pricing-intro {
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .table-scroll {
+        border-radius: 14px;
+      }
+
+      table {
+        min-width: 560px;
+      }
+
+      caption {
+        padding: 12px 10px 8px;
+      }
+
+      .pricing-caption-title,
+      .pricing-assumptions,
+      th,
+      td,
+      .pricing-note strong,
+      .pricing-note span,
+      .pricing-side h4,
+      .pricing-side p,
+      .simple-list li {
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 9px 10px;
+      }
+
+      .pricing-notes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .pricing-note {
+        border-radius: 14px;
+        padding: 10px 12px;
+      }
+
+      .contact-link {
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body id="top">
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="/" aria-label="Back to homepage">
+        <div class="logo">
+          <img src="assets/print-shop-team.jpg" alt="Third Eye Print Co. team" />
+        </div>
+        <div class="brand-copy">
+          <h1>Third Eye Print Co.</h1>
+          <p>Cards, tents, carts, and print help - San Diego</p>
+        </div>
+      </a>
+
+      <div class="nav-cluster">
+        <nav class="nav-links" aria-label="Primary">
+          <a href="/business-cards/">Business cards</a>
+          <a href="#quote">Custom order</a>
+        </nav>
+        <div class="nav-actions">
+          <a href="/auth/" class="nav-account" id="portalNavLink" data-state="signed-out">Portal</a>
+          <a href="/business-cards/" class="nav-cta">Order cards</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h2>Business cards. Made easy.</h2>
+          <p>
+            Choose a card quantity and pay online. We can collect artwork and other details afterward.<br />
+            <span class="hero-copy-followup">Need T-shirts or something else printed? We can help with that too.</span>
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#quote" data-service-link-preset="Business cards">Order business cards</a>
+            <a class="btn btn-secondary" href="#shop">T-shirts & other printing</a>
+            <a class="btn btn-secondary" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
+              View Instagram portfolio
+            </a>
+            <div class="phone-action">
+              <a class="btn" href="tel:+16195022080" data-phone-copy="+1 (619) 502-2080">
+                <span>Call or text now</span>
+              </a>
+              <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
+            </div>
+          </div>
+
+          <ul class="hero-points">
+            <li>Simple card quantities that match the production run — no artwork required to pay.</li>
+            <li>Standard cards are fast; premium finishes and custom work get a quick review.</li>
+            <li>San Diego pickup available, with shipping by request.</li>
+          </ul>
+        </div>
+
+        <aside class="surface hero-panel" aria-label="Quick review panel">
+          <figure class="hero-photo">
+            <img src="assets/print-shop-team.jpg" alt="Third Eye Print Co. shop team" loading="eager" />
+          </figure>
+
+          <div class="panel-stack">
+            <div class="mini-card">
+              <span class="mini-label">Simple path</span>
+              <strong>Pick a quantity, send your details, and we’ll keep the rest simple.</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="shop">
+      <div class="wrap">
+        <div class="section-head">
+          <h3>What do you need?</h3>
+          <p>Business cards are the fastest path. Everything else starts with a short request.</p>
+        </div>
+
+        <div class="shop-grid">
+          <article class="surface shop-card">
+            <span class="mini-label">Fastest option</span>
+            <h4>Business cards</h4>
+            <div class="shop-price">
+              <span class="shop-price-prefix">From</span>
+              <span id="businessCardsPrice">$20.00</span>
+            </div>
+            <p>Simple standard business cards with quantities that match the production run. Pay first; artwork can come later.</p>
+            <ul class="simple-list tier-list" id="businessCardsTiers">
+              <li><strong>50 cards</strong><span>$20.00</span></li>
+              <li><strong>100 cards</strong><span>$29.00</span></li>
+              <li><strong>250 cards</strong><span>$39.00</span></li>
+              <li><strong>500 cards</strong><span>$59.00</span></li>
+            </ul>
+            <button
+              class="btn btn-primary"
+              type="button"
+              data-service-preset="Business cards"
+              data-prefill-note="Need business cards."
+              data-preset-message="Business cards selected. Choose a quantity and add your details."
+              data-scroll-target="quote"
+            >
+              Order business cards
+            </button>
+          </article>
+
+          <article class="surface shop-card shop-card--quote">
+            <span class="mini-label">Apparel</span>
+            <h4>T-shirts & apparel</h4>
+            <div class="shop-price shop-price--muted">Quick quote</div>
+            <p>Tees, hoodies, work shirts, and small team or event runs.</p>
+            <ul class="simple-list">
+              <li>Tell us garment type and quantity</li>
+              <li>Add sizes and print locations if you know them</li>
+              <li>Bring artwork or ask for design help</li>
+            </ul>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-service-preset="T-shirts & apparel"
+              data-prefill-note="Need T-shirts or apparel printed."
+              data-preset-message="Apparel selected. Add garment, quantity, sizes, and artwork details."
+              data-scroll-target="quote"
+            >
+              Request apparel
+            </button>
+          </article>
+
+          <article class="surface shop-card shop-card--quote">
+            <span class="mini-label">Other printing</span>
+            <h4>Signs, tents & more</h4>
+            <div class="shop-price shop-price--muted">Tell us what you need</div>
+            <p>For products that need a few more details before pricing.</p>
+            <ul class="simple-list">
+              <li>Signs, banners, tents, and decals</li>
+              <li>Menus, cart graphics, and event materials</li>
+              <li>Special stocks, finishes, or custom quantities</li>
+            </ul>
+            <button
+              class="btn"
+              type="button"
+              data-service-preset="Custom quote"
+              data-prefill-note="Need help with a print job."
+              data-preset-message="Add what you know and send the request."
+              data-scroll-target="quote"
+            >
+              Request other printing
+            </button>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="quote" class="quote-section">
+      <div class="wrap">
+        <div class="section-head">
+          <h3>Start your order</h3>
+          <p>Choose a product, add your contact info, and send the request. Business card packages can go straight to online payment.</p>
+        </div>
+
+        <div class="quote-grid">
+          <aside class="surface contact-card">
+            <h4>Best way to start</h4>
+            <p>Fill out the form so we have the product, timeline, and contact info in one place. Call or text only if you need a quick answer before sending it.</p>
+
+            <div class="contact-points">
+              <div class="phone-action">
+                <a class="contact-link" href="tel:+16195022080" data-phone-copy="+1 (619) 502-2080">
+                  <strong>Urgent? Call or text</strong>
+                </a>
+                <div class="phone-copy-note" data-phone-copy-note aria-live="polite"></div>
+              </div>
+              <a class="contact-link" href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">
+                <strong>See recent work</strong>
+                <span>Instagram</span>
+              </a>
+            </div>
+          </aside>
+
+          <div class="surface form-card">
+            <h4>Tell us what you need</h4>
+            <p>Pick the closest option and continue. Business cards can be paid for immediately; artwork and extra details can come later.</p>
+
+            <form id="quoteForm" action="" method="POST" novalidate>
+              <input id="serviceType" name="serviceType" type="hidden" />
+              <input id="quantity" name="quantity" type="hidden" />
+              <input id="checkoutOptionLabel" name="checkoutOptionLabel" type="hidden" />
+
+              <div class="service-choice-grid" aria-label="What do you need?">
+                <button
+                  class="service-choice"
+                  type="button"
+                  data-service-choice="Business cards"
+                  data-service-preset="Business cards"
+                  data-prefill-note="Need business cards."
+                >
+                  <strong>Business cards</strong>
+                  <span>50, 100, 250, or 500 cards.</span>
+                </button>
+                <button
+                  class="service-choice"
+                  type="button"
+                  data-service-choice="T-shirts & apparel"
+                  data-service-preset="T-shirts & apparel"
+                  data-prefill-note="Need T-shirts or apparel printed."
+                >
+                  <strong>T-shirts & apparel</strong>
+                  <span>Tees, hoodies, uniforms, and event apparel.</span>
+                </button>
+                <button
+                  class="service-choice"
+                  type="button"
+                  data-service-choice="Custom quote"
+                  data-service-preset="Custom quote"
+                  data-prefill-note="Need help with a print job."
+                >
+                  <strong>Other printing</strong>
+                  <span>Signs, tents, decals, menus, carts, and custom work.</span>
+                </button>
+              </div>
+
+              <div class="choice-note" id="serviceChoiceNote">
+                Pick the closest option, then add your details below.
+              </div>
+              <div class="quote-mode-note" id="quoteModeNote" hidden></div>
+
+              <div class="field-grid">
+                <label for="name">
+                  Name
+                  <input id="name" name="name" autocomplete="name" placeholder="Your name" />
+                </label>
+                <label for="email">
+                  Email
+                  <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
+                </label>
+              </div>
+
+              <div class="field-grid">
+                <label for="phone">
+                  Phone number
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="Best number to reach you" />
+                </label>
+                <div class="field-stack" id="checkoutOptionSection">
+                  <label for="checkoutOptionId">
+                    <span id="checkoutOptionFieldLabel">Starting package</span>
+                    <select id="checkoutOptionId" name="checkoutOptionId">
+                      <option value="">Choose a package...</option>
+                    </select>
+                  </label>
+                  <div class="field-help" id="checkoutOptionNote">
+                    Choose a package if one fits. You can still send the request if you want us to review first.
+                  </div>
+                </div>
+              </div>
+
+              <label for="needBy">
+                Need by
+                <input id="needBy" name="needBy" placeholder="Date needed (MM/DD or event date)" />
+              </label>
+
+              <label for="notes">
+                Project notes
+                <textarea
+                  id="notes"
+                  name="notes"
+                  placeholder="What do you need, when do you need it, and do you have artwork? Include size, quantity, cart dimensions, or event details if you know them."
+                ></textarea>
+              </label>
+
+              <details class="details-more">
+                <summary>
+                  Add optional details
+                </summary>
+
+                <div class="details-body">
+                  <div class="field-grid">
+                    <label for="company">
+                      Company or brand
+                      <input id="company" name="company" autocomplete="organization" placeholder="Optional" />
+                    </label>
+                    <label for="artStatus">
+                      Artwork (optional)
+                      <select id="artStatus" name="artStatus">
+                        <option value="">Optional — choose if helpful</option>
+                        <option>I’ll send artwork later</option>
+                        <option>Print-ready artwork</option>
+                        <option>Need light setup help</option>
+                        <option>Need design support</option>
+                        <option>Still figuring it out</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <label for="garment">
+                    Product details
+                    <input id="garment" name="garment" placeholder="Card finish, shirt sizes, print locations, sign size, tent details, or custom specs" />
+                  </label>
+                </div>
+              </details>
+
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit" id="sendQuoteBtn">Send order request</button>
+                <button class="btn btn-secondary" type="button" id="payDepositBtn">Pay online for selected package</button>
+              </div>
+
+              <div id="formMsg" class="form-status" role="status" aria-live="polite"></div>
+              <div class="deposit-note" id="depositNote">
+                <span id="depositLabel">Package total</span>: <strong id="depositAmount">Choose a package</strong>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>
+        <strong style="color: var(--text);">Third Eye Print Co.</strong><br />
+        San Diego business cards, apparel, signs, tents, decals, and custom print help.
+      </div>
+
+      <div class="footer-contacts">
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Email:</span>
+          <a href="mailto:gamboaesai@gmail.com">gamboaesai@gmail.com</a>
+        </div>
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Phone:</span>
+          <a href="tel:+16195022080">+1 (619) 502-2080</a>
+        </div>
+        <div class="footer-contact-line">
+          <span class="footer-contact-label">Instagram:</span>
+          <a href="https://instagram.com/thirdeyeprintco" target="_blank" rel="noreferrer">@thirdeyeprintco</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+  <script src="/gun-init.js"></script>
+  <script>
+    const runtimeConfig = window.THIRD_EYE_CONFIG || {};
+    const form = document.getElementById("quoteForm");
+    const msg = document.getElementById("formMsg");
+    const payDepositBtn = document.getElementById("payDepositBtn");
+    const sendQuoteBtn = document.getElementById("sendQuoteBtn");
+    const depositNote = document.getElementById("depositNote");
+    const depositLabel = document.getElementById("depositLabel");
+    const depositAmount = document.getElementById("depositAmount");
+    const businessCardsPrice = document.getElementById("businessCardsPrice");
+    const businessCardsTiers = document.getElementById("businessCardsTiers");
+    const eventTentsPrice = document.getElementById("eventTentsPrice");
+    const eventTentsTiers = document.getElementById("eventTentsTiers");
+    const bundleDealsPrice = document.getElementById("bundleDealsPrice");
+    const bundleDealsTiers = document.getElementById("bundleDealsTiers");
+    const serviceTypeField = document.getElementById("serviceType");
+    const quantityField = document.getElementById("quantity");
+    const checkoutOptionLabelField = document.getElementById("checkoutOptionLabel");
+    const checkoutOptionField = document.getElementById("checkoutOptionId");
+    const checkoutOptionSection = document.getElementById("checkoutOptionSection");
+    const checkoutOptionFieldLabel = document.getElementById("checkoutOptionFieldLabel");
+    const checkoutOptionNote = document.getElementById("checkoutOptionNote");
+    const serviceChoiceNote = document.getElementById("serviceChoiceNote");
+    const quoteModeNote = document.getElementById("quoteModeNote");
+    const nameField = document.getElementById("name");
+    const emailField = document.getElementById("email");
+    const phoneField = document.getElementById("phone");
+    const needByField = document.getElementById("needBy");
+    const notesField = document.getElementById("notes");
+    const garmentField = document.getElementById("garment");
+    const portalNavLink = document.getElementById("portalNavLink");
+    const stripeEnabled = Boolean(runtimeConfig.stripeEnabled);
+    const quoteEmailTo = String(runtimeConfig.quoteEmailTo || "gamboaesai@gmail.com").trim();
+    const fallbackStripeCatalog = {
+      businessCards: {
+        key: "businessCards",
+        label: "Business cards",
+        buttonLabel: "Checkout business cards",
+        currency: "usd",
+        productName: "Third Eye Print Co. Business Cards",
+        description: "Fast checkout for business card packs.",
+        defaultOptionId: "cards-100",
+        startingAtCents: 2000,
+        options: [
+          { id: "cards-50", label: "50 cards", quantityLabel: "50 cards", amountCents: 2000, description: "Starter business card pack." },
+          { id: "cards-100", label: "100 cards", quantityLabel: "100 cards", amountCents: 2900, description: "Popular business card pack." },
+          { id: "cards-250", label: "250 cards", quantityLabel: "250 cards", amountCents: 3900, description: "Larger business card run." },
+          { id: "cards-500", label: "500 cards", quantityLabel: "500 cards", amountCents: 5900, description: "Best-value bulk business card pack." },
+        ],
+      },
+      eventTent: {
+        key: "eventTent",
+        label: "Event tents",
+        buttonLabel: "Choose tent package",
+        currency: "usd",
+        productName: "Third Eye Print Co. Event Tents",
+        description: "Fast checkout for event tents.",
+        defaultOptionId: "tent-1",
+        startingAtCents: 100000,
+        options: [
+          { id: "tent-1", label: "1 tent", quantityLabel: "1 tent", amountCents: 100000, description: "Single branded event tent." },
+          { id: "tent-3", label: "3 tents", quantityLabel: "3 tents", amountCents: 270000, description: "Three event tents with bundle pricing." },
+          { id: "tent-5", label: "5 tents", quantityLabel: "5 tents", amountCents: 425000, description: "Five event tents with the strongest tent discount." },
+        ],
+      },
+      bundleDeal: {
+        key: "bundleDeal",
+        label: "Tent and card bundles",
+        buttonLabel: "Choose bundle",
+        currency: "usd",
+        productName: "Third Eye Print Co. Tent and Card Bundle",
+        description: "Fast checkout for tent and card bundles.",
+        defaultOptionId: "bundle-1-100",
+        startingAtCents: 102500,
+        options: [
+          { id: "bundle-1-100", label: "1 tent + 100 cards", quantityLabel: "1 tent + 100 cards", amountCents: 102500, description: "Starter event bundle with tent and cards." },
+          { id: "bundle-3-250", label: "3 tents + 250 cards", quantityLabel: "3 tents + 250 cards", amountCents: 275000, description: "Mid-size event bundle with tent discount and added cards." },
+          { id: "bundle-5-500", label: "5 tents + 500 cards", quantityLabel: "5 tents + 500 cards", amountCents: 430000, description: "Largest event bundle for teams, events, and activations." },
+        ],
+      },
+    };
+    const stripeCatalog = {
+      businessCards: mergeCatalogService(fallbackStripeCatalog.businessCards, runtimeConfig.stripeCatalog && runtimeConfig.stripeCatalog.businessCards),
+      eventTent: mergeCatalogService(fallbackStripeCatalog.eventTent, runtimeConfig.stripeCatalog && runtimeConfig.stripeCatalog.eventTent),
+      bundleDeal: mergeCatalogService(fallbackStripeCatalog.bundleDeal, runtimeConfig.stripeCatalog && runtimeConfig.stripeCatalog.bundleDeal),
+    };
+
+    const gunContext = window.ThirdEyeGun && typeof window.ThirdEyeGun.createContext === "function"
+      ? window.ThirdEyeGun.createContext()
+      : { gun: null, root: null, peers: [] };
+    const gunLeads = gunContext.root && typeof gunContext.root.get === "function"
+      ? gunContext.root.get("leads")
+      : null;
+
+    const depositCurrency = String(runtimeConfig.stripeCurrency || "usd").toUpperCase();
+    const phoneCopyLinks = Array.from(document.querySelectorAll("[data-phone-copy]"));
+    const desktopPhoneMedia = window.matchMedia("(min-width: 721px)");
+    const fallbackPhoneNumber = "+1 (619) 502-2080";
+    const presetButtons = Array.from(document.querySelectorAll("[data-service-preset]"));
+    const presetLinks = Array.from(document.querySelectorAll("[data-service-link-preset]"));
+    const serviceChoiceButtons = Array.from(document.querySelectorAll("[data-service-choice]"));
+    const servicePrefillNotes = new Map(
+      presetButtons
+        .map((button) => [
+          String(button.dataset.servicePreset || "").trim(),
+          String(button.dataset.prefillNote || "").trim()
+        ])
+        .filter(([preset, note]) => preset && note)
+    );
+    let autoNotesValue = "";
+    let manualNotesValue = notesField ? String(notesField.value || "").trim() : "";
+    let activeQuoteId = "";
+
+    [
+      ["Business cards", "Need business cards."],
+      ["T-shirts & apparel", "Need T-shirts or apparel printed."],
+      ["Event tents", "Need a branded event tent."],
+      ["Tent and card bundles", "Need a tent and card bundle."],
+      ["Ice cream carts", "Need ice cream cart graphics. Please quote cart wrap, decals, menu/signage, and setup options."],
+      ["Custom quote", "Need help with a print job."]
+    ].forEach(([service, note]) => {
+      servicePrefillNotes.set(service, note);
+    });
+    const phoneCopyTimeouts = new WeakMap();
+    const portalAliasStorageKey = "thirdEyeAdminAlias";
+
+    function syncPortalNavLink() {
+      if (!portalNavLink) {
+        return;
+      }
+
+      let alias = "";
+
+      try {
+        alias = String(window.localStorage.getItem(portalAliasStorageKey) || "").trim();
+      } catch (_error) {
+        alias = "";
+      }
+
+      if (alias) {
+        const username = alias.includes("@") ? alias.split("@")[0] : alias;
+        portalNavLink.textContent = username || "Portal";
+        portalNavLink.href = "/portal/";
+        portalNavLink.dataset.state = "signed-in";
+        portalNavLink.setAttribute("aria-label", `Open portal for ${username || alias}`);
+        portalNavLink.title = alias;
+        return;
+      }
+
+      portalNavLink.textContent = "Portal";
+      portalNavLink.href = "/auth/";
+      portalNavLink.dataset.state = "signed-out";
+      portalNavLink.setAttribute("aria-label", "Open portal sign in");
+      portalNavLink.removeAttribute("title");
+    }
+
+    function trimFieldValue(field) {
+      return field ? String(field.value || "").trim() : "";
+    }
+
+    function activateServicePreset(preset, {
+      prefillNote = "",
+      presetMessage = "",
+      scrollTarget = "",
+      announce = true
+    } = {}) {
+      const normalizedPreset = String(preset || "").trim();
+      const normalizedPrefillNote = String(prefillNote || "").trim() || servicePrefillNotes.get(normalizedPreset) || "";
+      const normalizedPresetMessage = String(presetMessage || "").trim();
+      const normalizedScrollTarget = String(scrollTarget || "").trim();
+
+      if (serviceTypeField && normalizedPreset) {
+        serviceTypeField.value = normalizedPreset;
+      }
+
+      if (normalizedPreset && normalizedPrefillNote) {
+        servicePrefillNotes.set(normalizedPreset, normalizedPrefillNote);
+      }
+
+      syncProjectNotes();
+      updateCheckoutUi();
+
+      if (normalizedScrollTarget) {
+        const target = document.getElementById(normalizedScrollTarget);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      if (!announce) {
+        setFormMessage("");
+        return;
+      }
+
+      setFormMessage(normalizedPresetMessage || (
+        normalizedPreset
+          ? `Selected ${normalizedPreset}. Add any missing detail and continue.`
+          : ""
+      ));
+    }
+
+    function activatePresetFromHash() {
+      const normalizedHash = String(window.location.hash || "").trim().toLowerCase();
+      if (!normalizedHash) {
+        return;
+      }
+
+      const matchingLink = presetLinks.find((link) => (
+        String(link.getAttribute("href") || "").trim().toLowerCase() === normalizedHash
+      ));
+
+      if (!matchingLink) {
+        return;
+      }
+
+      activateServicePreset(String(matchingLink.dataset.serviceLinkPreset || "").trim(), {
+        announce: false
+      });
+    }
+
+    function formatCurrency(cents, currencyCode = depositCurrency) {
+      const normalizedCents = Number(cents);
+      const normalizedCurrency = String(currencyCode || depositCurrency).toUpperCase();
+
+      if (!Number.isFinite(normalizedCents) || normalizedCents <= 0) {
+        return "configured in Stripe";
+      }
+
+      try {
+        return (normalizedCents / 100).toLocaleString(undefined, {
+          style: "currency",
+          currency: normalizedCurrency
+        });
+      } catch (_error) {
+        return `${(normalizedCents / 100).toFixed(2)} ${normalizedCurrency}`;
+      }
+    }
+
+    function mergeCatalogService(fallbackService, configuredService) {
+      const mergedService = {
+        ...fallbackService,
+        ...(configuredService || {}),
+      };
+      const configuredOptions = configuredService && Array.isArray(configuredService.options)
+        ? configuredService.options
+        : [];
+
+      mergedService.options = configuredOptions.length
+        ? configuredOptions.map((option, index) => ({
+          ...(fallbackService.options[index] || {}),
+          ...option,
+        }))
+        : fallbackService.options.map((option) => ({ ...option }));
+
+      if (!Number.isFinite(Number(mergedService.startingAtCents)) || Number(mergedService.startingAtCents) <= 0) {
+        mergedService.startingAtCents = mergedService.options.reduce((lowest, option) => (
+          option.amountCents < lowest ? option.amountCents : lowest
+        ), mergedService.options[0] ? mergedService.options[0].amountCents : 0);
+      }
+
+      return mergedService;
+    }
+
+    function resolveCatalogService(serviceKey) {
+      return stripeCatalog[serviceKey] || null;
+    }
+
+    function resolveCheckoutOffer(serviceType) {
+      const normalized = String(serviceType || "").trim().toLowerCase();
+
+      if (normalized === "business cards") {
+        return resolveCatalogService("businessCards");
+      }
+
+      if (normalized === "event tents" || normalized === "event tent") {
+        return resolveCatalogService("eventTent");
+      }
+
+      if (
+        normalized === "tent and card bundles" ||
+        normalized === "tent and card bundle" ||
+        normalized === "bundle" ||
+        normalized === "bundles"
+      ) {
+        return resolveCatalogService("bundleDeal");
+      }
+
+      return null;
+    }
+
+    function resolveCheckoutOption(service, optionValue) {
+      if (!service || !Array.isArray(service.options)) {
+        return null;
+      }
+
+      const normalizedValue = String(optionValue || "").trim().toLowerCase();
+      if (!normalizedValue) {
+        return null;
+      }
+
+      return service.options.find((option) => {
+        const candidates = [option.id, option.label, option.quantityLabel];
+        return candidates.some((candidate) => String(candidate || "").trim().toLowerCase() === normalizedValue);
+      }) || null;
+    }
+
+    function getDefaultCheckoutOption(service) {
+      if (!service || !Array.isArray(service.options) || !service.options.length) {
+        return null;
+      }
+
+      return resolveCheckoutOption(service, service.defaultOptionId) || service.options[0];
+    }
+
+    function resolveCheckoutSelection(serviceType, optionValue) {
+      const service = resolveCheckoutOffer(serviceType);
+      if (!service) {
+        return null;
+      }
+
+      const option = resolveCheckoutOption(service, optionValue);
+      if (!option) {
+        return null;
+      }
+
+      return {
+        ...service,
+        option,
+        amountCents: option.amountCents,
+      };
+    }
+
+    function isQuoteOnlyService(serviceType) {
+      const normalizedServiceType = String(serviceType || "").trim().toLowerCase();
+      return normalizedServiceType === "custom quote" || normalizedServiceType === "ice cream carts" || normalizedServiceType === "t-shirts & apparel";
+    }
+
+    function getQuoteSubmitLabel(serviceType) {
+      return "Send order request";
+    }
+
+    function getQuoteModeMessage(serviceType) {
+      const normalizedServiceType = String(serviceType || "").trim().toLowerCase();
+
+      if (normalizedServiceType === "ice cream carts") {
+        return "<strong>For ice cream carts:</strong> include cart dimensions, photos if you have them, menu/signage needs, and whether artwork is ready.";
+      }
+
+      if (normalizedServiceType === "t-shirts & apparel") {
+        return "<strong>For apparel:</strong> include garment type, total quantity, sizes, print locations, and whether artwork is ready.";
+      }
+
+      if (normalizedServiceType === "custom quote") {
+        return "<strong>For anything else:</strong> send the size, quantity, timeline, and artwork status so we can reply with the right next step.";
+      }
+
+      return "";
+    }
+
+    function renderTierList(listElement, service) {
+      if (!listElement || !service || !Array.isArray(service.options)) {
+        return;
+      }
+
+      listElement.textContent = "";
+
+      service.options.forEach((option) => {
+        const item = document.createElement("li");
+        const label = document.createElement("strong");
+        const price = document.createElement("span");
+
+        label.textContent = option.label;
+        price.textContent = formatCurrency(option.amountCents, option.currency || service.currency || depositCurrency);
+
+        item.appendChild(label);
+        item.appendChild(price);
+        listElement.appendChild(item);
+      });
+    }
+
+    function updateCatalogPricing() {
+      const businessCardsOffer = resolveCatalogService("businessCards");
+      const eventTentOffer = resolveCatalogService("eventTent");
+      const bundleDealOffer = resolveCatalogService("bundleDeal");
+
+      if (businessCardsPrice && businessCardsOffer) {
+        businessCardsPrice.textContent = formatCurrency(
+          businessCardsOffer.startingAtCents,
+          businessCardsOffer.currency || depositCurrency
+        );
+        renderTierList(businessCardsTiers, businessCardsOffer);
+      }
+
+      if (eventTentsPrice && eventTentOffer) {
+        eventTentsPrice.textContent = formatCurrency(
+          eventTentOffer.startingAtCents,
+          eventTentOffer.currency || depositCurrency
+        );
+        renderTierList(eventTentsTiers, eventTentOffer);
+      }
+
+      if (bundleDealsPrice && bundleDealOffer) {
+        bundleDealsPrice.textContent = formatCurrency(
+          bundleDealOffer.startingAtCents,
+          bundleDealOffer.currency || depositCurrency
+        );
+        renderTierList(bundleDealsTiers, bundleDealOffer);
+      }
+    }
+
+    function syncServiceChoiceButtons() {
+      const selectedService = trimFieldValue(serviceTypeField);
+
+      serviceChoiceButtons.forEach((button) => {
+        const choice = String(button.dataset.serviceChoice || "").trim();
+        const isActive = Boolean(choice) && choice === selectedService;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    }
+
+    function setCheckoutSelection(option) {
+      if (checkoutOptionField) {
+        checkoutOptionField.value = option ? option.id : "";
+      }
+
+      if (checkoutOptionLabelField) {
+        checkoutOptionLabelField.value = option ? option.label : "";
+      }
+
+      if (quantityField) {
+        quantityField.value = option ? (option.quantityLabel || option.label) : "";
+      }
+    }
+
+    function getDefaultCheckoutPathOptions() {
+      return [
+        resolveCatalogService("businessCards"),
+        resolveCatalogService("eventTent"),
+        resolveCatalogService("bundleDeal")
+      ].filter((service) => service && Array.isArray(service.options) && service.options.length);
+    }
+
+    function getCheckoutPathValue(service) {
+      return service ? `service:${service.key}` : "";
+    }
+
+    function resolveCheckoutPathFromValue(value) {
+      const rawValue = String(value || "").trim();
+      const normalizedValue = rawValue.toLowerCase();
+      if (!normalizedValue.startsWith("service:")) {
+        return null;
+      }
+
+      const serviceKey = rawValue.slice(rawValue.indexOf(":") + 1).trim();
+      const normalizedServiceKey = serviceKey.toLowerCase();
+
+      return Object.values(stripeCatalog).find((service) => (
+        service
+        && String(service.key || "").trim().toLowerCase() === normalizedServiceKey
+      )) || resolveCatalogService(serviceKey) || null;
+    }
+
+    function populateCheckoutOptions(service) {
+      if (!checkoutOptionField) {
+        return null;
+      }
+
+      const currentSelectionValue = trimFieldValue(checkoutOptionField);
+
+      checkoutOptionField.textContent = "";
+
+      if (!service || !Array.isArray(service.options) || !service.options.length) {
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Choose a package...";
+        checkoutOptionField.appendChild(placeholder);
+        getDefaultCheckoutPathOptions().forEach((pathService) => {
+          const selectOption = document.createElement("option");
+          selectOption.value = getCheckoutPathValue(pathService);
+          selectOption.textContent = `${pathService.label} - from ${formatCurrency(pathService.startingAtCents, pathService.currency || depositCurrency)}`;
+          checkoutOptionField.appendChild(selectOption);
+        });
+        checkoutOptionField.disabled = false;
+        checkoutOptionField.value = "";
+        setCheckoutSelection(null);
+        return null;
+      }
+
+      const existingOption = resolveCheckoutOption(service, currentSelectionValue);
+      const selectedOption = existingOption || getDefaultCheckoutOption(service);
+
+      service.options.forEach((option) => {
+        const selectOption = document.createElement("option");
+        selectOption.value = option.id;
+        selectOption.textContent = `${option.label} - ${formatCurrency(option.amountCents, option.currency || service.currency || depositCurrency)}`;
+        checkoutOptionField.appendChild(selectOption);
+      });
+
+      checkoutOptionField.disabled = false;
+      setCheckoutSelection(selectedOption);
+      return selectedOption;
+    }
+
+    function updateCheckoutUi() {
+      if (!payDepositBtn || !sendQuoteBtn || !depositAmount || !depositLabel) {
+        return;
+      }
+
+      const selectedService = trimFieldValue(serviceTypeField);
+      const service = resolveCheckoutOffer(selectedService);
+      const option = service ? populateCheckoutOptions(service) : populateCheckoutOptions(null);
+      const offer = option ? resolveCheckoutSelection(selectedService, option.id) : null;
+      const isQuoteOnly = isQuoteOnlyService(selectedService);
+      const hasSelectedService = Boolean(selectedService);
+
+      syncServiceChoiceButtons();
+
+      if (checkoutOptionSection) {
+        checkoutOptionSection.hidden = isQuoteOnly || !service;
+      }
+
+      if (checkoutOptionFieldLabel) {
+        checkoutOptionFieldLabel.textContent = service && service.label
+          ? `${service.label} starting package`
+          : "Starting package";
+      }
+
+      if (checkoutOptionNote) {
+        if (!stripeEnabled) {
+          checkoutOptionNote.textContent = "Online payment is unavailable right now. Send the request and we will follow up.";
+        } else if (offer) {
+          checkoutOptionNote.textContent = `${offer.option.label} selected at ${formatCurrency(offer.amountCents, offer.currency || depositCurrency)}. You can pay online or send the request for review.`;
+        } else if (isQuoteOnly) {
+          checkoutOptionNote.textContent = "";
+        } else {
+          checkoutOptionNote.textContent = "Choose a starting point above to see package options.";
+        }
+      }
+
+      if (serviceChoiceNote) {
+        if (!stripeEnabled) {
+          serviceChoiceNote.textContent = isQuoteOnly
+            ? ""
+            : "Online payment is unavailable right now. Send the request and we will follow up.";
+        } else if (offer) {
+          serviceChoiceNote.textContent = `${offer.label} selected. Pay online if the package fits, or send the request for review.`;
+        } else if (isQuoteOnly) {
+          serviceChoiceNote.textContent = "";
+        } else {
+          serviceChoiceNote.textContent = "Pick the closest option, then add your details below.";
+        }
+
+        serviceChoiceNote.hidden = !serviceChoiceNote.textContent;
+      }
+
+      if (quoteModeNote) {
+        const quoteModeMessage = isQuoteOnly ? getQuoteModeMessage(selectedService) : "";
+        quoteModeNote.innerHTML = quoteModeMessage;
+        quoteModeNote.hidden = !quoteModeMessage;
+      }
+
+      if (!stripeEnabled) {
+        payDepositBtn.hidden = true;
+        if (depositNote) {
+          depositNote.hidden = true;
+        }
+        sendQuoteBtn.textContent = "Send order request";
+        sendQuoteBtn.classList.add("btn-primary");
+        sendQuoteBtn.classList.remove("btn-secondary");
+        return;
+      }
+
+      if (depositNote) {
+        depositNote.hidden = isQuoteOnly || !offer;
+      }
+
+      if (offer) {
+        payDepositBtn.hidden = false;
+        payDepositBtn.disabled = false;
+        payDepositBtn.textContent = `Pay online for ${offer.option.label.toLowerCase()}`;
+        depositLabel.textContent = "Package total";
+        depositAmount.textContent = formatCurrency(offer.amountCents, offer.currency || depositCurrency);
+        sendQuoteBtn.textContent = "Send order request";
+        sendQuoteBtn.classList.add("btn-primary");
+        sendQuoteBtn.classList.remove("btn-secondary");
+        return;
+      }
+
+      if (isQuoteOnly) {
+        payDepositBtn.hidden = true;
+        sendQuoteBtn.textContent = getQuoteSubmitLabel(selectedService);
+        sendQuoteBtn.classList.add("btn-primary");
+        sendQuoteBtn.classList.remove("btn-secondary");
+        return;
+      }
+
+      payDepositBtn.hidden = true;
+      payDepositBtn.disabled = false;
+      payDepositBtn.textContent = hasSelectedService ? "Pay online for selected package" : "Pay online";
+      if (depositNote) {
+        depositNote.hidden = true;
+      }
+      sendQuoteBtn.textContent = "Send order request";
+      sendQuoteBtn.classList.add("btn-primary");
+      sendQuoteBtn.classList.remove("btn-secondary");
+    }
+
+    const validationFields = [
+      nameField,
+      emailField,
+      phoneField,
+      checkoutOptionField,
+      needByField,
+      notesField,
+      garmentField
+    ].filter(Boolean);
+
+    function clearFormFeedback() {
+      validationFields.forEach((field) => {
+        field.removeAttribute("aria-invalid");
+      });
+
+      if (msg) {
+        delete msg.dataset.state;
+      }
+    }
+
+    function setFormMessage(message, state = "") {
+      clearFormFeedback();
+      if (!msg) {
+        return;
+      }
+
+      msg.textContent = message;
+      if (state) {
+        msg.dataset.state = state;
+      }
+    }
+
+    function showFormError(message, field) {
+      setFormMessage(message, "error");
+
+      if (!field) {
+        return;
+      }
+
+      field.setAttribute("aria-invalid", "true");
+      field.focus();
+    }
+
+    function hasQuoteProjectDetails(lead) {
+      const manualProjectNotes = stripAutoNotes(trimFieldValue(notesField));
+
+      return Boolean(
+        manualProjectNotes
+        || trimFieldValue(garmentField)
+        || trimFieldValue(needByField)
+        || String(lead.quantity || "").trim()
+        || String(lead.checkoutOptionLabel || "").trim()
+        || String(lead.checkoutOptionId || "").trim()
+      );
+    }
+
+    function buildLeadContactSummary(lead) {
+      return [lead.email, lead.phone]
+        .map((value) => String(value || "").trim())
+        .filter(Boolean)
+        .join(" / ");
+    }
+
+    function getQuoteValidationError(lead) {
+      if (!String(lead.email || "").trim()) {
+        return {
+          message: "Add an email address so we can reply to your request.",
+          field: emailField
+        };
+      }
+
+      if (!String(lead.phone || "").trim()) {
+        return {
+          message: "Add a phone number so we can follow up about your order.",
+          field: phoneField
+        };
+      }
+
+      if (isQuoteOnlyService(lead.serviceType) && !hasQuoteProjectDetails(lead)) {
+        return {
+          message: "Add a few project details so we know what you need.",
+          field: notesField
+        };
+      }
+
+      return null;
+    }
+
+    function getCheckoutValidationError(lead) {
+      const selection = resolveCheckoutSelection(
+        lead.serviceType,
+        lead.checkoutOptionId || lead.checkoutOptionLabel || lead.quantity
+      );
+
+      if (!selection) {
+        return {
+          message: "Choose a starting package before paying online.",
+          field: checkoutOptionField
+        };
+      }
+
+      return null;
+    }
+
+    function scrollToPackages() {
+      const section = document.getElementById("shop");
+      if (!section) {
+        return;
+      }
+
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    syncPortalNavLink();
+
+    window.addEventListener("storage", (event) => {
+      if (!event || event.key === portalAliasStorageKey) {
+        syncPortalNavLink();
+      }
+    });
+
+    window.addEventListener("hashchange", () => {
+      activatePresetFromHash();
+    });
+
+    function showPhoneCopyNote(link, message) {
+      const wrapper = link.closest(".phone-action");
+      const note = wrapper ? wrapper.querySelector("[data-phone-copy-note]") : null;
+
+      if (!note) {
+        return;
+      }
+
+      const existingTimeoutId = phoneCopyTimeouts.get(note);
+      if (existingTimeoutId) {
+        window.clearTimeout(existingTimeoutId);
+      }
+
+      note.textContent = message;
+      note.classList.add("is-visible");
+
+      const timeoutId = window.setTimeout(() => {
+        note.classList.remove("is-visible");
+      }, 4400);
+
+      phoneCopyTimeouts.set(note, timeoutId);
+    }
+
+    async function copyTextToClipboard(value) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+
+      const tempInput = document.createElement("textarea");
+      tempInput.value = value;
+      tempInput.setAttribute("readonly", "");
+      tempInput.style.position = "absolute";
+      tempInput.style.left = "-9999px";
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      tempInput.setSelectionRange(0, tempInput.value.length);
+
+      const didCopy = document.execCommand("copy");
+      tempInput.remove();
+
+      if (!didCopy) {
+        throw new Error("Clipboard copy failed");
+      }
+    }
+
+    function stripAutoNotes(value) {
+      const normalizedValue = String(value || "").trim();
+
+      if (!autoNotesValue) {
+        return normalizedValue;
+      }
+
+      if (normalizedValue === autoNotesValue) {
+        return "";
+      }
+
+      if (normalizedValue.endsWith(autoNotesValue)) {
+        return normalizedValue.slice(0, normalizedValue.length - autoNotesValue.length).trim();
+      }
+
+      return normalizedValue.replace(autoNotesValue, "").trim();
+    }
+
+    function buildAutoNotes() {
+      const serviceType = trimFieldValue(serviceTypeField);
+      const serviceNote = servicePrefillNotes.get(serviceType) || "";
+      const selection = resolveCheckoutSelection(serviceType, trimFieldValue(checkoutOptionField));
+      const noteLines = [];
+
+      if (serviceNote) {
+        noteLines.push(serviceNote);
+      }
+
+      if (selection) {
+        noteLines.push(`Selected package: ${selection.option.label} (${formatCurrency(selection.amountCents, selection.currency || depositCurrency)}).`);
+      }
+
+      return noteLines.join("\n");
+    }
+
+    function syncProjectNotes() {
+      if (!notesField) {
+        return;
+      }
+
+      manualNotesValue = stripAutoNotes(notesField.value);
+      autoNotesValue = buildAutoNotes();
+      notesField.value = [manualNotesValue, autoNotesValue].filter(Boolean).join("\n\n");
+    }
+
+    if (notesField) {
+      notesField.addEventListener("input", () => {
+        manualNotesValue = stripAutoNotes(notesField.value);
+      });
+    }
+
+    phoneCopyLinks.forEach((link) => {
+      link.addEventListener("click", async (event) => {
+        if (!desktopPhoneMedia.matches) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const phoneNumber = String(link.dataset.phoneCopy || "").trim() || fallbackPhoneNumber;
+
+        try {
+          await copyTextToClipboard(phoneNumber);
+          showPhoneCopyNote(link, `${phoneNumber} copied to clipboard`);
+        } catch (_error) {
+          showPhoneCopyNote(link, `Copy this number: ${phoneNumber}`);
+        }
+      });
+    });
+
+    presetButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const preset = String(button.dataset.servicePreset || "").trim();
+        const prefillNote = String(button.dataset.prefillNote || "").trim();
+        const presetMessage = String(button.dataset.presetMessage || "").trim();
+        const scrollTarget = String(button.dataset.scrollTarget || "").trim();
+
+        activateServicePreset(preset, {
+          prefillNote,
+          presetMessage,
+          scrollTarget
+        });
+      });
+    });
+
+    presetLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        activateServicePreset(String(link.dataset.serviceLinkPreset || "").trim(), {
+          announce: false
+        });
+      });
+    });
+
+    if (checkoutOptionField) {
+      checkoutOptionField.addEventListener("change", () => {
+        const selectedValue = trimFieldValue(checkoutOptionField);
+        const selectedPath = resolveCheckoutPathFromValue(selectedValue);
+
+        if (selectedPath && serviceTypeField) {
+          serviceTypeField.value = selectedPath.label || "";
+          syncProjectNotes();
+          updateCheckoutUi();
+          return;
+        }
+
+        const selection = resolveCheckoutSelection(
+          trimFieldValue(serviceTypeField),
+          selectedValue
+        );
+        setCheckoutSelection(selection ? selection.option : null);
+        syncProjectNotes();
+        updateCheckoutUi();
+      });
+    }
+
+    if (depositAmount) {
+      updateCatalogPricing();
+      updateCheckoutUi();
+    }
+
+    activatePresetFromHash();
+
+    const paymentStatus = new URLSearchParams(window.location.search).get("payment");
+    if (paymentStatus === "success") {
+      setFormMessage("Payment received. We will follow up with next production steps.");
+    } else if (paymentStatus === "cancelled") {
+      setFormMessage("Payment canceled. You can still send the order request and we will follow up.");
+    }
+
+    function formDataToLead() {
+      const data = Object.fromEntries(new FormData(form).entries());
+      const lead = {};
+
+      Object.entries(data).forEach(([key, value]) => {
+        lead[key] = String(value || "").trim();
+      });
+
+      if (!lead.serviceType) {
+        lead.serviceType = "Custom quote";
+      }
+
+      if (!lead.quantity && lead.checkoutOptionLabel) {
+        lead.quantity = lead.checkoutOptionLabel;
+      }
+
+      lead.contact = buildLeadContactSummary(lead);
+
+      return lead;
+    }
+
+    function setBusy(isBusy) {
+      form.querySelectorAll("button").forEach((button) => {
+        button.disabled = isBusy;
+      });
+    }
+
+    function wait(ms) {
+      return new Promise((resolve) => window.setTimeout(resolve, ms));
+    }
+
+    function randomId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return window.crypto.randomUUID();
+      }
+
+      return `third-eye-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    }
+
+    function ensureQuoteId() {
+      if (!activeQuoteId) {
+        activeQuoteId = randomId();
+      }
+
+      return activeQuoteId;
+    }
+
+    function buildLeadRecord(source, lead, extra = {}) {
+      return {
+        id: randomId(),
+        quoteId: ensureQuoteId(),
+        source,
+        createdAt: new Date().toISOString(),
+        ...lead,
+        ...extra
+      };
+    }
+
+    function buildMailtoUrl(lead) {
+      const serviceLabel = lead.serviceType || "Custom quote";
+      const requesterLabel = lead.name || lead.company || lead.email || lead.phone || lead.contact || "";
+      const subject = requesterLabel
+        ? `Order request: ${serviceLabel} - ${requesterLabel}`
+        : `Order request: ${serviceLabel}`;
+      const bodyLines = [
+        "New order request",
+        "",
+        `Name: ${lead.name || "-"}`,
+        `Email: ${lead.email || "-"}`,
+        `Phone: ${lead.phone || "-"}`,
+        `Company or brand: ${lead.company || "-"}`,
+        `Service type: ${lead.serviceType || "-"}`,
+        `Selected package: ${lead.checkoutOptionLabel || "-"}`,
+        `Quantity or size: ${lead.quantity || "-"}`,
+        `Product details: ${lead.garment || "-"}`,
+        `Artwork status: ${lead.artStatus || "-"}`,
+        `Need by: ${lead.needBy || "-"}`,
+        "",
+        "Project notes:",
+        lead.notes || "-"
+      ];
+
+      return `mailto:${quoteEmailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+    }
+
+    function syncLeadRecord(record) {
+      if (!gunLeads) {
+        return Promise.resolve({ ok: false, offline: true });
+      }
+
+      return new Promise((resolve, reject) => {
+        gunLeads.get(record.id).put(record, (ack) => {
+          if (ack && ack.err) {
+            reject(new Error(String(ack.err)));
+            return;
+          }
+
+          resolve(ack || {});
+        });
+      });
+    }
+
+    async function persistLeadEvent(source, lead, extra = {}, timeoutMs = 0) {
+      const record = buildLeadRecord(source, lead, extra);
+      const syncPromise = syncLeadRecord(record);
+
+      if (timeoutMs > 0) {
+        await Promise.race([syncPromise, wait(timeoutMs)]);
+      } else {
+        await syncPromise;
+      }
+
+      return record;
+    }
+
+    async function createCheckoutSession(lead) {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lead })
+      });
+
+      const body = await response.json();
+      if (!response.ok || !body.url) {
+        throw new Error(body.error || "Stripe checkout failed");
+      }
+
+      return body;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const lead = formDataToLead();
+      const validationError = getQuoteValidationError(lead);
+
+      if (validationError) {
+        showFormError(validationError.message, validationError.field);
+        return;
+      }
+
+      setBusy(true);
+      setFormMessage(gunLeads
+        ? "Saving your order request..."
+        : "Preparing your order request...");
+
+      try {
+        await persistLeadEvent("quote", lead, {}, 900);
+      } catch (_error) {
+        console.warn("Lead sync failed; continuing with mailto flow.");
+      }
+
+      window.location.href = buildMailtoUrl(lead);
+
+      window.setTimeout(() => {
+        setFormMessage("If an email draft opened, tap send so the shop gets a backup copy. You can also call or text +1 (619) 502-2080.");
+        setBusy(false);
+        activeQuoteId = "";
+      }, 1200);
+    });
+
+    if (payDepositBtn) {
+      payDepositBtn.addEventListener("click", async () => {
+        const lead = formDataToLead();
+        const validationError = getCheckoutValidationError(lead);
+
+        if (validationError) {
+          scrollToPackages();
+          setFormMessage("Choose a starting package before paying online.");
+          return;
+        }
+
+        try {
+          setBusy(true);
+          setFormMessage("Preparing secure online payment...");
+
+          let quoteRecord = null;
+          try {
+            quoteRecord = await persistLeadEvent("quote_deposit_intent", lead);
+          } catch (_error) {
+            console.warn("Lead sync failed before checkout; continuing.");
+          }
+
+          lead.quoteId = quoteRecord && quoteRecord.quoteId
+            ? quoteRecord.quoteId
+            : ensureQuoteId();
+
+          const checkout = await createCheckoutSession(lead);
+
+          try {
+            await persistLeadEvent("deposit_checkout", lead, {
+              quoteId: lead.quoteId,
+              checkoutSessionId: checkout.id || ""
+            });
+          } catch (_error) {
+            console.warn("Checkout event sync failed; continuing to Stripe.");
+          }
+
+          window.location.assign(checkout.url);
+        } catch (_error) {
+          setFormMessage(_error && _error.message
+            ? _error.message
+            : "Online payment is unavailable right now. Send the order request and we will follow up.", "error");
+          setBusy(false);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

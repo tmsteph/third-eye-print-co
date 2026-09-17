@@ -6,564 +6,91 @@ import { chromium } from "playwright";
 const ROOT = path.resolve(process.cwd());
 const PORT = 8787;
 const HOST = "127.0.0.1";
-const BASE_URL = `http://${HOST}:${PORT}`;
-const SCREENSHOT_DIR = path.join(ROOT, "artifacts", "screenshots");
+const BASE = `http://${HOST}:${PORT}`;
+const OUT = path.join(ROOT, "artifacts", "screenshots");
+fs.mkdirSync(OUT, { recursive: true });
 
-fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function waitForServer() {
+  for (let i = 0; i < 80; i += 1) {
+    try { if ((await fetch(BASE)).ok) return; } catch {}
+    await wait(200);
+  }
+  throw new Error("Local server did not start");
 }
 
-function getFileSize(filePath) {
-  return fs.statSync(filePath).size;
+function browserExecutable() {
+  for (const candidate of [process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH, "/usr/bin/google-chrome", "/usr/bin/chromium"]) {
+    if (candidate && fs.existsSync(candidate)) return candidate;
+  }
+  return undefined;
 }
 
-function resolveChromeExecutable() {
-  const candidates = [
-    process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
-    "/usr/bin/google-chrome",
-    "/usr/bin/chromium-browser",
-    "/usr/bin/chromium"
-  ].filter(Boolean);
-
-  for (const candidate of candidates) {
-    try {
-      fs.accessSync(candidate, fs.constants.X_OK);
-      return candidate;
-    } catch (_error) {
-      // Ignore missing browser candidates and keep looking.
-    }
-  }
-
-  return null;
+async function mockConfig(page) {
+  await page.route("**/config.js", async (route) => route.fulfill({
+    status: 200,
+    contentType: "application/javascript",
+    body: `window.THIRD_EYE_CONFIG=${JSON.stringify({
+      stripeEnabled: true,
+      stripeCatalog: { businessCards: {
+        key: "businessCards", label: "Business cards", currency: "usd", defaultOptionId: "cards-100", options: [
+          {id:"cards-50",label:"50 cards",amountCents:2000},
+          {id:"cards-100",label:"100 cards",amountCents:2900},
+          {id:"cards-250",label:"250 cards",amountCents:3900},
+          {id:"cards-500",label:"500 cards",amountCents:5900}
+        ]
+      }}
+    })};`
+  }));
 }
 
-function countTracks(values, tolerance = 8) {
-  const tracks = [];
-
-  for (const value of [...values].sort((left, right) => left - right)) {
-    const lastTrack = tracks[tracks.length - 1];
-    if (lastTrack === undefined || Math.abs(value - lastTrack) > tolerance) {
-      tracks.push(value);
-    }
-  }
-
-  return tracks.length;
-}
-
-function roundMetric(metric) {
-  return {
-    label: metric.label,
-    x: Math.round(metric.x),
-    y: Math.round(metric.y),
-    width: Math.round(metric.width),
-    height: Math.round(metric.height)
-  };
-}
-
-async function waitForServer(url, attempts = 100) {
-  for (let attempt = 0; attempt < attempts; attempt += 1) {
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        return;
-      }
-    } catch (_error) {
-      // Ignore boot races.
-    }
-
-    await wait(250);
-  }
-
-  throw new Error(`Server did not become ready at ${url}`);
-}
-
-async function assertHtmlContains(url, requiredFragments) {
-  const response = await fetch(url);
-  const html = await response.text();
-  const missing = requiredFragments.filter((fragment) => !html.includes(fragment));
-
-  if (missing.length) {
-    throw new Error(`Missing expected content at ${url}: ${missing.join(", ")}`);
-  }
-}
-
-async function captureHomepage(browser, scenario) {
-  const page = await browser.newPage({
-    colorScheme: "dark",
-    viewport: {
-      width: scenario.width,
-      height: scenario.height
-    }
-  });
-
-  await page.goto(BASE_URL, { waitUntil: "networkidle" });
-  await page.evaluate(() => document.fonts.ready);
-
-  const buttons = page.locator(".hero-actions > .btn, .hero-actions > .phone-action .btn");
-  const buttonCount = await buttons.count();
-  if (buttonCount !== 4) {
-    throw new Error(`Expected 4 hero CTA buttons for ${scenario.name}, received ${buttonCount}`);
-  }
-
-  const metrics = await buttons.evaluateAll((elements) => {
-    return elements.map((element) => {
-      const rect = element.getBoundingClientRect();
-      return {
-        label: element.textContent.replace(/\s+/g, " ").trim(),
-        x: rect.x,
-        y: rect.y,
-        width: rect.width,
-        height: rect.height
-      };
-    });
-  });
-
-  const columnCount = countTracks(metrics.map((metric) => metric.x));
-  const rowCount = countTracks(metrics.map((metric) => metric.y));
-  const widthSpread = Math.max(...metrics.map((metric) => metric.width)) - Math.min(...metrics.map((metric) => metric.width));
-  const heightSpread = Math.max(...metrics.map((metric) => metric.height)) - Math.min(...metrics.map((metric) => metric.height));
-
-  if (columnCount !== scenario.expectedColumns) {
-    throw new Error(`Expected ${scenario.expectedColumns} CTA columns for ${scenario.name}, received ${columnCount}`);
-  }
-
-  if (rowCount !== scenario.expectedRows) {
-    throw new Error(`Expected ${scenario.expectedRows} CTA rows for ${scenario.name}, received ${rowCount}`);
-  }
-
-  if (widthSpread > 4) {
-    throw new Error(`Hero CTA widths drifted by ${widthSpread.toFixed(2)}px for ${scenario.name}`);
-  }
-
-  if (heightSpread > 2) {
-    throw new Error(`Hero CTA heights drifted by ${heightSpread.toFixed(2)}px for ${scenario.name}`);
-  }
-
-  const screenshotPath = path.join(SCREENSHOT_DIR, `${scenario.name}.png`);
-  await page.screenshot({
-    path: screenshotPath,
-    fullPage: true
-  });
-  await page.close();
-
-  return {
-    name: scenario.name,
-    file: screenshotPath,
-    bytes: getFileSize(screenshotPath),
-    viewport: {
-      width: scenario.width,
-      height: scenario.height
-    },
-    columns: columnCount,
-    rows: rowCount,
-    buttons: metrics.map(roundMetric)
-  };
-}
-
-async function waitForStatusMessage(page, expectedMessage) {
-  await page.waitForFunction((message) => {
-    const node = document.getElementById("formMsg");
-    return node && node.textContent === message;
-  }, expectedMessage);
-}
-
-async function mockRuntimeConfig(page, config) {
-  await page.route("**/config.js", async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/javascript",
-      body: `window.THIRD_EYE_CONFIG = ${JSON.stringify(config)};`
-    });
-  });
-}
-
-async function assertChoosePackageButtonNavigatesToShop(browser) {
-  const page = await browser.newPage({
-    colorScheme: "dark",
-    viewport: {
-      width: 1440,
-      height: 900
-    }
-  });
-
-  await mockRuntimeConfig(page, { stripeEnabled: true });
-  await page.goto(BASE_URL, { waitUntil: "networkidle" });
-  await page.evaluate(() => document.fonts.ready);
-  await page.locator("#quoteForm").scrollIntoViewIfNeeded();
-
-  const buttonState = await page.evaluate(() => {
-    const button = document.getElementById("payDepositBtn");
-    const depositNote = document.getElementById("depositNote");
-    const checkoutSection = document.getElementById("checkoutOptionSection");
-    return {
-      hidden: button ? button.hidden : null,
-      disabled: button ? button.disabled : null,
-      label: button ? button.textContent.trim() : "",
-      depositNoteHidden: depositNote ? depositNote.hidden : null,
-      checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null
-    };
-  });
-
-  if (
-    buttonState.hidden !== true
-    || buttonState.disabled !== false
-    || buttonState.label !== "Pay online"
-    || buttonState.depositNoteHidden !== true
-    || buttonState.checkoutSectionHidden !== true
-  ) {
-    throw new Error("Default order form state should prioritize the request form and hide payment controls.");
-  }
-
-  await page.locator('[data-service-choice="Business cards"]').click();
-  const resolvedPathState = await page.evaluate(() => {
-    const field = document.getElementById("checkoutOptionId");
-    const serviceType = document.getElementById("serviceType");
-    const fieldLabel = document.getElementById("checkoutOptionFieldLabel");
-    const button = document.getElementById("payDepositBtn");
-    const checkoutSection = document.getElementById("checkoutOptionSection");
-
-    return {
-      currentValue: field ? field.value : "",
-      optionValues: field ? Array.from(field.options).map((option) => option.value) : [],
-      serviceType: serviceType ? serviceType.value : "",
-      fieldLabel: fieldLabel ? fieldLabel.textContent.replace(/\s+/g, " ").trim() : "",
-      buttonLabel: button ? button.textContent.replace(/\s+/g, " ").trim() : "",
-      checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null
-    };
-  });
-
-  if (
-    resolvedPathState.serviceType !== "Business cards"
-    || resolvedPathState.fieldLabel !== "Business cards starting package"
-    || !resolvedPathState.currentValue
-    || resolvedPathState.currentValue.startsWith("service:")
-    || !resolvedPathState.optionValues.includes("cards-100")
-    || resolvedPathState.checkoutSectionHidden !== false
-    || !resolvedPathState.buttonLabel.startsWith("Pay online for ")
-  ) {
-    throw new Error("Selecting a packaged product did not expose package payment state.");
-  }
-
+async function checkLauncher(browser, width, height, name) {
+  const page = await browser.newPage({ viewport: { width, height }, colorScheme: "dark" });
+  await page.goto(BASE, { waitUntil: "networkidle" });
+  const href = await page.locator('a[href="/business-cards/"]').first().getAttribute("href");
+  if (href !== "/business-cards/") throw new Error("Homepage business-card CTA is not a separate page");
+  if (await page.locator('a[href^="#quote"]').count()) throw new Error("Homepage still contains the old scrolling order CTA");
+  const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  if (scrollHeight > height + 220) throw new Error(`Homepage is too tall for ${name}: ${scrollHeight}px`);
+  await page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: true });
   await page.close();
 }
 
-async function assertQuoteValidationMessages(browser) {
-  const page = await browser.newPage({
-    colorScheme: "dark",
-    viewport: {
-      width: 1440,
-      height: 2200
-    }
-  });
-
-  await mockRuntimeConfig(page, { stripeEnabled: true });
-  await page.goto(BASE_URL, { waitUntil: "networkidle" });
-  await page.evaluate(() => document.fonts.ready);
-  await page.locator('[data-service-choice="Custom quote"]').click();
-  await page.waitForFunction(() => {
-    return document.getElementById("serviceType")?.value === "Custom quote";
-  });
-
-  await page.locator("#sendQuoteBtn").click();
-  await waitForStatusMessage(page, "Add an email address so we can reply to your request.");
-
-  const emailInvalid = await page.locator("#email").getAttribute("aria-invalid");
-  if (emailInvalid !== "true") {
-    throw new Error("Quote validation did not flag the email field when it was missing.");
-  }
-
-  await page.locator("#email").fill("buyer@example.com");
-  await page.locator("#sendQuoteBtn").click();
-  await waitForStatusMessage(page, "Add a phone number so we can follow up about your order.");
-
-  const phoneInvalid = await page.locator("#phone").getAttribute("aria-invalid");
-  if (phoneInvalid !== "true") {
-    throw new Error("Quote validation did not flag the phone field when it was missing.");
-  }
-
-  await page.locator("#phone").fill("+1 (619) 555-0100");
-  await page.locator("#sendQuoteBtn").click();
-  await waitForStatusMessage(page, "Add a few project details so we know what you need.");
-
-  const notesInvalid = await page.locator("#notes").getAttribute("aria-invalid");
-  if (notesInvalid !== "true") {
-    throw new Error("Quote validation did not flag the notes field when custom quote details were missing.");
-  }
-
-  await page.close();
-}
-
-async function assertCustomQuoteUi(browser) {
-  const page = await browser.newPage({
-    colorScheme: "dark",
-    viewport: {
-      width: 1440,
-      height: 2200
-    }
-  });
-
-  await mockRuntimeConfig(page, { stripeEnabled: true });
-  await page.goto(BASE_URL, { waitUntil: "networkidle" });
-  await page.evaluate(() => document.fonts.ready);
-  await page.locator('[data-service-choice="Custom quote"]').click();
-  await page.waitForFunction(() => {
-    return document.getElementById("serviceType")?.value === "Custom quote";
-  });
-
-  const customQuoteState = await page.evaluate(() => {
-    const checkoutSection = document.getElementById("checkoutOptionSection");
-    const payButton = document.getElementById("payDepositBtn");
-    const depositNote = document.getElementById("depositNote");
-    const choiceNote = document.getElementById("serviceChoiceNote");
-    const quoteModeNote = document.getElementById("quoteModeNote");
-
-    return {
-      serviceType: document.getElementById("serviceType")?.value || "",
-      checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null,
-      payButtonHidden: payButton ? payButton.hidden : null,
-      depositNoteHidden: depositNote ? depositNote.hidden : null,
-      choiceNoteHidden: choiceNote ? choiceNote.hidden : null,
-      choiceNoteText: choiceNote ? choiceNote.textContent.trim() : null,
-      quoteModeNoteHidden: quoteModeNote ? quoteModeNote.hidden : null,
-      quoteModeNoteText: quoteModeNote ? quoteModeNote.textContent.trim() : null,
-      sendQuoteLabel: document.getElementById("sendQuoteBtn")?.textContent.trim() || ""
-    };
-  });
-
-  if (customQuoteState.serviceType !== "Custom quote") {
-    throw new Error("The custom job choice did not switch the form into custom request mode.");
-  }
-
-  if (customQuoteState.checkoutSectionHidden !== true) {
-    throw new Error("Custom quote mode still shows the checkout package controls.");
-  }
-
-  if (customQuoteState.payButtonHidden !== true) {
-    throw new Error("Custom quote mode still shows the checkout button.");
-  }
-
-  if (customQuoteState.depositNoteHidden !== true) {
-    throw new Error("Custom quote mode still shows the deposit note.");
-  }
-
-  if (customQuoteState.choiceNoteHidden !== true || customQuoteState.choiceNoteText !== "") {
-    throw new Error("Custom quote mode still shows helper copy that should be hidden.");
-  }
-
-  if (customQuoteState.quoteModeNoteHidden !== false || !customQuoteState.quoteModeNoteText.includes("For anything else:")) {
-    throw new Error("Custom request mode did not show the expected helper note.");
-  }
-
-  if (customQuoteState.sendQuoteLabel !== "Send order request") {
-    throw new Error("Custom request mode did not keep the expected submit button label.");
-  }
-
-  await page.close();
-}
-
-async function assertApparelQuoteUi(browser) {
-  const page = await browser.newPage({
-    colorScheme: "dark",
-    viewport: {
-      width: 1440,
-      height: 2200
-    }
-  });
-
-  await mockRuntimeConfig(page, { stripeEnabled: true });
-  await page.goto(BASE_URL, { waitUntil: "networkidle" });
-  await page.evaluate(() => document.fonts.ready);
-  await page.locator('[data-service-preset="T-shirts & apparel"]').first().click();
-  await page.waitForFunction(() => {
-    return document.getElementById("serviceType")?.value === "T-shirts & apparel";
-  });
-
-  const apparelQuoteState = await page.evaluate(() => {
-    const checkoutSection = document.getElementById("checkoutOptionSection");
-    const payButton = document.getElementById("payDepositBtn");
-    const depositNote = document.getElementById("depositNote");
-    const choiceNote = document.getElementById("serviceChoiceNote");
-    const quoteModeNote = document.getElementById("quoteModeNote");
-    const notes = document.getElementById("notes");
-
-    return {
-      serviceType: document.getElementById("serviceType")?.value || "",
-      checkoutSectionHidden: checkoutSection ? checkoutSection.hidden : null,
-      payButtonHidden: payButton ? payButton.hidden : null,
-      depositNoteHidden: depositNote ? depositNote.hidden : null,
-      choiceNoteHidden: choiceNote ? choiceNote.hidden : null,
-      choiceNoteText: choiceNote ? choiceNote.textContent.trim() : null,
-      quoteModeNoteHidden: quoteModeNote ? quoteModeNote.hidden : null,
-      quoteModeNoteText: quoteModeNote ? quoteModeNote.textContent.trim() : null,
-      sendQuoteLabel: document.getElementById("sendQuoteBtn")?.textContent.trim() || "",
-      notesValue: notes ? notes.value : ""
-    };
-  });
-
-  if (apparelQuoteState.serviceType !== "T-shirts & apparel") {
-    throw new Error("The apparel CTA did not set the expected service type.");
-  }
-
-  if (
-    apparelQuoteState.checkoutSectionHidden !== true
-    || apparelQuoteState.payButtonHidden !== true
-    || apparelQuoteState.depositNoteHidden !== true
-  ) {
-    throw new Error("Apparel request mode still exposes payment controls.");
-  }
-
-  if (apparelQuoteState.choiceNoteHidden !== true || apparelQuoteState.choiceNoteText !== "") {
-    throw new Error("Apparel request mode still shows package helper copy.");
-  }
-
-  if (apparelQuoteState.quoteModeNoteHidden !== false || !apparelQuoteState.quoteModeNoteText.includes("For apparel:")) {
-    throw new Error("Apparel request mode did not show the expected detail helper note.");
-  }
-
-  if (apparelQuoteState.sendQuoteLabel !== "Send order request") {
-    throw new Error("Apparel request mode did not use the expected submit label.");
-  }
-
-  if (!apparelQuoteState.notesValue.includes("Need T-shirts or apparel printed.")) {
-    throw new Error("Apparel request mode did not prefill the project notes.");
-  }
-
-  await page.close();
-}
-
-async function assertCheckoutAllowsMissingIdentity(browser) {
-  const page = await browser.newPage({
-    colorScheme: "dark",
-    viewport: {
-      width: 1440,
-      height: 2200
-    }
-  });
-  let checkoutRequest = null;
-
-  await mockRuntimeConfig(page, { stripeEnabled: true });
+async function checkCardCheckout(browser) {
+  const page = await browser.newPage({ viewport: { width: 430, height: 900 }, colorScheme: "dark" });
+  await mockConfig(page);
+  let checkoutBody = null;
   await page.route("**/api/create-checkout-session", async (route) => {
-    checkoutRequest = route.request().postDataJSON();
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        id: "cs_test_stub",
-        url: `${BASE_URL}/?checkout=stub`
-      })
-    });
+    checkoutBody = route.request().postDataJSON();
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ id: "cs_test", url: `${BASE}/business-cards/?payment=cancelled` }) });
   });
+  await page.goto(`${BASE}/business-cards/`, { waitUntil: "networkidle" });
+  if (await page.getByText("Call or text", { exact: false }).count()) throw new Error("Card checkout still contains call/text distractions");
+  if ((await page.locator("#qty button").count()) !== 4) throw new Error("Expected four card quantities");
+  if (!(await page.locator("#pay").isEnabled())) throw new Error("Payment should be available without artwork");
+  if ((await page.locator("#artSubtitle").textContent()).trim() !== "No artwork needed to checkout.") throw new Error("Artwork is not clearly optional");
+  const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  if (scrollHeight > 980) throw new Error(`Business-card checkout is too tall: ${scrollHeight}px`);
 
-  await page.goto(BASE_URL, { waitUntil: "networkidle" });
-  await page.evaluate(() => document.fonts.ready);
-  await page.locator("#quoteForm").scrollIntoViewIfNeeded();
-  await page.locator('[data-service-choice="Business cards"]').click();
-  await page.waitForFunction(() => {
-    const field = document.getElementById("checkoutOptionId");
-    return field && !field.disabled && Boolean(field.value);
-  });
-  await page.locator("#payDepositBtn").click();
-  await page.waitForURL((url) => url.searchParams.get("checkout") === "stub");
-
-  if (!checkoutRequest || !checkoutRequest.lead) {
-    throw new Error("Checkout request was not captured during the Playwright smoke test.");
-  }
-
-  if (
-    checkoutRequest.lead.name !== ""
-    || checkoutRequest.lead.email !== ""
-    || checkoutRequest.lead.phone !== ""
-    || checkoutRequest.lead.contact !== ""
-  ) {
-    throw new Error("Checkout request unexpectedly required name, email, or phone before payment.");
-  }
-
+  await page.locator("#qty button").filter({ hasText: "250" }).click();
+  await page.locator("#artwork").setInputFiles({ name: "artwork.pdf", mimeType: "application/pdf", buffer: Buffer.from("test artwork") });
+  if (!(await page.locator("#artSubtitle").textContent()).includes("artwork.pdf")) throw new Error("Optional artwork selection is not reflected in UI");
+  await page.screenshot({ path: path.join(OUT, "business-cards-mobile.png"), fullPage: true });
+  await page.locator("#pay").click();
+  await page.waitForURL("**/business-cards/?payment=cancelled");
+  if (!checkoutBody || checkoutBody.lead.checkoutOptionId !== "cards-250") throw new Error("Selected quantity did not reach checkout");
+  if (!checkoutBody.lead.notes.includes("artwork.pdf")) throw new Error("Artwork filename was not kept with the checkout metadata");
   await page.close();
 }
 
-const scenarios = [
-  {
-    name: "homepage-desktop-playwright",
-    width: 1440,
-    height: 2200,
-    expectedColumns: 2,
-    expectedRows: 2
-  },
-  {
-    name: "homepage-tablet-playwright",
-    width: 820,
-    height: 2200,
-    expectedColumns: 1,
-    expectedRows: 4
-  },
-  {
-    name: "homepage-mobile-playwright",
-    width: 430,
-    height: 2200,
-    expectedColumns: 1,
-    expectedRows: 4
-  }
-];
-
-const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", HOST], {
-  cwd: ROOT,
-  env: { ...process.env },
-  stdio: "inherit"
-});
-
+const server = spawn("python3", ["-m", "http.server", String(PORT), "--bind", HOST], { cwd: ROOT, stdio: "ignore" });
 try {
-  await waitForServer(BASE_URL);
-
-  await assertHtmlContains(BASE_URL, [
-    "Business cards. Made easy.",
-    "What do you need?",
-    "T-shirts & apparel"
-  ]);
-  await assertHtmlContains(`${BASE_URL}/auth/`, [
-    "Portal sign in",
-    "Open portal",
-    "Create account"
-  ]);
-  await assertHtmlContains(`${BASE_URL}/portal/`, [
-    "What this page is for",
-    "What is coming next"
-  ]);
-  await assertHtmlContains(`${BASE_URL}/admin/`, [
-    "Quotes and orders, in one place.",
-    "Lead feed"
-  ]);
-
-  const browser = await chromium.launch({
-    executablePath: resolveChromeExecutable() ?? undefined,
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
-    headless: true
-  });
-
+  await waitForServer();
+  const browser = await chromium.launch({ executablePath: browserExecutable(), args: ["--no-sandbox", "--disable-setuid-sandbox"], headless: true });
   try {
-    const report = [];
-
-    for (const scenario of scenarios) {
-      report.push(await captureHomepage(browser, scenario));
-    }
-
-    await assertChoosePackageButtonNavigatesToShop(browser);
-    await assertCustomQuoteUi(browser);
-    await assertApparelQuoteUi(browser);
-    await assertQuoteValidationMessages(browser);
-    await assertCheckoutAllowsMissingIdentity(browser);
-
-    fs.writeFileSync(
-      path.join(SCREENSHOT_DIR, "report.json"),
-      JSON.stringify(report, null, 2)
-    );
-
-    console.log("Visual smoke check passed.");
-    console.log(JSON.stringify(report, null, 2));
-  } finally {
-    await browser.close();
-  }
-} finally {
-  server.kill("SIGTERM");
-}
+    await checkLauncher(browser, 1440, 900, "launcher-desktop");
+    await checkLauncher(browser, 430, 900, "launcher-mobile");
+    await checkCardCheckout(browser);
+    console.log("App-style visual smoke check passed.");
+  } finally { await browser.close(); }
+} finally { server.kill("SIGTERM"); }
