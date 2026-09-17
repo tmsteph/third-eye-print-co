@@ -62,8 +62,9 @@ function createCheckoutSessionHandler(options = {}) {
     try {
       const body = await readJsonBody(req);
       if (Array.isArray(body.artwork) && body.artwork.length) {
-        return sendJson(res, 400, { error: "Artwork is uploaded after payment." });
+        return sendJson(res, 400, { error: "Artwork files are delivered only after payment." });
       }
+      const artworkExpected = Boolean(body && body.artworkExpected);
       const lead = normalizeLead(body && body.lead ? body.lead : body || {});
       const checkoutSelection = resolveCheckoutSelection(lead, env);
       if (!checkoutSelection) {
@@ -88,7 +89,8 @@ function createCheckoutSessionHandler(options = {}) {
         quantity: lead.quantity || checkoutSelection.option.quantityLabel || "",
         garment: lead.garment || "",
         needBy: lead.needBy || "",
-        artworkState: "pending",
+        artworkState: artworkExpected ? "selected_pending_payment" : "not_selected",
+        artworkExpected: artworkExpected ? "yes" : "no",
         artworkFiles: "",
       };
 

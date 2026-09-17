@@ -22,6 +22,12 @@ function createStripeFactory(result) {
     result.secretKey = secretKey;
 
     return {
+      checkout: {
+        sessions: {
+          async retrieve(id) { result.retrievedSessionId = id; return result.event?.data?.object || {}; },
+          async update(id, payload) { result.updatedSessionId = id; result.updatedSession = payload; return { id, ...payload }; },
+        },
+      },
       webhooks: {
         constructEvent(rawBody, signature, webhookSecret) {
           result.rawBody = Buffer.isBuffer(rawBody) ? rawBody.toString("utf8") : String(rawBody || "");
@@ -142,13 +148,17 @@ test("stripe webhook persists paid checkout sessions", async () => {
       },
     },
   };
-  const persisted = [];
+  const persisted = [], sent = [];
   const handler = createStripeWebhookHandler({
     env: {
       STRIPE_SECRET_KEY: "sk_test_secret",
       STRIPE_WEBHOOK_SECRET: "whsec_test_secret",
+      GMAIL_USER: "3dvr@example.com",
+      GMAIL_APP_PASSWORD: "app-pass",
+      CHECKOUT_ORDER_EMAIL: "esai@example.com,3dvr@example.com",
     },
     stripeFactory: createStripeFactory(stripeCalls),
+    mailTransport: { async sendMail(payload) { sent.push(payload); return { accepted: ["esai@example.com"] }; } },
     persistRecord: async (record) => {
       persisted.push(record);
       return record;
@@ -177,6 +187,11 @@ test("stripe webhook persists paid checkout sessions", async () => {
   assert.equal(persisted[0].phone, "+16195551212");
   assert.equal(persisted[0].checkoutSessionId, "cs_test_paid");
   assert.equal(res.body.recordId, "stripe-evt_test_paid");
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].to, "esai@example.com,3dvr@example.com");
+  assert.match(sent[0].subject, /PAID Third Eye order/);
+  assert.equal(stripeCalls.retrievedSessionId, "cs_test_paid");
+  assert.equal(stripeCalls.updatedSession.metadata.checkoutEmailSent, "yes");
 });
 
 test("stripe webhook ignores unrelated events", async () => {

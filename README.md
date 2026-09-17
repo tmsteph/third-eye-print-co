@@ -34,6 +34,7 @@ cp .env.example .env
 - `QUOTE_EMAIL_TO` (public quote mailto target)
 - `GMAIL_USER` + `GMAIL_APP_PASSWORD` (server-side Gmail sender for post-payment business-card artwork)
 - `BUSINESS_CARD_ORDER_EMAIL` (one or more comma-separated recipients for paid artwork; can include both Esai and the 3DVR inbox; falls back to `QUOTE_EMAIL_TO`/`GMAIL_USER`)
+- `CHECKOUT_ORDER_EMAIL` (recipient list for paid-checkout notifications; falls back to `BUSINESS_CARD_ORDER_EMAIL`)
 
 4. Run the Vercel dev server:
 
@@ -77,7 +78,7 @@ This writes screenshots and a small report to `artifacts/screenshots/`.
 - `GET /config.js`: Rewritten to `/api/config` and exposes safe public runtime config (`gunRelayUrls`, `adminPubs`, and the live checkout tiers for cards, tents, and bundles).
 - `POST /api/create-checkout-session`: Creates the Stripe Checkout session. It deliberately does not accept or email business-card artwork before payment.
 - `POST /api/upload-artwork`: Accepts optional PDF/JPG/PNG artwork only after checking the Stripe session is paid and matches the business-card order ID; then emails the attachments to the configured order inbox.
-- `POST /api/webhooks/stripe`: Verifies Stripe webhook signatures and writes confirmed payment events back into `third-eye-print-co/leads` in Gun.
+- `POST /api/webhooks/stripe`: Verifies Stripe webhook signatures, writes confirmed payments into Gun, and emails the order inbox for every successful checkout.
 
 ## Stripe webhook setup
 

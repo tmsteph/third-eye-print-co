@@ -80,6 +80,60 @@ function formatAmountNote(amountCents, currencyCode) {
   }
 }
 
+
+function createMailTransport(env) {
+  if (!env.GMAIL_USER || !env.GMAIL_APP_PASSWORD) return null;
+  const nodemailer = require("nodemailer");
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: env.GMAIL_USER, pass: env.GMAIL_APP_PASSWORD },
+    disableFileAccess: true,
+    disableUrlAccess: true,
+  });
+}
+
+async function notifyPaidCheckout({ stripe, session, record, env, mailTransport }) {
+  const transport = mailTransport || createMailTransport(env);
+  if (!transport) throw new Error("Paid checkout email is not configured.");
+  const current = stripe.checkout?.sessions?.retrieve ? await stripe.checkout.sessions.retrieve(session.id) : session;
+  const metadata = current?.metadata || session.metadata || {};
+  if (metadata.checkoutEmailSent === "yes") return { sent: false, duplicate: true };
+  const recipient = String(env.CHECKOUT_ORDER_EMAIL || env.BUSINESS_CARD_ORDER_EMAIL || env.QUOTE_EMAIL_TO || env.GMAIL_USER || "").trim();
+  if (!recipient) throw new Error("Paid checkout recipient is not configured.");
+  const orderId = safeText(metadata.orderId || "", 80);
+  const service = safeText(metadata.serviceType || record.serviceType || "Order", 120);
+  const option = safeText(metadata.checkoutOptionLabel || record.checkoutOptionLabel || record.quantity || "", 120);
+  const amount = formatAmountNote(record.checkoutAmountCents, record.checkoutCurrency).replace(/^Stripe confirmed payment of /, "").replace(/\.$/, "");
+  const artworkState = safeText(metadata.artworkState || "", 80);
+  const artworkLine = artworkState === "selected_pending_payment"
+    ? "Artwork: selected before payment; delivery should follow automatically."
+    : artworkState === "received" ? "Artwork: received." : "Artwork: not selected yet.";
+  await transport.sendMail({
+    from: `"Third Eye Print Co." <${env.GMAIL_USER}>`,
+    to: recipient,
+    replyTo: record.email || env.GMAIL_USER,
+    subject: `PAID Third Eye order ${orderId || session.id} — ${option || service}`,
+    text: [
+      "A Third Eye Print Co. checkout was paid.", "",
+      `Order: ${orderId || "(no order id)"}`,
+      `Stripe session: ${session.id}`,
+      `Product: ${service}`,
+      option ? `Option: ${option}` : "",
+      `Amount: ${amount}`,
+      record.email ? `Customer email: ${record.email}` : "",
+      record.name ? `Customer: ${record.name}` : "",
+      artworkLine,
+    ].filter(Boolean).join("\n"),
+    headers: { "X-Third-Eye-Stripe-Session": session.id, "X-Third-Eye-Order-Id": orderId },
+  });
+  if (stripe.checkout?.sessions?.update) {
+    await stripe.checkout.sessions.update(session.id, {
+      metadata: { ...metadata, checkoutEmailSent: "yes", checkoutEmailSentAt: new Date().toISOString() },
+    });
+  }
+  return { sent: true };
+}
+
 function buildStripeLeadRecord(event) {
   if (!event || !HANDLED_EVENT_TYPES.has(event.type)) {
     return null;
@@ -156,6 +210,7 @@ function createStripeWebhookHandler(options = {}) {
     env = process.env,
     persistRecord = persistLeadRecord,
     stripeFactory = require("stripe"),
+    mailTransport = null,
   } = options;
 
   return async function stripeWebhookHandler(req, res) {
@@ -204,6 +259,7 @@ function createStripeWebhookHandler(options = {}) {
       }
 
       await persistRecord(record, { env });
+      await notifyPaidCheckout({ stripe, session: event.data.object, record, env, mailTransport });
 
       sendJson(res, 200, {
         received: true,
@@ -230,4 +286,5 @@ module.exports.config = {
 };
 module.exports.buildStripeLeadRecord = buildStripeLeadRecord;
 module.exports.createStripeWebhookHandler = createStripeWebhookHandler;
+module.exports.notifyPaidCheckout = notifyPaidCheckout;
 module.exports.readRawBody = readRawBody;
