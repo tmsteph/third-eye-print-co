@@ -1,29 +1,351 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0f"><title>Business Cards — Third Eye Print Co.</title><meta name="description" content="Choose a quantity, optionally add artwork, and pay securely."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/app.css"><script src="/config.js"></script></head><body>
-<div class="shell"><header class="top"><a class="back" href="/">← Back</a><a class="brand" href="/"><img src="/favicon.svg" alt=""><span>Third Eye Print Co.</span></a><span class="spacer"></span></header><main>
-<div><h1>Business cards</h1><p>Choose a quantity, add artwork if you have it, then pay securely.</p></div>
-<section class="panel" id="qtyPanel"><span class="label">1 · Quantity</span><div class="grid four" id="qty"></div></section>
-<section class="panel" id="artPanel" hidden><span class="label">2 · Artwork · optional</span><div class="upload-row"><div class="upload-copy"><strong id="artTitle">Add artwork</strong><span id="artSubtitle">Choose up to two print files, or send them later.</span></div><label class="button" for="artwork">Choose files</label></div><input class="file-input" id="artwork" type="file" multiple accept="image/jpeg,image/png,application/pdf"><div class="file-note">PDF, JPG, or PNG · 2.5 MB total. Before payment, selected files stay on this device and are delivered only after Stripe confirms payment.</div><div class="grid two" id="postPayActions" style="margin-top:12px" hidden><button class="button primary" id="upload" type="button" disabled>Send artwork</button><a class="button" id="emailArtwork" href="#">Email instead</a></div></section>
-<section class="panel success" id="success" hidden><strong>Payment received.</strong><p id="successCopy">Your order is in.</p></section><div class="status" id="status" aria-live="polite"></div>
-</main></div><div class="bar" id="bar"><div class="bar-inner"><div class="summary"><span id="summaryQty">100 cards</span><strong id="summaryPrice">$29.00</strong></div><button class="pay" id="pay">Pay $29.00</button></div></div>
-<script>
-const runtime=window.THIRD_EYE_CONFIG||{}, fallback=[{id:'cards-50',label:'50 cards',amountCents:2000},{id:'cards-100',label:'100 cards',amountCents:2900},{id:'cards-250',label:'250 cards',amountCents:3900},{id:'cards-500',label:'500 cards',amountCents:5900}];
-const configured=runtime.stripeCatalog?.businessCards, options=configured?.options?.length?configured.options:fallback;let selected=options.find(o=>o.id==='cards-100')||options[0];
-const $=id=>document.getElementById(id),qty=$('qty'),qtyPanel=$('qtyPanel'),summaryQty=$('summaryQty'),summaryPrice=$('summaryPrice'),pay=$('pay'),bar=$('bar'),status=$('status'),success=$('success'),successCopy=$('successCopy'),artPanel=$('artPanel'),artwork=$('artwork'),artTitle=$('artTitle'),artSubtitle=$('artSubtitle'),postPayActions=$('postPayActions'),upload=$('upload'),emailArtwork=$('emailArtwork');
-const maxArtworkBytes=Number(runtime.maxArtworkBytes)||2500000, uploadEnabled=Boolean(runtime.artworkUploadConfigured), money=c=>new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(Number(c||0)/100);artPanel.hidden=!uploadEnabled;
-function render(){qty.replaceChildren();for(const o of options){const b=document.createElement('button');b.type='button';b.className='choice'+(o.id===selected.id?' active':'');b.innerHTML=`${o.label.replace(' cards','')}<span>${money(o.amountCents)}</span>`;b.onclick=()=>{selected=o;render()};qty.appendChild(b)}summaryQty.textContent=selected.label;summaryPrice.textContent=money(selected.amountCents);pay.textContent=`Pay ${money(selected.amountCents)}`}
-function selectedFiles(){return Array.from(artwork.files||[])}function validateFiles(files){if(files.length>2)throw new Error('Choose at most two artwork files.');if(files.reduce((n,f)=>n+f.size,0)>maxArtworkBytes)throw new Error('Keep artwork under 2.5 MB total.');if(files.some(f=>!['application/pdf','image/jpeg','image/png'].includes(f.type)))throw new Error('Artwork must be PDF, JPG, or PNG.')}
-function updateArtwork(){const files=selectedFiles();if(!files.length){artTitle.textContent='Add artwork';artSubtitle.textContent='Choose up to two print files, or send them later.';upload.disabled=true;return}artTitle.textContent=files.length===1?'Artwork selected':'2 files selected';artSubtitle.textContent=files.map(f=>f.name).join(' · ');upload.disabled=false}
-artwork.addEventListener('change',()=>{status.className='status';status.textContent='';try{validateFiles(selectedFiles())}catch(e){artwork.value='';status.className='status error';status.textContent=e.message}updateArtwork()});
-const readFile=file=>new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=()=>reject(new Error(`Could not read ${file.name}.`));r.onload=()=>resolve({name:file.name,type:file.type,data:String(r.result||'').split(',')[1]||''});r.readAsDataURL(file)});
-const openDb=()=>new Promise((resolve,reject)=>{const req=indexedDB.open('third-eye-checkout',1);req.onupgradeneeded=()=>req.result.createObjectStore('artwork',{keyPath:'orderId'});req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});
-async function dbAction(mode,fn){const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction('artwork',mode),store=tx.objectStore('artwork');let result;try{result=fn(store)}catch(e){db.close();reject(e);return}tx.oncomplete=()=>{db.close();resolve(result?.result)};tx.onerror=()=>{db.close();reject(tx.error)}})}
-async function savePending(orderId,files){await dbAction('readwrite',s=>s.put({orderId,createdAt:Date.now(),files:files.map(f=>({name:f.name,type:f.type,blob:f}))}))}async function getPending(orderId){return dbAction('readonly',s=>s.get(orderId))}async function deletePending(orderId){if(orderId)await dbAction('readwrite',s=>s.delete(orderId))}
-async function cleanupPending(){try{const db=await openDb();const tx=db.transaction('artwork','readwrite'),store=tx.objectStore('artwork'),req=store.openCursor(),cutoff=Date.now()-7*86400000;req.onsuccess=()=>{const c=req.result;if(!c)return;if(Number(c.value?.createdAt||0)<cutoff)c.delete();c.continue()};tx.oncomplete=()=>db.close()}catch{}}
-async function deliver(files,sessionId,orderId){validateFiles(files);const encoded=[];for(const file of files)encoded.push(await readFile(file));const r=await fetch('/api/upload-artwork',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId,orderId,artwork:encoded})}),body=await r.json();if(!r.ok)throw new Error(body.error||'Could not send artwork.');await deletePending(orderId);artwork.value='';artTitle.textContent='Artwork received';artSubtitle.textContent='Your files were sent with your paid order.';upload.hidden=true;emailArtwork.hidden=true;status.textContent='Artwork received. Thank you.'}
-pay.addEventListener('click',async()=>{status.className='status';status.textContent='Opening secure checkout…';pay.disabled=true;try{const files=uploadEnabled?selectedFiles():[];validateFiles(files);const r=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lead:{serviceType:'Business cards',checkoutOptionId:selected.id,checkoutOptionLabel:selected.label,quantity:selected.label,artStatus:files.length?'Selected':'Not selected'},artworkExpected:files.length>0})}),body=await r.json();if(!r.ok||!body.url)throw new Error(body.error||'Checkout unavailable');if(files.length)await savePending(body.orderId,files);location.assign(body.url)}catch(e){status.className='status error';status.textContent=e.message||'Checkout unavailable. Please try again.';pay.disabled=false}});
-const params=new URLSearchParams(location.search),payment=params.get('payment'),order=params.get('order')||'',sessionId=params.get('session_id')||'';
-async function paidReturn(){success.hidden=false;successCopy.textContent=`Order ${order} is paid.`;bar.hidden=true;qtyPanel.hidden=true;postPayActions.hidden=!uploadEnabled;const email=runtime.quoteEmailTo||'gamboaesai@gmail.com',subject=`Business card artwork - ${order}`,body=`Hi Third Eye Print Co.,\n\nPlease find my business card artwork attached for paid order ${order}.\n`;emailArtwork.href=`mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;if(!uploadEnabled)return;try{const pending=await getPending(order);if(pending?.files?.length){artTitle.textContent='Sending artwork…';artSubtitle.textContent='Payment confirmed. Delivering your selected files.';upload.disabled=true;const files=pending.files.map(f=>new File([f.blob],f.name,{type:f.type}));await deliver(files,sessionId,order)}}catch(e){artTitle.textContent='Artwork ready';artSubtitle.textContent='Payment is complete. Tap retry to send your selected files.';upload.textContent='Retry artwork';upload.disabled=false;status.className='status error';status.textContent=e.message||'Could not send artwork automatically.'}}
-if(payment==='success'&&sessionId&&order)paidReturn();else if(payment==='cancelled'){deletePending(order);status.textContent='Payment canceled. No artwork was sent and no charge was made.'}
-upload.addEventListener('click',async()=>{const files=selectedFiles();if(!sessionId||!order||!files.length)return;upload.disabled=true;status.className='status';status.textContent='Verifying payment and sending artwork…';try{await deliver(files,sessionId,order)}catch(e){upload.disabled=false;status.className='status error';status.textContent=e.message||'Could not send artwork. Please try again.'}});
-cleanupPending();render();updateArtwork();
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0b0f">
+  <title>Business Cards — Third Eye Print Co.</title>
+  <meta name="description" content="Upload your business card artwork, choose a quantity, and pay securely.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script src="/config.js"></script>
+  <style>
+    :root{color-scheme:dark;--panel:#15161ce8;--muted:#aeb2bc;--accent:#e4cf85;--accent2:#f0db97;--text:#f7f5ef;--line:#ffffff1f;--danger:#ffb4a6;--ok:#bfe7a6}
+    *{box-sizing:border-box}
+    [hidden]{display:none!important}
+    body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 15% 0%,#e4cf8526,transparent 32rem),linear-gradient(#0b0b0f,#101116)}
+    button,input{font:inherit}
+    a{color:inherit;text-decoration:none}
+    .shell{width:min(720px,calc(100% - 24px));margin:auto;padding:20px 0 50px}
+    .top{display:flex;align-items:center;gap:12px}
+    .back{color:var(--muted);font-weight:750}
+    .brand{display:flex;align-items:center;gap:9px;margin-left:auto;font-weight:850}
+    .brand img{width:30px;height:30px;border-radius:9px;background:#fff}
+    .hero{padding:42px 2px 26px}
+    .hero small{color:var(--accent2);font-weight:800;letter-spacing:.15em}
+    .hero h1{margin:10px 0 0;font-size:clamp(2.6rem,11vw,4.7rem);line-height:.95;letter-spacing:-.055em}
+    .hero p{max-width:540px;color:var(--muted);font-size:1.03rem;line-height:1.5}
+    .flow{display:grid;gap:14px}
+    .card{display:grid;grid-template-columns:40px 1fr;gap:4px 14px;padding:19px;border:1px solid var(--line);border-radius:22px;background:var(--panel);box-shadow:0 18px 50px #0003}
+    .num{display:grid;width:35px;height:35px;place-items:center;border-radius:50%;background:var(--accent);color:#0b0b0f;font-weight:900}
+    .copy h2{margin:2px 0 4px;font-size:1.18rem}
+    .copy p{margin:0;color:var(--muted)}
+    .wide{grid-column:1/-1}
+    .uploads{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+    .upload{position:relative;min-height:164px;padding:14px;border:1px dashed #e4cf8570;border-radius:15px;background:#191a20;cursor:pointer;overflow:hidden}
+    .upload input{position:absolute;width:1px;height:1px;opacity:0}
+    .upload strong{display:block}
+    .upload .name{display:block;margin-top:7px;color:var(--accent2);font-size:.88rem;overflow-wrap:anywhere}
+    .preview{display:grid;place-items:center;height:92px;margin-top:10px;border-radius:10px;background:#0003;color:var(--muted);font-size:.8rem;overflow:hidden}
+    .preview img{width:100%;height:100%;object-fit:contain;background:#fff}
+    .note{margin:9px 0 0;color:var(--muted);font-size:.8rem}
+    .products{display:grid;gap:9px;margin-top:16px}
+    .product{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:15px;background:#101116;cursor:pointer}
+    .product:has(input:checked){border-color:#e4cf8599;background:#242116;box-shadow:0 0 0 1px #e4cf8533}
+    .product input{accent-color:var(--accent)}
+    .details{display:grid;flex:1;gap:3px}
+    .details span{color:var(--muted);font-size:.88rem}
+    .price{font-size:1.2rem}
+    .pay{width:100%;margin-top:16px;padding:16px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--accent2),#d7b957);color:#09090c;font-weight:900;cursor:pointer}
+    .pay:disabled{opacity:.5;cursor:not-allowed}
+    .status{min-height:1.2em;margin:10px 0 0;color:var(--danger);font-size:.88rem}
+    .fine{margin:2px 0 0;color:var(--muted);font-size:.78rem;text-align:center}
+    .banner{margin:20px 0 0;padding:13px 15px;border:1px solid #bfe7a655;border-radius:14px;background:#32452440;color:#d9f5c8}
+    .banner.cancel{border-color:#ffb4a655;background:#5a23233f;color:#ffd0d0}
+    .banner a{text-decoration:underline;font-weight:800}
+    @media(max-width:520px){.hero{padding-top:34px}.card{padding:16px}.uploads{grid-template-columns:1fr}.upload{min-height:145px}.preview{height:78px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <a class="back" href="/">← Back</a>
+      <a class="brand" href="/"><img src="/favicon.svg" alt=""><span>Third Eye Print Co.</span></a>
+    </header>
+
+    <section id="banner" class="banner" hidden></section>
+
+    <section class="hero">
+      <small>BUSINESS CARDS</small>
+      <h1>Upload. Pick. Pay.</h1>
+      <p>No quote call. Upload your card, choose how many you need, see the price, then check out securely.</p>
+    </section>
+
+    <form id="form" class="flow" novalidate>
+      <section class="card">
+        <div class="num">1</div>
+        <div class="copy"><h2>Upload your card</h2><p>Front required. Back optional.</p></div>
+        <div class="uploads wide">
+          <label class="upload">
+            <input id="front" type="file" accept="image/jpeg,image/png,application/pdf" required>
+            <strong>Front</strong>
+            <span id="front-name" class="name">Choose image or PDF</span>
+            <span id="front-preview" class="preview"></span>
+          </label>
+          <label class="upload">
+            <input id="back" type="file" accept="image/jpeg,image/png,application/pdf">
+            <strong>Back <small>optional</small></strong>
+            <span id="back-name" class="name">Choose image or PDF</span>
+            <span id="back-preview" class="preview"></span>
+          </label>
+        </div>
+        <p class="note wide">JPG, PNG, or PDF. Front + back must stay under 2.5 MB total. Files are delivered automatically only after Stripe confirms payment.</p>
+      </section>
+
+      <section class="card">
+        <div class="num">2</div>
+        <div class="copy"><h2>Choose quantity</h2><p>Third Eye Print Co. business card pricing.</p></div>
+        <div id="products" class="products wide"></div>
+      </section>
+
+      <section class="card">
+        <div class="num">3</div>
+        <div class="copy"><h2>Pay securely</h2><p>Stripe handles payment. Your selected artwork sends automatically after payment.</p></div>
+        <button id="pay" class="pay wide" type="submit">Pay securely</button>
+        <p id="status" class="status wide" role="status" aria-live="polite"></p>
+        <p class="fine wide">Production starts after payment and a quick artwork check.</p>
+      </section>
+    </form>
+  </main>
+
+  <script>
+    const runtime=window.THIRD_EYE_CONFIG||{};
+    const fallback=[
+      {id:'cards-50',label:'50 cards',amountCents:2000},
+      {id:'cards-100',label:'100 cards',amountCents:2900},
+      {id:'cards-250',label:'250 cards',amountCents:3900},
+      {id:'cards-500',label:'500 cards',amountCents:5900}
+    ];
+    const configured=runtime.stripeCatalog&&runtime.stripeCatalog.businessCards;
+    const options=configured&&configured.options&&configured.options.length?configured.options:fallback;
+    let selected=options[0];
+    const form=document.getElementById('form');
+    const front=document.getElementById('front');
+    const back=document.getElementById('back');
+    const pay=document.getElementById('pay');
+    const status=document.getElementById('status');
+    const products=document.getElementById('products');
+    const banner=document.getElementById('banner');
+    const maxArtworkBytes=Number(runtime.maxArtworkBytes)||2500000;
+    const uploadEnabled=Boolean(runtime.artworkUploadConfigured);
+    let submitting=false;
+
+    const money=c=>new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(Number(c||0)/100);
+
+    function renderProducts(){
+      products.replaceChildren();
+      options.forEach(function(o,index){
+        const label=document.createElement('label');
+        label.className='product';
+        const input=document.createElement('input');
+        input.type='radio';
+        input.name='product';
+        input.value=o.id;
+        input.checked=index===0;
+        input.addEventListener('change',function(){selected=o;updatePay()});
+        const details=document.createElement('span');
+        details.className='details';
+        const name=document.createElement('strong');
+        name.textContent=o.label;
+        const specs=document.createElement('span');
+        specs.textContent='Premium business cards';
+        details.append(name,specs);
+        const price=document.createElement('strong');
+        price.className='price';
+        price.textContent=money(o.amountCents);
+        label.append(input,details,price);
+        products.append(label);
+      });
+      selected=options[0];
+      updatePay();
+    }
+
+    function updatePay(){
+      pay.textContent='Pay '+money(selected.amountCents);
+      pay.disabled=submitting||!uploadEnabled;
+    }
+
+    function showFile(input,nameId,previewId){
+      const file=input.files&&input.files[0];
+      const name=document.getElementById(nameId);
+      const preview=document.getElementById(previewId);
+      name.textContent=file?file.name:'Choose image or PDF';
+      preview.replaceChildren();
+      if(!file)return;
+      if(file.type.indexOf('image/')===0){
+        const img=document.createElement('img');
+        img.src=URL.createObjectURL(file);
+        img.alt='Artwork preview';
+        preview.append(img);
+      }else{
+        preview.textContent='PDF selected';
+      }
+    }
+
+    front.addEventListener('change',function(){showFile(front,'front-name','front-preview');status.textContent=''});
+    back.addEventListener('change',function(){showFile(back,'back-name','back-preview');status.textContent=''});
+
+    function validateFiles(files){
+      if(!files.length)throw new Error('Upload the front of your card.');
+      if(files.length>2)throw new Error('Upload one front and, if needed, one back file.');
+      if(files.reduce(function(n,f){return n+f.size},0)>maxArtworkBytes)throw new Error('Front + back must stay under 2.5 MB total.');
+      if(files.some(function(f){return !['application/pdf','image/jpeg','image/png'].includes(f.type)}))throw new Error('Artwork must be PDF, JPG, or PNG.');
+    }
+
+    const readFile=file=>new Promise(function(resolve,reject){
+      const r=new FileReader();
+      r.onerror=function(){reject(new Error('Could not read '+file.name+'.'))};
+      r.onload=function(){resolve({name:file.name,type:file.type,data:String(r.result||'').split(',')[1]||''})};
+      r.readAsDataURL(file);
+    });
+
+    const openDb=()=>new Promise(function(resolve,reject){
+      const req=indexedDB.open('third-eye-checkout',1);
+      req.onupgradeneeded=function(){if(!req.result.objectStoreNames.contains('artwork'))req.result.createObjectStore('artwork',{keyPath:'orderId'})};
+      req.onsuccess=function(){resolve(req.result)};
+      req.onerror=function(){reject(req.error)};
+    });
+
+    async function dbAction(mode,fn){
+      const db=await openDb();
+      return new Promise(function(resolve,reject){
+        const tx=db.transaction('artwork',mode);
+        const store=tx.objectStore('artwork');
+        let result;
+        try{result=fn(store)}catch(e){db.close();reject(e);return}
+        tx.oncomplete=function(){db.close();resolve(result&&result.result)};
+        tx.onerror=function(){db.close();reject(tx.error)};
+      });
+    }
+
+    async function savePending(orderId,files){
+      await dbAction('readwrite',function(s){return s.put({orderId:orderId,createdAt:Date.now(),files:files.map(function(f){return {name:f.name,type:f.type,blob:f}})})});
+    }
+    async function getPending(orderId){return dbAction('readonly',function(s){return s.get(orderId)})}
+    async function deletePending(orderId){if(orderId)await dbAction('readwrite',function(s){return s.delete(orderId)})}
+
+    async function cleanupPending(){
+      try{
+        const db=await openDb();
+        const tx=db.transaction('artwork','readwrite');
+        const store=tx.objectStore('artwork');
+        const req=store.openCursor();
+        const cutoff=Date.now()-7*86400000;
+        req.onsuccess=function(){
+          const c=req.result;
+          if(!c)return;
+          if(Number(c.value&&c.value.createdAt||0)<cutoff)c.delete();
+          c.continue();
+        };
+        tx.oncomplete=function(){db.close()};
+      }catch(_e){}
+    }
+
+    async function deliver(files,sessionId,orderId){
+      validateFiles(files);
+      const encoded=[];
+      for(const file of files)encoded.push(await readFile(file));
+      const r=await fetch('/api/upload-artwork',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({sessionId:sessionId,orderId:orderId,artwork:encoded})
+      });
+      const body=await r.json();
+      if(!r.ok)throw new Error(body.error||'Could not deliver artwork.');
+      await deletePending(orderId);
+    }
+
+    function setSubmitting(value){
+      submitting=value;
+      front.disabled=value;
+      back.disabled=value;
+      products.querySelectorAll('input[name="product"]').forEach(function(input){input.disabled=value});
+      updatePay();
+    }
+
+    form.addEventListener('submit',async function(e){
+      e.preventDefault();
+      if(submitting)return;
+      status.textContent='';
+      const f=front.files&&front.files[0];
+      const b=back.files&&back.files[0];
+      const files=[f,b].filter(Boolean);
+      try{
+        if(!uploadEnabled)throw new Error('Artwork upload is being connected right now.');
+        validateFiles(files);
+        setSubmitting(true);
+        pay.textContent='Opening secure checkout…';
+        const r=await fetch('/api/create-checkout-session',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            lead:{
+              serviceType:'Business cards',
+              checkoutOptionId:selected.id,
+              checkoutOptionLabel:selected.label,
+              quantity:selected.label,
+              artStatus:'Selected'
+            },
+            artworkExpected:true
+          })
+        });
+        const body=await r.json();
+        if(!r.ok||!body.url)throw new Error(body.error||'Checkout unavailable.');
+        await savePending(body.orderId,files);
+        location.assign(body.url);
+      }catch(e){
+        setSubmitting(false);
+        status.textContent=e.message||'Checkout unavailable. Please try again.';
+      }
+    });
+
+    async function paidReturn(order,sessionId){
+      form.hidden=true;
+      banner.hidden=false;
+      banner.textContent='Payment received. Delivering your artwork automatically…';
+      try{
+        const pending=await getPending(order);
+        if(!pending||!pending.files||!pending.files.length)throw new Error('Selected artwork was not found on this device.');
+        const files=pending.files.map(function(f){return new File([f.blob],f.name,{type:f.type})});
+        let lastError;
+        for(let attempt=0;attempt<3;attempt++){
+          try{
+            await deliver(files,sessionId,order);
+            banner.textContent='Payment received. Your artwork was delivered automatically. We’ll review it and start production.';
+            return;
+          }catch(e){
+            lastError=e;
+            if(attempt<2)await new Promise(function(resolve){setTimeout(resolve,900*(attempt+1))});
+          }
+        }
+        throw lastError;
+      }catch(e){
+        const email=runtime.quoteEmailTo||'gamboaesai@gmail.com';
+        const subject='Business card artwork - '+order;
+        banner.innerHTML='Payment received, but automatic artwork delivery needs attention. <a href="mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subject)+'">Email the artwork</a>.';
+        status.textContent=e.message||'Could not deliver artwork automatically.';
+      }
+    }
+
+    const params=new URLSearchParams(location.search);
+    const payment=params.get('payment');
+    const order=params.get('order')||'';
+    const sessionId=params.get('session_id')||'';
+    if(payment==='success'&&sessionId&&order){
+      paidReturn(order,sessionId);
+    }else if(payment==='cancelled'){
+      deletePending(order);
+      banner.hidden=false;
+      banner.className='banner cancel';
+      banner.textContent='Payment was not completed. No charge was made and no artwork was sent.';
+    }
+
+    cleanupPending();
+    renderProducts();
+    if(!uploadEnabled){
+      pay.textContent='Checkout unavailable';
+      pay.disabled=true;
+      status.textContent='Artwork upload is being connected right now.';
+    }
+  </script>
+</body>
+</html>
