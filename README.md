@@ -52,6 +52,7 @@ http://localhost:8787
 ## Public app routes
 
 - `/business-cards/`: focused quantity → optional artwork → payment flow. The upload control is only exposed when server-side Gmail delivery is configured.
+- `/tents/`: 10×10 printed canopy + aluminum frame; live Stripe tiers ($1,000 / $2,700 / $4,250 defaults), US shipping-address collection, and server-verified payment return. Shipping and applicable tax are quoted separately for approval before production. Artwork is emailed after payment; manual 4over fulfillment follows proof approval.
 - `/t-shirts/`: compact apparel request flow.
 - `/custom/`: compact request flow for signs, tents, decals, menus, banners, and other jobs.
 - The previous long-form storefront is retired from the public flow; Git history remains the source of truth if anything needs to be recovered.
@@ -70,7 +71,7 @@ This writes screenshots and a small report to `artifacts/screenshots/`.
 
 - 4over is the current production partner, but there is no direct 4over API integration yet. Fulfillment is manual after the customer request/payment reaches Third Eye.
 - The public business-card checkout intentionally uses production-friendly quantities: 50, 100, 250, and 500 cards.
-- Premium stocks, special finishes, apparel, signs, tents, and unusual quantities stay on the quote path until their production specs are standardized.
+- Premium stocks, special finishes, apparel, signs, tent accessories / nonstandard sizes, and unusual quantities stay on the quote path until their production specs are standardized.
 - Legacy `200`-card environment variable names are still accepted as fallbacks so existing deployments do not break while moving to the 250-card tier.
 
 ## API routes

@@ -92,6 +92,8 @@ function createCheckoutSessionHandler(options = {}) {
         artworkState: artworkExpected ? "selected_pending_payment" : "not_selected",
         artworkExpected: artworkExpected ? "yes" : "no",
         artworkFiles: "",
+        company: lead.company || "",
+        notes: (lead.notes || "").slice(0, 500),
       };
 
       const session = await stripe.checkout.sessions.create({
@@ -107,12 +109,13 @@ function createCheckoutSessionHandler(options = {}) {
         }],
         success_url: checkoutSelection.key === "businessCards"
           ? `${siteUrl}/business-cards/?payment=success&order=${encodeURIComponent(orderId)}&session_id={CHECKOUT_SESSION_ID}`
-          : `${siteUrl}/custom/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+          : `${siteUrl}/${checkoutSelection.key === "eventTent" ? "tents" : "custom"}/?payment=success&order=${encodeURIComponent(orderId)}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: checkoutSelection.key === "businessCards"
           ? `${siteUrl}/business-cards/?payment=cancelled&order=${encodeURIComponent(orderId)}`
-          : `${siteUrl}/custom/?payment=cancelled`,
+          : `${siteUrl}/${checkoutSelection.key === "eventTent" ? "tents" : "custom"}/?payment=cancelled`,
         customer_email: lead.email || undefined,
         phone_number_collection: { enabled: checkoutSelection.key !== "businessCards" },
+        shipping_address_collection: checkoutSelection.key === "eventTent" ? { allowed_countries: ["US"] } : undefined,
         metadata,
         payment_intent_data: { metadata },
       });
